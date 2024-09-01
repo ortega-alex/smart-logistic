@@ -1,0 +1,7 @@
+### ADD PROFILE
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile
+Content-Type: application/json
+
+{
+    "perfil": "Vendedor"
+}

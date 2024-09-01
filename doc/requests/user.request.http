@@ -1,0 +1,25 @@
+### LOGIN
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/login
+Content-Type: application/json
+
+{
+    "usuario": "m.ortega",
+    "contrasenia": "abc123**"
+}
+
+### ADD USER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/user
+Content-Type: application/json
+
+{
+    "nombre": "Pablo Ignacio",
+    "usuario": "p.ignacio",
+    "contrasenia": "abc123**",
+    "telefono": "53654565",
+    "correo": "p.ignacio@mail.com",
+    "id_perfil": 2
+}
+
+### GET ALL USERS 
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/user
+Content-Type: application/json
