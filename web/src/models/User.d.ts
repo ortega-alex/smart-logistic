@@ -9,8 +9,11 @@ export interface User {
     nombre_completo: string;
     imagenes?: Array<string>;
     perfil?: Profile;
+    cotrasenia?: string;
 }
 
 export interface Sesion extends User {
     id_sesion: number;
 }
+
+export type Login = Pick<User, 'usuario' | 'cotrasenia'>;

@@ -1,12 +1,13 @@
-import { Button, Form, FormRule, Input } from 'antd';
+import { Button, Form, FormProps, Input } from 'antd';
 import logo from '@/assets/images/logo.png';
 import { Icon } from '@/components';
 import { useState } from 'react';
+import { Login } from '@/models';
 
 export const SingIn = () => {
     const [showPass, setshowPass] = useState(false);
 
-    const handleSubmit = (values: FormRule) => {
+    const handleSubmit: FormProps<Login>['onFinish'] = values => {
         console.log(values);
     };
 
