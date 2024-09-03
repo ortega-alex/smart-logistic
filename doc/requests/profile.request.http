@@ -1,7 +1,23 @@
 ### ADD PROFILE
 POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "perfil": "Vendedor"
+    "perfil": "Administrador"
+}
+
+### GET PROFILE
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### UPDATE PROFILE
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile/3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "perfil": "Invitado",
+    "estado": true
 }

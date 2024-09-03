@@ -1,10 +1,10 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Usuario } from './User';
+import { User } from './User';
 
-@Entity()
-export class Perfil extends BaseEntity {
+@Entity('perfil')
+export class Profile extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id_perfil: number;
 
     @Column({
         nullable: false
@@ -22,6 +22,6 @@ export class Perfil extends BaseEntity {
     @UpdateDateColumn()
     fecha_edicion: Date;
 
-    @OneToMany(() => Usuario, perfiles => perfiles.perfil)
-    perfiles: Perfil[];
+    @OneToMany(() => User, perfiles => perfiles.perfil)
+    perfiles: Profile[];
 }

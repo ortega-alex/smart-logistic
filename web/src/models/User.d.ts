@@ -1,3 +1,5 @@
+import { Profile } from './Profile';
+
 export interface User {
     id_usuario: number;
     usuario: string;
@@ -6,7 +8,7 @@ export interface User {
     nombre_corto?: string;
     nombre_completo: string;
     imagenes?: Array<string>;
-    perfil?: string;
+    perfil?: Profile;
 }
 
 export interface Sesion extends User {

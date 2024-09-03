@@ -1,13 +1,14 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Perfil } from './Profile';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Profile } from './Profile';
 
-@Entity()
-export class Usuario extends BaseEntity {
+@Entity('usuario')
+export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id_usuario: number;
 
-    @ManyToOne(() => Perfil, perfil => perfil.perfiles)
-    perfil: Perfil;
+    @ManyToOne(() => Profile, perfil => perfil.perfiles)
+    @JoinColumn({ name: 'id_perfil' })
+    perfil: Profile;
 
     @Column()
     nombre: string;

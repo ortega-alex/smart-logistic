@@ -8,20 +8,15 @@
         "standard",
         "eslint-config-prettier"
     ],
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
-    },
+    "overrides": [],
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json"
     },
     "plugins": [
-        "react"
+        "react",
+        "prettier"
     ],
     "rules": {
         "no-unused-vars": "warn",
@@ -29,7 +24,6 @@
         "camelcase": "off",
         "react/prop-types": "off",
         "no-undef": "off",
-        "react/react-in-jsx-scope": "off",
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts"] }] 
+        "react/react-in-jsx-scope": "off"
     }
 }
