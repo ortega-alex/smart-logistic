@@ -1,5 +1,7 @@
 export const privateRoutes = {
-    PRIVATE: 'privado'
+    PRIVATE: 'privado',
+    HOME: 'home',
+    VEHICLES: 'vehicles'
 } as const;
 
 export const publicRoutes = {

@@ -3,17 +3,17 @@ import { Profile } from './Profile';
 export interface User {
     id_usuario: number;
     usuario: string;
-    estado: string;
     correo: string;
-    nombre_corto?: string;
-    nombre_completo: string;
-    imagenes?: Array<string>;
-    perfil?: Profile;
+    telefono: string;
+    nombre: string;
     cotrasenia?: string;
+    estado: boolean;
+    perfil?: Profile;
 }
 
 export interface Sesion extends User {
     id_sesion: number;
+    iniciales: string;
 }
 
 export type Login = Pick<User, 'usuario' | 'cotrasenia'>;
