@@ -1,5 +1,7 @@
 import { Icon } from '@/components';
 import { privateRoutes } from '@/models';
+import { RootState } from '@/redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const menus = [
@@ -60,27 +62,43 @@ const menus = [
 ];
 
 export const Home = () => {
+    const deviceState: Boolean = useSelector((store: RootState) => store.device);
+
     return (
         <div className='h-100 bg-secondary text-danger flex flex-1 justify-center items-center flex-column'>
             <h1>Bienvenido</h1>
-            {[1, 2].map(item => (
-                <div className={`flex ${item === 2 ? 'menu-bottom' : ''}`} key={item}>
-                    {menus
-                        .filter(_item => _item.type === item)
-                        .map((menu, i) => (
+            {[1, 2, 3].map(item => {
+                let inicio = 0;
+                let final = deviceState ? 4 : 5;
+
+                if (item === 2) {
+                    inicio = deviceState ? 4 : 5;
+                    final = deviceState ? 7 : 9;
+                }
+
+                if (item === 3) {
+                    inicio = deviceState ? 7 : -1;
+                    final = deviceState ? 9 : -1;
+                }
+
+                if (inicio === -1 || final === -1) return null;
+                return (
+                    <div className={`flex ${item > 1 ? 'menu-bottom' : ''}`} key={item}>
+                        {menus.slice(inicio, final).map((menu, i) => (
                             <Link to={`/${privateRoutes.PRIVATE}/${menu.path}`} replace={true} key={i} style={{ textDecoration: 'none' }}>
                                 <div className='hex-container zoom'>
                                     <div className='hex-border'>
                                         <div className='hex-button '>
-                                            <span style={{ fontSize: '1.5dvh' }}>{menu.name}</span>
+                                            {!deviceState && <span style={{ fontSize: '1.5dvh' }}>{menu.name}</span>}
                                             {menu.icon}
                                         </div>
                                     </div>
                                 </div>
                             </Link>
                         ))}
-                </div>
-            ))}
+                    </div>
+                );
+            })}
         </div>
     );
 };

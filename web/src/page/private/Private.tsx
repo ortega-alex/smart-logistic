@@ -1,12 +1,27 @@
 import { Loading, Navbar, RoutesWithNotFound } from '@/components';
 import { privateRoutes } from '@/models';
-import { lazy, useState } from 'react';
+import { modifyDevice } from '@/redux/state';
+import { lazy, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Navigate, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./home/Home').then(module => ({ default: module.Home })));
 
 export const Private = () => {
-    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+
+    const [loading] = useState(false);
+
+    const eventListenerResize = () => {
+        let isMovile = false;
+        if (window.innerWidth >= 320 && window.innerWidth <= 768) isMovile = true;
+        dispatch(modifyDevice(isMovile));
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', eventListenerResize);
+        return () => window.removeEventListener('resize', eventListenerResize);
+    }, []);
 
     return (
         <div className='flex flex-column vh-100'>

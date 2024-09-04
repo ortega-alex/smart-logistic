@@ -9,7 +9,8 @@ const emptySession: Sesion = {
     estado: false,
     nombre: '',
     usuario: '',
-    telefono: ''
+    telefono: '',
+    iniciales: 'NA'
 };
 const session = getStorage(_KEYS.SESSION);
 

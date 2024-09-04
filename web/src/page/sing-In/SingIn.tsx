@@ -1,9 +1,10 @@
 import { sessionAdapter } from '@/adapter';
+import logoBrand from '@/assets/images/logo-brand.png';
 import logo from '@/assets/images/logo.png';
 import { Icon } from '@/components';
 import { Login, privateRoutes } from '@/models';
 import { setSession } from '@/redux';
-import { httpLogin } from '@/services/user.service';
+import { httpLogin } from '@/services';
 import { Button, Form, FormProps, Input, message } from 'antd';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -32,39 +33,47 @@ export const SingIn = () => {
 
     return (
         <div className='login-container'>
-            <div className='card shadow-lg'>
-                <Form layout='vertical' onFinish={handleSubmit}>
-                    <div className='text-center'>
-                        <img src={logo} alt='logo' width={150} />
-                    </div>
-                    <Form.Item label='Usuario' name='usuario' rules={[{ required: true, message: 'El usuario es requerido' }]}>
-                        <Input placeholder='Ingrese un usuario' autoFocus prefix={<Icon.User />} />
-                    </Form.Item>
-                    <Form.Item label='Contraseña' name='contrasenia' rules={[{ required: true, message: 'El usuario es requerido' }]}>
-                        <Input
-                            placeholder='Ingrese una contraseña'
-                            type={showPass ? 'text' : 'password'}
-                            autoCapitalize='off'
-                            autoComplete='off'
-                            prefix={<Icon.Lock />}
-                            suffix={
-                                <Button
-                                    size='small'
-                                    type='text'
-                                    onClick={() => setshowPass(!showPass)}
-                                    icon={showPass ? <Icon.EyeSlash /> : <Icon.Eye />}
-                                />
-                            }
-                        />
-                    </Form.Item>
-                    <Button block type='link' htmlType='button' disabled={loading}>
-                        Olvidé la contraseña
-                    </Button>
-                    <Button block type='primary' htmlType='submit' loading={loading} disabled={loading}>
-                        Iniciar Sesión
-                    </Button>
-                </Form>
+            <img src={logoBrand} alt='logo' width={150} />
+            <div className='flex-1 flex justify-center items-center'>
+                <div className='card shadow-lg'>
+                    <Form layout='vertical' onFinish={handleSubmit}>
+                        <div className='text-center'>
+                            <img src={logo} alt='logo' width={150} />
+                        </div>
+                        <Form.Item label='Usuario' name='usuario' rules={[{ required: true, message: 'El usuario es requerido' }]}>
+                            <Input placeholder='Ingrese un usuario' autoFocus prefix={<Icon.User />} />
+                        </Form.Item>
+                        <Form.Item label='Contraseña' name='contrasenia' rules={[{ required: true, message: 'El usuario es requerido' }]}>
+                            <Input
+                                placeholder='Ingrese una contraseña'
+                                type={showPass ? 'text' : 'password'}
+                                autoCapitalize='off'
+                                autoComplete='off'
+                                prefix={<Icon.Lock />}
+                                suffix={
+                                    <Button
+                                        size='small'
+                                        type='text'
+                                        onClick={() => setshowPass(!showPass)}
+                                        icon={showPass ? <Icon.EyeSlash /> : <Icon.Eye />}
+                                    />
+                                }
+                            />
+                        </Form.Item>
+                        <Button block type='link' htmlType='button' disabled={loading}>
+                            Olvidé la contraseña
+                        </Button>
+                        <Button block type='primary' htmlType='submit' loading={loading} disabled={loading}>
+                            Iniciar Sesión
+                        </Button>
+                    </Form>
+                </div>
             </div>
+            <footer>
+                <p className='w-100 text-center'>
+                    <small> Copyright &copy; 2024 ays-saavedra.com</small>
+                </p>
+            </footer>
         </div>
     );
 };
