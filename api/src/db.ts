@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Profile, User } from './entities';
+import { Menu, Profile, User } from './entities';
 import { enviroment } from './utils';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
@@ -9,7 +9,7 @@ export const AppDataSource = new DataSource({
     username: enviroment.MYSQL_USER,
     password: enviroment.MYSQL_PASSWORD,
     database: enviroment.MYSQL_DATABASE,
-    entities: [Profile, User],
+    entities: [Profile, User, Menu],
     synchronize: true,
     namingStrategy: new SnakeNamingStrategy()
 });

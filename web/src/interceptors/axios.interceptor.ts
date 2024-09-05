@@ -1,10 +1,12 @@
+import { _KEYS } from '@/models';
+import { getStorage } from '@/services';
 import axios from 'axios';
 
 export const Interceptor = () => {
     axios.interceptors.request.use(
         config => {
-            const token = null;
-            if (!token) config.headers.Authorization = `Bearer ${token}`;
+            const token = getStorage(_KEYS.TOKEN);
+            if (token) config.headers.Authorization = `Bearer ${token}`;
             return config;
         },
         error => Promise.reject(error)

@@ -1,7 +1,7 @@
 import icon from '@/assets/images/icon.png';
-import { color, privateRoutes, publicRoutes, Sesion } from '@/models';
+import { color, Menu, privateRoutes, publicRoutes, Sesion } from '@/models';
 import { resetSesion, RootState } from '@/redux';
-import { Avatar, Badge, Button, Drawer } from 'antd';
+import { Avatar, Badge, Button, Drawer, Dropdown } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { Icon } from './Icon';
 export const Navbar = () => {
     const sessionState: Sesion = useSelector((store: RootState) => store.session);
     const deviceState: Boolean = useSelector((store: RootState) => store.device);
+    const menuState: Array<Menu> = useSelector((store: RootState) => store.menu);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { pathname } = useLocation();
@@ -19,6 +20,7 @@ export const Navbar = () => {
     const [sideMenu, setSideMenu] = useState(false);
 
     const handleNavigation = (path: string) => {
+        console.log(path);
         navigate(path);
         setSideMenu(false);
     };
@@ -48,10 +50,45 @@ export const Navbar = () => {
                 </div>
 
                 {!show && !deviceState && (
-                    <div className='flex-1 flex justify-end text-white'>
-                        <Link to={privateRoutes.VEHICLES} style={{ color: color.white, textDecoration: 'none' }}>
-                            <span className='text-white'>Vehiculos</span>
-                        </Link>
+                    <div className='flex-1 flex justify-end text-white gap-3 mr-3'>
+                        {menuState.some(item => item.path === 'QUOTER') && (
+                            <Link to={privateRoutes.QUOTER} style={{ color: color.white, textDecoration: 'none' }}>
+                                <span className='text-white'>Cotizador</span>
+                            </Link>
+                        )}
+                        {menuState.some(item => item.path === 'VEHICLES') && (
+                            <Link to={privateRoutes.VEHICLES} style={{ color: color.white, textDecoration: 'none' }}>
+                                <span className='text-white'>Vehiculos</span>
+                            </Link>
+                        )}
+                        {menuState.some(item => item.es_mantenimiento) && (
+                            <Dropdown
+                                menu={{
+                                    items: menuState
+                                        .filter(item => item.es_mantenimiento)
+                                        .map(item => ({
+                                            key: item.id_menu,
+                                            label: (
+                                                <Link to={privateRoutes[item.path]} style={{ textDecoration: 'none' }}>
+                                                    <span>{item.menu}</span>
+                                                </Link>
+                                            )
+                                        }))
+                                }}
+                                placement='bottomLeft'
+                                arrow
+                            >
+                                <Button type='text' htmlType='button' className='text-white' size='small'>
+                                    <span>Mantenimietos</span>
+                                    <Icon.AngleDown />
+                                </Button>
+                            </Dropdown>
+                        )}
+                        {menuState.some(item => item.path === 'REPORTS') && (
+                            <Link to={privateRoutes.REPORTS} style={{ color: color.white, textDecoration: 'none' }}>
+                                <span className='text-white'>Reporte</span>
+                            </Link>
+                        )}
                     </div>
                 )}
 
@@ -76,14 +113,66 @@ export const Navbar = () => {
                     <Link to='/' className='navbar-brand'>
                         <img src={icon} height='80' className='d-inline-block align-top' alt='' />
                     </Link>
-                    <Button
-                        type='link'
-                        icon={<Icon.Car color='white' />}
-                        htmlType='button'
-                        onClick={() => handleNavigation(privateRoutes.VEHICLES)}
-                    >
-                        <span className='text-white'>Vehiculos</span>
-                    </Button>
+
+                    {menuState.some(item => item.path === 'QUOTER') && (
+                        <Button
+                            type='link'
+                            icon={<Icon.Calculate color='white' />}
+                            htmlType='button'
+                            className='text-left'
+                            block
+                            onClick={() => handleNavigation(privateRoutes.QUOTER)}
+                        >
+                            <span className='text-white'>Cotizador</span>
+                        </Button>
+                    )}
+
+                    {menuState.some(item => item.path === 'VEHICLES') && (
+                        <Button
+                            type='link'
+                            icon={<Icon.Car color='white' />}
+                            htmlType='button'
+                            className='text-left'
+                            block
+                            onClick={() => handleNavigation(privateRoutes.VEHICLES)}
+                        >
+                            <span className='text-white'>Vehiculos</span>
+                        </Button>
+                    )}
+
+                    {menuState.some(item => item.es_mantenimiento) && (
+                        <Dropdown
+                            menu={{
+                                items: menuState
+                                    .filter(item => item.es_mantenimiento)
+                                    .map(item => ({
+                                        key: item.path,
+                                        label: <span>{item.menu}</span>
+                                    })),
+                                onClick: value => handleNavigation(privateRoutes[value.key])
+                            }}
+                            placement='bottomLeft'
+                            arrow
+                        >
+                            <Button type='text' htmlType='button' className='text-white' size='small'>
+                                <span>Mantenimietos</span>
+                                <Icon.AngleDown />
+                            </Button>
+                        </Dropdown>
+                    )}
+
+                    {menuState.some(item => item.path === 'REPORTS') && (
+                        <Button
+                            type='link'
+                            icon={<Icon.Report color='white' />}
+                            htmlType='button'
+                            className='text-left'
+                            block
+                            onClick={() => handleNavigation(privateRoutes.REPORTS)}
+                        >
+                            <span className='text-white'>Reportes</span>
+                        </Button>
+                    )}
                 </div>
             </Drawer>
             <Drawer

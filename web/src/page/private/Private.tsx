@@ -1,6 +1,8 @@
 import { Loading, Navbar, RoutesWithNotFound } from '@/components';
 import { privateRoutes } from '@/models';
-import { modifyDevice } from '@/redux/state';
+import { modifyDevice, setMenu } from '@/redux/state';
+import { httpGetMenus } from '@/services';
+import { message } from 'antd';
 import { lazy, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Navigate, Route } from 'react-router-dom';
@@ -20,6 +22,11 @@ export const Private = () => {
 
     useEffect(() => {
         window.addEventListener('resize', eventListenerResize);
+
+        httpGetMenus()
+            .then(res => dispatch(setMenu({ menus: res })))
+            .catch(err => message.error(`Error http get menus: ${err.message}`));
+
         return () => window.removeEventListener('resize', eventListenerResize);
     }, []);
 

@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { deviceSlice, sessionSlice } from './state';
+import { deviceSlice, menuSlice, sessionSlice } from './state';
 
 export const store = configureStore({
     reducer: {
         session: sessionSlice.reducer,
-        device: deviceSlice.reducer
+        device: deviceSlice.reducer,
+        menu: menuSlice.reducer
     }
 });
 
