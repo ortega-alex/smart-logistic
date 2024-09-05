@@ -1,6 +1,6 @@
 import { Map } from '@/models';
-import { AiFillLock, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai';
-import { BiUser } from 'react-icons/bi';
+import { AiFillLock, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
+import { BiEdit, BiUser } from 'react-icons/bi';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
 import { FaAngleDown } from 'react-icons/fa6';
@@ -18,6 +18,7 @@ export const Icon = {
     Car: LiaCarAltSolid,
     Car2: TbCar,
     Crane: TbCarCrane,
+    Edit: BiEdit,
     Eye: BsEye,
     EyeSlash: BsEyeSlash,
     Lock: AiFillLock,
@@ -25,6 +26,7 @@ export const Icon = {
     MenuFold: AiOutlineMenuFold,
     MenuUnfold: AiOutlineMenuUnfold,
     Profile: CgProfile,
+    Upload: AiOutlineUpload,
     User: BiUser,
     Users: TbUsersPlus,
     Report: HiOutlineDocumentReport,

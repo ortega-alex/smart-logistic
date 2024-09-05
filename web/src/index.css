@@ -109,6 +109,10 @@
     color: var(--danger) !important;
 }
 
+.text-success {
+    color: var(--success) !important;
+}
+
 .navbar {
     position: relative;
     display: -ms-flexbox;
@@ -159,6 +163,11 @@
 .h-100,
 .h-full {
     height: 100% !important;
+}
+
+.w-100,
+.w-full {
+    width: 100% !important;
 }
 
 .text-left {
@@ -221,6 +230,17 @@
 .flex-column {
     -ms-flex-direction: column !important;
     flex-direction: column !important;
+}
+
+@media (min-width: 768px) {
+    .flex-md-column {
+        -ms-flex-direction: row !important;
+        flex-direction: row !important;
+    }
+    .flex-md-row {
+        -ms-flex-direction: column !important;
+        flex-direction: column !important;
+    }
 }
 
 .justify-start {
@@ -687,4 +707,16 @@
         height: 72px;
         opacity: 0;
     }
+}
+
+.table-row-light {
+    background-color: var(--white-light);
+}
+
+.table-row-dark {
+    background-color: #f1f1f1;
+}
+
+.ant-upload-list-item-name {
+    max-width: 250px !important;
 }

@@ -1,4 +1,5 @@
 export * from './Color.const';
+export * from './Customer.d';
 export * from './Environment.const';
 export * from './Menu.d';
 export * from './Profile.d';
