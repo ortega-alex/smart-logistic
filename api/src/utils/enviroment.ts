@@ -7,5 +7,7 @@ export const enviroment = {
     MYSQL_DATABASE: process.env.MYSQL_DATABASE || 'smart_logistic',
     MYSQL_PASSWORD: process.env.MYSQL_ROOT_PASSWORD,
     MYSQL_USER: process.env.MYSQL_ROOT_USER || 'root',
-    TOKEN_SECRET: '2bcb7dc9-7236-11ec-8b4d-0025220dcb60'
+    TOKEN_SECRET: '2bcb7dc9-7236-11ec-8b4d-0025220dcb60',
+    URI_FILE: 'files',
+    URI_IMAGES: 'images'
 };

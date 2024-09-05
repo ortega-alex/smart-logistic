@@ -6,10 +6,6 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_usuario: number;
 
-    @ManyToOne(() => Profile, perfil => perfil.perfiles)
-    @JoinColumn({ name: 'id_perfil' })
-    perfil: Profile;
-
     @Column()
     nombre: string;
 
@@ -37,4 +33,8 @@ export class User extends BaseEntity {
 
     @UpdateDateColumn()
     fecha_edicion: Date;
+
+    @ManyToOne(() => Profile, perfil => perfil.perfiles)
+    @JoinColumn({ name: 'id_perfil' })
+    perfil: Profile;
 }

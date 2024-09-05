@@ -1,3 +1,6 @@
+import { CustomerFile } from './CustomerFile';
+import { TypeOfCustomer } from './TypeOfCustomer';
+
 export interface Customer {
     id_cliente: number;
     cliente: string;
@@ -9,5 +12,6 @@ export interface Customer {
     correo: string;
     estado: boolean;
     id_tipo_cliente?: number;
-    archivos?: Array<File>;
+    archivos?: Array<CustomerFile>;
+    tipo_cliente?: TypeOfCustomer;
 }

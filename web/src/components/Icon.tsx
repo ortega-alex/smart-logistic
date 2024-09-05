@@ -10,9 +10,11 @@ import { IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { MdOutlineCalculate } from 'react-icons/md';
 import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
+import { GrAttachment } from 'react-icons/gr';
 
 export const Icon = {
     AngleDown: FaAngleDown,
+    Attachment: GrAttachment,
     Bell: GoBell,
     Calculate: MdOutlineCalculate,
     Car: LiaCarAltSolid,

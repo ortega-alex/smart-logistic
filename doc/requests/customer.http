@@ -1,0 +1,9 @@
+### GET CUSTOMER
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET CUSTOMER BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/2
+Content-Type: application/json
+Authorization: Bearer {{token}}

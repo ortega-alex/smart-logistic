@@ -1,5 +1,6 @@
 export interface RequesParam {
     path: string;
     method: string;
-    data?: object;
+    data?: ObjectCustomer;
+    type?: string;
 }

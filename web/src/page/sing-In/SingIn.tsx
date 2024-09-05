@@ -41,7 +41,7 @@ export const SingIn = () => {
                             <img src={logo} alt='logo' width={150} />
                         </div>
                         <Form.Item label='Usuario' name='usuario' rules={[{ required: true, message: 'El usuario es requerido' }]}>
-                            <Input placeholder='Ingrese un usuario' autoFocus prefix={<Icon.User />} />
+                            <Input placeholder='Ingrese un usuario' autoFocus prefix={<Icon.User />} autoCapitalize='off' />
                         </Form.Item>
                         <Form.Item label='Contraseña' name='contrasenia' rules={[{ required: true, message: 'El usuario es requerido' }]}>
                             <Input

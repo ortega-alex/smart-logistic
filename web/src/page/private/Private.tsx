@@ -19,12 +19,13 @@ export const Private = () => {
 
     const eventListenerResize = () => {
         let isMovile = false;
-        if (window.innerWidth >= 320 && window.innerWidth <= 768) isMovile = true;
+        if (window.innerWidth >= 320 && window.innerWidth <= 800) isMovile = true;
         dispatch(modifyDevice(isMovile));
     };
 
     useEffect(() => {
         window.addEventListener('resize', eventListenerResize);
+        eventListenerResize();
 
         httpGetMenus()
             .then(res => dispatch(setMenu({ menus: res })))

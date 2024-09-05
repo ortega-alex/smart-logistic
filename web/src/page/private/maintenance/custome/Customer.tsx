@@ -1,10 +1,11 @@
 import { Icon } from '@/components';
 import { Customer as TypeCustomer } from '@/models';
-import { Button, Input, Modal, Table } from 'antd';
-import { useState } from 'react';
+import { Button, Input, message, Modal, Table } from 'antd';
+import { useEffect, useState } from 'react';
 import { FormCustomer } from './FormCustomer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux';
+import { httpGetCustomer, httpGetCustomerById } from '@/services';
 
 export const Customer = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -23,6 +24,30 @@ export const Customer = () => {
     const [customers, setCustomers] = useState<Array<TypeCustomer>>([]);
     const [customer, setCustomer] = useState<TypeCustomer>(emptyCustomer);
     const [modal, setModal] = useState(false);
+
+    const handleGet = () => {
+        setLoading(true);
+        httpGetCustomer()
+            .then(res => setCustomers(res))
+            .catch(err => message.error(`Error http get customers: ${err.message}`))
+            .finally(() => setLoading(false));
+    };
+
+    const handleEdit = (customer: TypeCustomer) => {
+        httpGetCustomerById(customer.id_cliente)
+            .then(res => {
+                if (res.message) message.warning(res.message);
+                else {
+                    setCustomer({ ...res, id_tipo_cliente: customer.tipo_cliente?.id_tipo_cliente });
+                    setModal(true);
+                }
+            })
+            .catch(err => message.error(`Error http get customer by id: ${err.message}`));
+    };
+
+    useEffect(() => {
+        handleGet();
+    }, []);
 
     return (
         <div className='h-100 flex flex-column p-3'>
@@ -51,12 +76,10 @@ export const Customer = () => {
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
                     pagination={{
                         position: ['none', 'bottomRight'],
-                        // ...tableParams.pagination,
                         showSizeChanger: true,
                         pageSizeOptions: [50, 100, 250, 500]
                     }}
                     className='table'
-                    // scroll={{ x: 800, y: 300 }}
                     loading={loading}
                     showSorterTooltip={false}
                     rowKey='id_cliente'
@@ -64,7 +87,7 @@ export const Customer = () => {
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'index'
+                            dataIndex: 'id_cliente'
                         },
                         {
                             title: 'Nombre',
@@ -76,11 +99,12 @@ export const Customer = () => {
                             title: 'Tipo de Cliente',
                             dataIndex: 'tipo_cliente',
                             ellipsis: true,
-                            sorter: true
+                            sorter: true,
+                            render: value => <span>{value?.tipo_cliente}</span>
                         },
                         {
                             title: 'Telefono',
-                            dataIndex: 'telefono',
+                            dataIndex: 'telefono_celular',
                             sorter: true
                         },
                         {
@@ -104,7 +128,7 @@ export const Customer = () => {
                                         icon={<Icon.Edit />}
                                         type='primary'
                                         size='small'
-                                        onClick={() => console.log(item)}
+                                        onClick={() => handleEdit(item)}
                                     />
                                 </div>
                             )
@@ -116,12 +140,27 @@ export const Customer = () => {
             <Modal
                 open={modal}
                 footer={null}
-                title={<h3 className='text-primary'>{customer.id_cliente > 0 ? 'Editar' : 'Nuevo'} Cliente</h3>}
+                title={
+                    <div className='flex flex-row gap-1'>
+                        {customer?.archivos && customer.archivos?.length > 0 && (
+                            <Button type='link' htmlType='button' ghost icon={<Icon.Attachment />}>
+                                Archivos
+                            </Button>
+                        )}
+                        <h3 className='text-primary'>{customer.id_cliente > 0 ? 'Editar' : 'Nuevo'} Cliente</h3>
+                    </div>
+                }
                 onCancel={() => setModal(false)}
                 centered
                 destroyOnClose
             >
-                <FormCustomer customer={customer} />
+                <FormCustomer
+                    customer={customer}
+                    onClose={() => {
+                        setModal(false);
+                        handleGet();
+                    }}
+                />
             </Modal>
         </div>
     );

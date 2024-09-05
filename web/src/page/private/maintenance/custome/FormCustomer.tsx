@@ -1,18 +1,40 @@
 import { Icon } from '@/components';
 import { Customer } from '@/models';
-import { Button, Form, FormProps, Input, Select, Switch, Upload } from 'antd';
-import { useState } from 'react';
+import { TypeOfCustomer } from '@/models/TypeOfCustomer';
+import { httpAddCustomer, httpEditCustomer, httpGetTypeOfCustomer } from '@/services';
+import { Button, Form, FormProps, Input, message, Select, Switch, Upload } from 'antd';
+import { useEffect, useState } from 'react';
 
 interface Props {
     customer: Customer;
+    onClose: () => void;
 }
 
-export const FormCustomer: React.FC<Props> = ({ customer }) => {
+export const FormCustomer: React.FC<Props> = ({ customer, onClose }) => {
     const [loading, setLoading] = useState(false);
+    const [typeOfCustomers, setTypeOfCustomers] = useState<Array<TypeOfCustomer>>([]);
 
-    const handleSubmit: FormProps<Customer>['onFinish'] = values => {
-        console.log(values);
+    const handleSubmit: FormProps<Customer>['onFinish'] = async values => {
+        try {
+            setLoading(true);
+            let res;
+            if (customer.id_cliente > 0) res = await httpEditCustomer({ ...customer, ...values });
+            else res = await httpAddCustomer(values);
+
+            if (res.message) message.warning(res.message);
+            else onClose();
+        } catch (error) {
+            message.error(`Error http customer: ${(error as Error).message}`);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        httpGetTypeOfCustomer()
+            .then(res => setTypeOfCustomers(res))
+            .catch(err => message.error(`Error http customer: ${err.message}`));
+    }, []);
 
     return (
         <Form layout='vertical' initialValues={customer} onFinish={handleSubmit}>
@@ -47,12 +69,20 @@ export const FormCustomer: React.FC<Props> = ({ customer }) => {
                 <Form.Item label='Email' name='correo' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                     <Input placeholder='Ingrese un email' />
                 </Form.Item>
-                <Form.Item label='Tipo de cliente' name='id_tipo_cliente' className='flex-1'>
-                    <Select placeholder='Seleccione una opción' />
+                <Form.Item
+                    label='Tipo de cliente'
+                    name='id_tipo_cliente'
+                    className='flex-1'
+                    rules={[{ required: true, message: 'El campo es obligatorio' }]}
+                >
+                    <Select
+                        placeholder='Seleccione una opción'
+                        options={typeOfCustomers.map(item => ({ value: item.id_tipo_cliente, label: item.tipo_cliente }))}
+                    />
                 </Form.Item>
             </div>
             <div className='flex flex-md-column justify-between gap-1'>
-                <Form.Item name='archivos' rules={[{ required: true, message: `El campo es obligatorio` }]}>
+                <Form.Item name='files' rules={[{ required: customer.id_cliente === 0, message: `El campo es obligatorio` }]}>
                     <Upload
                         style={{ width: 300, border: 'solid black 1px' }}
                         multiple={true}
