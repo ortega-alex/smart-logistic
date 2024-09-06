@@ -1,11 +1,11 @@
-import { Icon } from '@/components';
-import { Customer as TypeCustomer } from '@/models';
-import { Button, Input, message, Modal, Table } from 'antd';
+import { Icon, ViewFiles } from '@/components';
+import { CustomerFile, Customer as TypeCustomer } from '@/models';
+import { Button, Input, message, Modal, Popover, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { FormCustomer } from './FormCustomer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux';
-import { httpGetCustomer, httpGetCustomerById } from '@/services';
+import { httpDeleteCustomerFile, httpGetCustomer, httpGetCustomerById } from '@/services';
 
 export const Customer = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -19,11 +19,24 @@ export const Customer = () => {
         telefono_celular: '',
         estado: true
     };
+    const emptyFile: CustomerFile = {
+        id_archivo: 0,
+        ruta: '',
+        nombre: '',
+        estado: true
+    };
 
     const [loading, setLoading] = useState(false);
     const [customers, setCustomers] = useState<Array<TypeCustomer>>([]);
     const [customer, setCustomer] = useState<TypeCustomer>(emptyCustomer);
-    const [modal, setModal] = useState(false);
+    const [modals, setModals] = useState({
+        customer: false,
+        // files: false,
+        preview: false
+    });
+    const [file, setFile] = useState<CustomerFile>(emptyFile);
+
+    const hamdleChangeModal = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
 
     const handleGet = () => {
         setLoading(true);
@@ -39,10 +52,26 @@ export const Customer = () => {
                 if (res.message) message.warning(res.message);
                 else {
                     setCustomer({ ...res, id_tipo_cliente: customer.tipo_cliente?.id_tipo_cliente });
-                    setModal(true);
+                    hamdleChangeModal('customer');
                 }
             })
             .catch(err => message.error(`Error http get customer by id: ${err.message}`));
+    };
+
+    const handleDeleteFile = (id: number) => {
+        Modal.confirm({
+            title: 'Eliminar archivo',
+            content: 'Estas seguro de querer eliminar este archivo?',
+            okText: 'Si',
+            cancelText: 'No',
+            onOk: () =>
+                httpDeleteCustomerFile(id)
+                    .then(res => {
+                        message.info(res.message);
+                        handleEdit(customer);
+                    })
+                    .catch(err => message.error(`Error http delete customer file by id: ${err.message}`))
+        });
     };
 
     useEffect(() => {
@@ -61,7 +90,7 @@ export const Customer = () => {
                     htmlType='button'
                     onClick={() => {
                         setCustomer(emptyCustomer);
-                        setModal(true);
+                        hamdleChangeModal('customer');
                     }}
                 >
                     Agregar
@@ -138,29 +167,65 @@ export const Customer = () => {
             )}
 
             <Modal
-                open={modal}
+                open={modals.customer}
                 footer={null}
                 title={
                     <div className='flex flex-row gap-1'>
                         {customer?.archivos && customer.archivos?.length > 0 && (
-                            <Button type='link' htmlType='button' ghost icon={<Icon.Attachment />}>
-                                Archivos
-                            </Button>
+                            <Popover
+                                placement='bottomLeft'
+                                content={
+                                    <>
+                                        {customer.archivos?.map(item => (
+                                            <div key={item.id_archivo} className='flex flex-row justify-between'>
+                                                <Button
+                                                    type='link'
+                                                    size='small'
+                                                    icon={<Icon.Attachment />}
+                                                    onClick={() => {
+                                                        setFile(item);
+                                                        hamdleChangeModal('preview');
+                                                    }}
+                                                >
+                                                    {item.nombre}
+                                                </Button>
+                                                <Button
+                                                    size='small'
+                                                    type='text'
+                                                    htmlType='button'
+                                                    danger
+                                                    ghost
+                                                    icon={<Icon.Trash />}
+                                                    onClick={() => handleDeleteFile(item.id_archivo)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </>
+                                }
+                            >
+                                <Button type='link' htmlType='button' ghost icon={<Icon.Attachment />}>
+                                    Archivos
+                                </Button>
+                            </Popover>
                         )}
                         <h3 className='text-primary'>{customer.id_cliente > 0 ? 'Editar' : 'Nuevo'} Cliente</h3>
                     </div>
                 }
-                onCancel={() => setModal(false)}
+                onCancel={() => hamdleChangeModal('customer', false)}
                 centered
                 destroyOnClose
             >
                 <FormCustomer
                     customer={customer}
                     onClose={() => {
-                        setModal(false);
+                        hamdleChangeModal('customer', false);
                         handleGet();
                     }}
                 />
+            </Modal>
+
+            <Modal open={modals.preview} footer={null} onCancel={() => hamdleChangeModal('preview', false)} centered destroyOnClose>
+                <ViewFiles file={file} />
             </Modal>
         </div>
     );

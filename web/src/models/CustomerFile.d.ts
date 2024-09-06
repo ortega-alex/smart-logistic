@@ -1,5 +1,5 @@
 export interface CustomerFile {
-    id_archivo: null;
+    id_archivo: number;
     ruta: string;
     nombre: string;
     estado: boolean;

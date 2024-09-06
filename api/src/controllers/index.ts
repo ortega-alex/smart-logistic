@@ -1,3 +1,4 @@
+export * from './customer-file.controller';
 export * from './customer.controller';
 export * from './menu.controller';
 export * from './profile.controller';

@@ -11,6 +11,7 @@ import { LiaCarAltSolid } from 'react-icons/lia';
 import { MdOutlineCalculate } from 'react-icons/md';
 import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 import { GrAttachment } from 'react-icons/gr';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
 export const Icon = {
     AngleDown: FaAngleDown,
@@ -28,6 +29,7 @@ export const Icon = {
     MenuFold: AiOutlineMenuFold,
     MenuUnfold: AiOutlineMenuUnfold,
     Profile: CgProfile,
+    Trash: FaRegTrashAlt,
     Upload: AiOutlineUpload,
     User: BiUser,
     Users: TbUsersPlus,

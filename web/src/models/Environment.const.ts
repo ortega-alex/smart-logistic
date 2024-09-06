@@ -5,8 +5,7 @@ const domain = `//${host}:${port}`;
 
 export const _SERVER = {
     baseUrl: domain,
-    apiUrl: `${domain}/api/${version}`,
-    publicUrl: `${domain}/api/public`
+    apiUrl: `${domain}/api/${version}`
 } as const;
 
 export const _KEYS = {

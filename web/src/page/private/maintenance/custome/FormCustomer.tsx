@@ -37,7 +37,7 @@ export const FormCustomer: React.FC<Props> = ({ customer, onClose }) => {
     }, []);
 
     return (
-        <Form layout='vertical' initialValues={customer} onFinish={handleSubmit}>
+        <Form layout='vertical' initialValues={{ ...customer, archivos: undefined }} onFinish={handleSubmit}>
             <Form.Item label='Nombre completo' name='cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese el nombre del cliente' />
             </Form.Item>

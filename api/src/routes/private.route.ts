@@ -4,6 +4,7 @@ import {
     addProfile,
     addTypeOfCustomer,
     addUser,
+    deleteCustomerFile,
     getCustomer,
     getCustomerById,
     getMenus,
@@ -30,6 +31,8 @@ routes.post('/customer', fileUpload.array('files'), addCustomer);
 routes.get('/customer', getCustomer);
 routes.get('/customer/:id', getCustomerById);
 routes.put('/customer/:id', fileUpload.array('files'), updateCustomerById);
+
+routes.delete('/customer-file/:id', deleteCustomerFile);
 
 routes.post('/type-of-customer', addTypeOfCustomer);
 routes.get('/type-of-customer', getTypeOfCustomers);
