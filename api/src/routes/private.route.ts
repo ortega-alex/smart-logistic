@@ -12,7 +12,8 @@ import {
     getTypeOfCustomers,
     getUsers,
     updateCustomerById,
-    updateProfile
+    updateProfile,
+    updateUser
 } from '../controllers';
 import { fileUpload } from '../middleware';
 
@@ -20,6 +21,7 @@ const routes = Router();
 
 routes.get('/user', getUsers);
 routes.post('/user', addUser);
+routes.put('/user/:id', updateUser);
 
 routes.post('/profile', addProfile);
 routes.get('/profile', getProfile);

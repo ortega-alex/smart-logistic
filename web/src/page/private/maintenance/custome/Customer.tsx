@@ -1,6 +1,6 @@
 import { Icon, ViewFiles } from '@/components';
 import { CustomerFile, Customer as TypeCustomer } from '@/models';
-import { Button, Input, message, Modal, Popover, Table } from 'antd';
+import { Button, Input, List, message, Modal, Popover, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { FormCustomer } from './FormCustomer';
 import { useSelector } from 'react-redux';
@@ -98,7 +98,35 @@ export const Customer = () => {
             </div>
 
             {deviceState ? (
-                <>Vista movile</>
+                <List
+                    dataSource={customers}
+                    renderItem={item => (
+                        <div className='item-list' key={item.id_cliente}>
+                            <div className='flex-1'>
+                                <strong>Nombre: </strong>&nbsp;{item.cliente}
+                            </div>
+                            <div className='flex-1'>
+                                <strong>Nombre: </strong>&nbsp;{item.tipo_cliente?.tipo_cliente}
+                            </div>
+                            <div className='flex flex-row justify-between'>
+                                <div className='flex-1'>
+                                    <strong>Telefono: </strong>&nbsp;{item.telefono_celular}
+                                </div>
+                                <div className='flex-1'>
+                                    <strong>Correo: </strong>&nbsp;{item.correo}
+                                </div>
+                            </div>
+                            <div className='flex flex-row justify-between'>
+                                <div>
+                                    <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
+                                </div>
+                                <Button type='link' danger htmlType='button' onClick={() => handleEdit(item)}>
+                                    Ver
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                />
             ) : (
                 <Table
                     size='small'

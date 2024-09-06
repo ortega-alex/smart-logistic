@@ -48,6 +48,9 @@ export const addUser = async (req: Request, res: Response) => {
         const profile = await Profile.findOneBy({ id_perfil });
         if (!profile) return res.status(404).json({ message: 'Perfil no encontrado' });
 
+        const existing_user = await User.findOneBy({ usuario });
+        if (existing_user) return res.status(203).json({ message: 'El usuario ya existe' });
+
         const user = new User();
         user.nombre = nombre;
         user.usuario = usuario;
@@ -71,6 +74,35 @@ export const getUsers = async (_req: Request, res: Response) => {
             }
         });
         return res.json(users);
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { nombre, id_perfil, correo, telefono, estado } = req.body;
+        const user = await User.findOneBy({ id_usuario: Number(id) });
+        if (!user) return res.status(404).json({ message: 'Usuario no exite' });
+
+        const profile = await Profile.findOneBy({ id_perfil });
+        if (!profile) return res.status(404).json({ message: 'Perfil no encontrado' });
+
+        const update = await User.update(
+            { id_usuario: Number(id) },
+            {
+                nombre: nombre ?? user.nombre,
+                correo: correo ?? user.correo,
+                telefono: telefono ?? user.telefono,
+                estado: estado ?? user.estado,
+                perfil: profile
+            }
+        );
+
+        if ((update?.affected ?? 0) > 0) return res.json(user);
+
+        return res.status(203).json({ message: 'No se pudo actualizar el usuario' });
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }

@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./home/Home').then(module => ({ default: module.Home })));
+
+// MANTENIMIENTOS
 const Customer = lazy(() => import('./maintenance/custome/Customer').then(module => ({ default: module.Customer })));
+const User = lazy(() => import('./maintenance/users/User').then(module => ({ default: module.User })));
 
 export const Private = () => {
     const dispatch = useDispatch();
@@ -19,7 +22,7 @@ export const Private = () => {
 
     const eventListenerResize = () => {
         let isMovile = false;
-        if (window.innerWidth >= 320 && window.innerWidth <= 800) isMovile = true;
+        if (window.innerWidth >= 320 && window.innerWidth <= 768) isMovile = true;
         dispatch(modifyDevice(isMovile));
     };
 
@@ -51,6 +54,7 @@ export const Private = () => {
                             {menuState.some(item => item.path === 'CUSTOMERS') && (
                                 <Route path={privateRoutes.CUSTOMERS} element={<Customer />} />
                             )}
+                            {menuState.some(item => item.path === 'USERS') && <Route path={privateRoutes.USERS} element={<User />} />}
                         </>
                     </RoutesWithNotFound>
                 )}
