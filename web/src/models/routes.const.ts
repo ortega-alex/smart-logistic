@@ -1,7 +1,7 @@
 import { ObjectCustomer } from './Utilityes';
 
 export const privateRoutes: ObjectCustomer = {
-    PRIVATE: 'privado',
+    PRIVATE: 'private',
     HOME: 'home',
     VEHICLES: 'vehicles',
     QUOTER: 'quoter',
@@ -11,7 +11,8 @@ export const privateRoutes: ObjectCustomer = {
     PORTS: 'ports',
     TYPES_OF_VEHICLES: 'type-of-vehicles',
     PROFILES: 'profiles',
-    REPORTS: 'reports'
+    REPORTS: 'reports',
+    ACUTION: 'aution'
 } as const;
 
 export const publicRoutes = {

@@ -1,5 +1,5 @@
 import { Icon, ViewFiles } from '@/components';
-import { CustomerFile, Customer as TypeCustomer } from '@/models';
+import { CustomerFile, EmptyCustomer, EmptyFile, Customer as TypeCustomer } from '@/models';
 import { Button, Input, List, message, Modal, Popover, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { FormCustomer } from './FormCustomer';
@@ -9,32 +9,16 @@ import { httpDeleteCustomerFile, httpGetCustomer, httpGetCustomerById } from '@/
 
 export const Customer = () => {
     const deviceState = useSelector((store: RootState) => store.device);
-    const emptyCustomer: TypeCustomer = {
-        id_cliente: 0,
-        cliente: '',
-        correo: '',
-        direccion: '',
-        dpi: '',
-        nit: '',
-        telefono_celular: '',
-        estado: true
-    };
-    const emptyFile: CustomerFile = {
-        id_archivo: 0,
-        ruta: '',
-        nombre: '',
-        estado: true
-    };
+    const title = 'Clientes';
 
     const [loading, setLoading] = useState(false);
     const [customers, setCustomers] = useState<Array<TypeCustomer>>([]);
-    const [customer, setCustomer] = useState<TypeCustomer>(emptyCustomer);
+    const [customer, setCustomer] = useState<TypeCustomer>(EmptyCustomer);
     const [modals, setModals] = useState({
         customer: false,
-        // files: false,
         preview: false
     });
-    const [file, setFile] = useState<CustomerFile>(emptyFile);
+    const [file, setFile] = useState<CustomerFile>(EmptyFile);
 
     const hamdleChangeModal = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
 
@@ -81,7 +65,7 @@ export const Customer = () => {
     return (
         <div className='h-100 flex flex-column p-3'>
             <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>Clientes</h3>
+                <h3>{title}</h3>
                 <div>
                     <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
                 </div>
@@ -89,7 +73,7 @@ export const Customer = () => {
                     type='primary'
                     htmlType='button'
                     onClick={() => {
-                        setCustomer(emptyCustomer);
+                        setCustomer(EmptyCustomer);
                         hamdleChangeModal('customer');
                     }}
                 >
@@ -120,8 +104,8 @@ export const Customer = () => {
                                 <div>
                                     <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
                                 </div>
-                                <Button type='link' danger htmlType='button' onClick={() => handleEdit(item)}>
-                                    Ver
+                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                    Editar
                                 </Button>
                             </div>
                         </div>
@@ -236,7 +220,9 @@ export const Customer = () => {
                                 </Button>
                             </Popover>
                         )}
-                        <h3 className='text-primary'>{customer.id_cliente > 0 ? 'Editar' : 'Nuevo'} Cliente</h3>
+                        <h3 className='text-primary'>
+                            {customer.id_cliente > 0 ? 'Editar' : 'Nuevo'} {title.substring(0, title.length - 1)}
+                        </h3>
                     </div>
                 }
                 onCancel={() => hamdleChangeModal('customer', false)}

@@ -29,6 +29,11 @@
     }
 } */
 
+.overflow-y {
+    overflow: hidden;
+    overflow-y: auto;
+}
+
 .zoom {
     transition: transform 0.2s;
 }
@@ -202,8 +207,37 @@
     max-width: 95%;
 }
 
-.vh-100 {
-    height: 100vh !important;
+.h-100,
+.h-full {
+    height: 100% !important;
+}
+
+.h-auto {
+    height: auto !important;
+}
+
+.vh-25 {
+    height: 25vh !important;
+}
+
+.vh-33 {
+    height: 33.333333vh !important;
+}
+
+.vh-50 {
+    height: 50vh !important;
+}
+
+.vh-66 {
+    height: 66.666667vh !important;
+}
+
+.vh-75 {
+    height: 75vh !important;
+}
+
+.vh-85 {
+    height: 85vh !important;
 }
 
 .flex-1 {

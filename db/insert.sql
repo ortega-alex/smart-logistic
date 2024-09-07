@@ -1,4 +1,4 @@
-insert into menu (menu, icon, path, es_mantenimiento) values
+INSERT INTO menu (menu, icon, path, es_mantenimiento) VALUES
 ('Cotizador', 'calculate', 'QUOTER', 0),
 ('Vehiculos', 'car', 'VEHICLES', 0),
 ('Clientes', 'users', 'CUSTOMERS', 1),
@@ -7,4 +7,10 @@ insert into menu (menu, icon, path, es_mantenimiento) values
 ('Puertos', 'store', 'PORTS', 1),
 ('Tipos de vehiculos', 'car2', 'TYPES_OF_VEHICLES', 1),
 ('Perfiles', 'profile', 'PROFILES', 1),
-('Reportes', 'report', 'REPORTS', 0);
+('Reportes', 'report', 'REPORTS', 0),
+('Subasta', 'store', 'ACUTION', 1);
+
+INSERT INTO permiso (permiso) VALUES 
+('Agregar'),
+('Editar'),
+('Ver'); 

@@ -15,3 +15,14 @@ export interface Customer {
     archivos?: Array<CustomerFile>;
     tipo_cliente?: TypeOfCustomer;
 }
+
+export const EmptyCustomer: TypeCustomer = {
+    id_cliente: 0,
+    cliente: '',
+    correo: '',
+    direccion: '',
+    dpi: '',
+    nit: '',
+    telefono_celular: '',
+    estado: true
+};

@@ -13,6 +13,11 @@ const Home = lazy(() => import('./home/Home').then(module => ({ default: module.
 // MANTENIMIENTOS
 const Customer = lazy(() => import('./maintenance/custome/Customer').then(module => ({ default: module.Customer })));
 const User = lazy(() => import('./maintenance/users/User').then(module => ({ default: module.User })));
+const Aution = lazy(() => import('./maintenance/aution/Aution').then(module => ({ default: module.Aution })));
+const Crane = lazy(() => import('./maintenance/crane/Crane').then(module => ({ default: module.Crane })));
+const Port = lazy(() => import('./maintenance/ports/Port').then(module => ({ default: module.Port })));
+const TypeVehicle = lazy(() => import('./maintenance/type-of-vehicle/TypeVehicle').then(module => ({ default: module.TypeVehicle })));
+const Profile = lazy(() => import('./maintenance/profile/Profile').then(module => ({ default: module.Profile })));
 
 export const Private = () => {
     const dispatch = useDispatch();
@@ -51,10 +56,26 @@ export const Private = () => {
                             {menuState.some(item => item.path === 'VEHICLES') && (
                                 <Route path={privateRoutes.VEHICLES} element={<>Vehiculos</>} />
                             )}
+
                             {menuState.some(item => item.path === 'CUSTOMERS') && (
                                 <Route path={privateRoutes.CUSTOMERS} element={<Customer />} />
                             )}
+
                             {menuState.some(item => item.path === 'USERS') && <Route path={privateRoutes.USERS} element={<User />} />}
+
+                            {menuState.some(item => item.path === 'ACUTION') && <Route path={privateRoutes.ACUTION} element={<Aution />} />}
+
+                            {menuState.some(item => item.path === 'CRANES') && <Route path={privateRoutes.CRANES} element={<Crane />} />}
+
+                            {menuState.some(item => item.path === 'PORTS') && <Route path={privateRoutes.PORTS} element={<Port />} />}
+
+                            {menuState.some(item => item.path === 'TYPES_OF_VEHICLES') && (
+                                <Route path={privateRoutes.TYPES_OF_VEHICLES} element={<TypeVehicle />} />
+                            )}
+
+                            {menuState.some(item => item.path === 'PROFILES') && (
+                                <Route path={privateRoutes.PROFILES} element={<Profile />} />
+                            )}
                         </>
                     </RoutesWithNotFound>
                 )}

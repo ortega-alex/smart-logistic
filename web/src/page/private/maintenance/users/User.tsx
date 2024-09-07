@@ -1,5 +1,5 @@
 import { Icon } from '@/components';
-import { User as TypeUser } from '@/models';
+import { User as TypeUser, UserEmpty } from '@/models';
 import { RootState } from '@/redux';
 import { httpGelUser } from '@/services';
 import { Button, Input, List, Modal, Table } from 'antd';
@@ -9,16 +9,10 @@ import { FormUser } from './FormUser';
 
 export const User = () => {
     const deviceState = useSelector((store: RootState) => store.device);
-    const userEmpty: TypeUser = {
-        id_usuario: 0,
-        correo: '',
-        estado: true,
-        nombre: '',
-        telefono: '',
-        usuario: ''
-    };
+    const title = 'Usuarios';
+
     const [users, setusers] = useState<Array<TypeUser>>([]);
-    const [user, setUser] = useState<TypeUser>(userEmpty);
+    const [user, setUser] = useState<TypeUser>(UserEmpty);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -42,7 +36,7 @@ export const User = () => {
     return (
         <div className='h-100 flex flex-column p-3'>
             <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>Usuarios</h3>
+                <h3>{title}</h3>
                 <div>
                     <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
                 </div>
@@ -50,7 +44,7 @@ export const User = () => {
                     type='primary'
                     htmlType='button'
                     onClick={() => {
-                        setUser(userEmpty);
+                        setUser(UserEmpty);
                         setModal(true);
                     }}
                 >
@@ -78,8 +72,8 @@ export const User = () => {
                                 <div>
                                     <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
                                 </div>
-                                <Button type='link' danger htmlType='button' onClick={() => handleEdit(item)}>
-                                    Ver
+                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                    Editar
                                 </Button>
                             </div>
                         </div>
@@ -97,7 +91,7 @@ export const User = () => {
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_cliente'
+                    rowKey='id_usuario'
                     dataSource={users}
                     columns={[
                         {
@@ -149,7 +143,11 @@ export const User = () => {
 
             <Modal
                 open={modal}
-                title={<h3>{user.id_usuario > 0 ? 'Editar' : 'Agregar'} Usuario</h3>}
+                title={
+                    <h3>
+                        {user.id_usuario > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
+                    </h3>
+                }
                 footer={null}
                 onCancel={() => setModal(false)}
                 centered

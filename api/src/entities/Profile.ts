@@ -1,5 +1,17 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
 import { User } from './User';
+import { Menu } from './Menu';
+import { ProfileMenuPermission } from './ProfimeMenuPermissions';
 
 @Entity('perfil')
 export class Profile extends BaseEntity {
@@ -24,4 +36,7 @@ export class Profile extends BaseEntity {
 
     @OneToMany(() => User, perfiles => perfiles.perfil)
     perfiles: Profile[];
+
+    @OneToMany(() => ProfileMenuPermission, permisos => permisos.perfil)
+    permisos: Profile[];
 }

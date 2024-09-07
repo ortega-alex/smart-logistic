@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ProfileMenuPermission } from './ProfimeMenuPermissions';
 
 @Entity()
 export class Menu extends BaseEntity {
@@ -29,4 +30,7 @@ export class Menu extends BaseEntity {
 
     @UpdateDateColumn()
     fecha_edicion: Date;
+
+    @OneToMany(() => ProfileMenuPermission, menus => menus.menu)
+    menus: Menu[];
 }
