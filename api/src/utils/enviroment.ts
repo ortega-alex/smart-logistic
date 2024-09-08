@@ -9,5 +9,7 @@ export const enviroment = {
     MYSQL_USER: process.env.MYSQL_ROOT_USER || 'root',
     TOKEN_SECRET: '2bcb7dc9-7236-11ec-8b4d-0025220dcb60',
     URI_FILE: 'files',
-    URI_IMAGES: 'images'
+    URI_IMAGES: 'images',
+    NODE_ENV: process.env.NODE_ENV || 'development',
+    SECRET: process.env.SECRET || 'e1f86c0b-6a5d-11ef-80f9-0242ac130002'
 };

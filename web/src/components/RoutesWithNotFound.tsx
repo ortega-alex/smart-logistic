@@ -12,7 +12,7 @@ export const RoutesWithNotFound: React.FC<Props> = ({ children }) => {
                 path='*'
                 element={
                     <div className='h-100'>
-                        <div className='flex flex-column justify-center items-center h-100'>
+                        <div className='flex flex-column justify-center items-center '>
                             <h1>404</h1>
                             <p>Page not found</p>
                         </div>

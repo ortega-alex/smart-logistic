@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
 import { privateRoutes, publicRoutes } from './routes';
-import { authToken } from './middleware';
+import { authToken, decrypt, encrypt } from './middleware';
 
 const app = express();
 const uri = '/api/v1';
@@ -13,6 +13,8 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(decrypt);
+app.use(encrypt);
 
 // STATIC FILES
 app.use(express.static(path.join(__dirname, './public')));
