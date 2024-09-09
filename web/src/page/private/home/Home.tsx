@@ -14,15 +14,18 @@ export const Home = () => {
             {[1, 2, 3].map(item => {
                 let inicio = 0;
                 let final = deviceState ? 4 : 5;
+                let length = menuState.length;
 
                 if (item === 2) {
                     inicio = deviceState ? 4 : 5;
                     final = deviceState ? 7 : 9;
+                    if (length % 2 === 0 && length < final) final = length - 1;
                 }
 
                 if (item === 3) {
                     inicio = deviceState ? 7 : -1;
                     final = deviceState ? 9 : -1;
+                    if (length % 2 === 0 && length < final) final = length - 1;
                 }
 
                 if (inicio === -1 || final === -1) return null;

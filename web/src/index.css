@@ -12,22 +12,11 @@
     line-height: 1.5;
     font-weight: 400;
 
-    /* color-scheme: light dark;
-    color: var(--white);
-    background-color: var(--black); */
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
-/* @media (prefers-color-scheme: light) {
-    :root {
-        color: var(--black);
-        background-color: var(--white);
-    }
-} */
 
 .overflow-y {
     overflow: hidden;

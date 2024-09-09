@@ -1,8 +1,9 @@
+import { permissionMenuAdapter } from '@/adapter';
 import { Loading, Navbar, RoutesWithNotFound } from '@/components';
-import { Menu, privateRoutes } from '@/models';
+import { Menu, privateRoutes, Sesion } from '@/models';
 import { RootState } from '@/redux';
 import { modifyDevice, setMenu } from '@/redux/state';
-import { httpGetMenus } from '@/services';
+import { httpGetPermissionsMenusByProfileId } from '@/services';
 import { message } from 'antd';
 import { lazy, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +23,7 @@ const Profile = lazy(() => import('./maintenance/profile/Profile').then(module =
 export const Private = () => {
     const dispatch = useDispatch();
     const menuState: Array<Menu> = useSelector((store: RootState) => store.menu);
+    const sesionState: Sesion = useSelector((store: RootState) => store.session);
 
     const [loading] = useState(false);
 
@@ -35,9 +37,12 @@ export const Private = () => {
         window.addEventListener('resize', eventListenerResize);
         eventListenerResize();
 
-        httpGetMenus()
-            .then(res => dispatch(setMenu({ menus: res })))
-            .catch(err => message.error(`Error http get menus: ${err.message}`));
+        httpGetPermissionsMenusByProfileId(sesionState.perfil?.id_perfil ?? 0)
+            .then(res => {
+                const { menus } = permissionMenuAdapter(res);
+                dispatch(setMenu({ menus }));
+            })
+            .catch(err => message.error(`Error http get permission menu by profile: ${err.message}`));
 
         return () => window.removeEventListener('resize', eventListenerResize);
     }, []);
