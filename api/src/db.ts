@@ -36,6 +36,6 @@ export const AppDataSource = new DataSource({
         Permission,
         ProfileMenuPermission
     ],
-    synchronize: true,
+    synchronize: enviroment.NODE_ENV === 'development',
     namingStrategy: new SnakeNamingStrategy()
 });
