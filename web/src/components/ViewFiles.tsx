@@ -8,7 +8,7 @@ interface Options {
 export const ViewFiles: React.FC<Options> = ({ file, download }) => {
     const arr = file.ruta.split('.');
     const extension = arr[arr.length - 1];
-    const url = `${_SERVER.baseUrl}/${file.ruta}`;
+    const url = `${_SERVER.baseUrl}${file.ruta}`;
 
     return (
         <object data={`${url}#toolbar=${download ? 1 : 0}`} type={`application/${extension}`} style={{ width: '100%', height: '90vh' }}>

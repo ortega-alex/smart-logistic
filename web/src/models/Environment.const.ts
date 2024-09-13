@@ -1,11 +1,17 @@
 const version = process.env.VERSION_API ?? 'v1';
 const port = process.env.REACT_APP_NODE_PORT || '4000';
 const host = process.env.REACT_APP_NODE_HOST || 'localhost';
-const domain = `//${host}:${port}`;
+let domain;
+
+if (process.env.NODE_ENV === 'development') domain = `//${host}:${port}/`;
+else {
+    const url = window.location.href;
+    domain = url.split('#')[0];
+}
 
 export const _SERVER = {
     baseUrl: domain,
-    apiUrl: `${domain}/api/${version}`
+    apiUrl: `${domain}api/${version}`
 } as const;
 
 export const _KEYS = {

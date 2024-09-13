@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import app from './app';
 import { AppDataSource } from './db';
+import { enviroment } from './utils';
 
-const port = 4000;
-
+const port = enviroment.NODE_ENV === 'development' ? enviroment.PORT : enviroment.PORT_POD;
 const main = async () => {
     try {
         await AppDataSource.initialize();

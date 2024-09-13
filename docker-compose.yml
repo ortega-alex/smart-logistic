@@ -6,15 +6,15 @@ services:
       context: .
       target: production
       args:
-        - PORT=3000
+        - PORT=4001
     ports:
-      - "${PORT_POD}:3000"     
+      - "${PORT_POD}:4001"     
     env_file:
       - .env
     depends_on:
       - db
   app-dev:
-    container_name: api-smart-logistic-dev
+    container_name: api-${PROJECT_NAME}-dev
     restart: unless-stopped
     build: 
       context: .

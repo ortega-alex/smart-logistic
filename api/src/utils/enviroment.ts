@@ -2,6 +2,8 @@ import { config } from 'dotenv';
 config();
 
 export const enviroment = {
+    PORT: process.env.PORT || 4000,
+    PORT_POD: process.env.PORT_POD || 4001,
     MYSQL_HOST: process.env.MYSQL_HOST || 'db',
     MYSQL_PORT: process.env.MYSQL_SERVER_PORT || 3306,
     MYSQL_DATABASE: process.env.MYSQL_DATABASE || 'smart_logistic',
