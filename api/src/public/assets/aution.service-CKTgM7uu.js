@@ -1,0 +1,1 @@
+import"./index-CmnY-2zJ.js";import{N as a}from"./method-http.utility-Ctcdl8Wi.js";const s="/aution",h=async()=>await a({path:s,method:"GET"}),i=async t=>await a({path:s,method:"POST",data:t}),p=async t=>await a({path:`${s}/${t.id_subasta}`,method:"PUT",data:t});export{i as a,h as b,p as h};
