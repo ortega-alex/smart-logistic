@@ -1,5 +1,5 @@
 ### LOGIN
-POST {{protocol}}://{{host}}/api/{{version}}/login
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/login
 Content-Type: application/json
 
 {
