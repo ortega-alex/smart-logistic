@@ -50,5 +50,6 @@ export default tseslint.config({
 ```
 ### COMANDO PARA COMPILAR Y COPIAR NUEVA VERSION
 ```
-  npm run build && rm ../api/src/public/index.html && rm -rf ../api/src/public/assets && cp -r ./dist/* ../api/src/public/
+  npm run build && find ../api/src/public/* -mindepth 1 -not -path "../api/src/public/files*" -not -path "../api/src/public/images*" -exec rm -rf {} + && cp -r ./dist/* ../api/src/public/
 ```
+

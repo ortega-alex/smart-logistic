@@ -2,8 +2,8 @@ import { Request } from 'express';
 import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 import { enviroment } from '../utils';
+import crypto from 'crypto-js';
 
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FileNameCallback = (error: Error | null, filename: string) => void;
@@ -21,7 +21,8 @@ export const ImageStorage = multer.diskStorage({
         }
     },
     filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const name = uuidv4() + path.extname(file.originalname);
+        const uuid = String(CryptoJS.lib.WordArray.random(16));
+        const name = uuid + path.extname(file.originalname);
         cb(null, name);
     }
 });
@@ -39,7 +40,8 @@ export const fileStorage = multer.diskStorage({
         }
     },
     filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const name = uuidv4() + path.extname(file.originalname);
+        const uuid = String(CryptoJS.lib.WordArray.random(16));
+        const name = uuid + path.extname(file.originalname);
         cb(null, name);
     }
 });
