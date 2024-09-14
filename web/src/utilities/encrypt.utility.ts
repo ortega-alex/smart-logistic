@@ -1,5 +1,6 @@
 import { _KEYS } from '@/models';
 import * as CryptoJS from 'crypto-js';
+import { v4 as uuidv4 } from 'uuid';
 
 const _KEY = CryptoJS.enc.Hex.parse(_KEYS.SECRET.replace(/-/g, ''));
 const _IV = CryptoJS.enc.Hex.parse(_KEYS.IV.replace(/-/g, ''));
@@ -12,7 +13,7 @@ export const decryptData = (data: string) => {
 };
 
 export const encryptRequest = (data: object | string): { iv: string; content: string } => {
-    const iv = crypto.randomUUID().replace(/-/g, '');
+    const iv = String(uuidv4()).replace(/-/g, '');
     const _IV = CryptoJS.enc.Hex.parse(iv);
     const content = CryptoJS.AES.encrypt(JSON.stringify(data), _KEY, { iv: _IV }).toString();
     console.log('content', content, 'iv', iv);
