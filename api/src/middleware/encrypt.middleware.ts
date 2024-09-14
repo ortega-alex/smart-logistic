@@ -5,7 +5,7 @@ import { enviroment } from '../utils';
 const key = crypto.enc.Hex.parse(String(enviroment.SECRET).replace(/-/g, ''));
 
 const encryptData = (data: object | string): { iv: string; content: string } => {
-    const iv = String(CryptoJS.lib.WordArray.random(16));
+    const iv = String(crypto.lib.WordArray.random(16));
     const _IV = crypto.enc.Hex.parse(iv);
     const content = crypto.AES.encrypt(JSON.stringify(data), key, { iv: _IV }).toString();
     return { iv, content };
