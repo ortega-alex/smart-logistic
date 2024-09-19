@@ -9,6 +9,12 @@ export class Crane extends BaseEntity {
     @Column('varchar', { length: 45 })
     grua: string;
 
+    @Column('decimal', { precision: 10, scale: 2, default: 0 })
+    costo: number;
+
+    @Column('varchar', { length: 10 })
+    moneda: string;
+
     @Column({ default: true })
     estado: boolean;
 
@@ -18,7 +24,7 @@ export class Crane extends BaseEntity {
     @UpdateDateColumn()
     fecha_edicion: Date;
 
-    @ManyToOne(() => Aution, aution => aution.gruas)
+    @ManyToOne(() => Aution, aution => aution.gruas, { nullable: true })
     @JoinColumn({ name: 'id_subasta' })
     subasta: Aution;
 }

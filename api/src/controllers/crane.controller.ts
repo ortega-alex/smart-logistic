@@ -16,16 +16,22 @@ export const getCrane = async (_req: Request, res: Response) => {
 
 export const addCrane = async (req: Request, res: Response) => {
     try {
-        const { grua, id_subasta } = req.body;
+        const { grua, id_subasta, costo, moneda } = req.body;
         if (!grua) return res.status(203).json({ message: 'El nombre es obligatorio' });
-        if (!id_subasta) return res.status(203).json({ message: 'La subasta es obligatorio' });
+        if (!costo) return res.status(203).json({ message: 'El costo es obligatorio' });
+        if (!moneda) return res.status(203).json({ message: 'La moneda es obligatorio' });
 
-        const aution = await Aution.findOneBy({ id_subasta: Number(id_subasta) });
-        if (!aution) return res.status(203).json({ message: 'No se pudo recuperar la subasta' });
+        let aution;
+        if (id_subasta) {
+            aution = await Aution.findOneBy({ id_subasta: Number(id_subasta) });
+            if (!aution) return res.status(203).json({ message: 'No se pudo recuperar la subasta' });
+        }
 
         const crane = new Crane();
         crane.grua = grua;
-        crane.subasta = aution;
+        if (aution) crane.subasta = aution;
+        crane.costo = costo;
+        crane.moneda = moneda;
         await crane.save();
 
         return res.json(crane);
@@ -37,20 +43,26 @@ export const addCrane = async (req: Request, res: Response) => {
 export const updateCrane = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { id_subasta, grua, estado } = req.body;
+        const { id_subasta, grua, estado, costo, moneda } = req.body;
 
         const crane = await Crane.findOneBy({ id_grua: Number(id) });
         if (!crane) return res.status(203).json({ message: 'Grua no encontrada' });
 
-        const aution = await Aution.findOneBy({ id_subasta: Number(id_subasta) });
-        if (!aution) return res.status(203).json({ message: 'No se pudo recuperar la subasta' });
+        let aution = null;
+        if (id_subasta) {
+            aution = await Aution.findOneBy({ id_subasta: Number(id_subasta) });
+            if (!aution) return res.status(203).json({ message: 'No se pudo recuperar la subasta' });
+        }
 
         const update = await Crane.update(
             { id_grua: Number(id) },
             {
+                // @ts-ignore
                 subasta: aution,
                 grua: grua ?? crane.grua,
-                estado: estado ?? crane.estado
+                estado: estado ?? crane.estado,
+                costo: costo ?? crane.costo,
+                moneda: moneda ?? crane.moneda
             }
         );
         if ((update?.affected ?? 0) > 0) return res.json(crane);

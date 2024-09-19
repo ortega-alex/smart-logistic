@@ -1,6 +1,6 @@
-import { Aution, Crane } from '@/models';
+import { Aution, Crane, Moneda } from '@/models';
 import { httpAddCrane, httpGetAutions, httpUpdateCrane } from '@/services';
-import { Button, Form, FormProps, Input, message, Select, Switch } from 'antd';
+import { Button, Form, FormProps, Input, InputNumber, message, Select, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -43,11 +43,27 @@ export const FormCrane: React.FC<Props> = ({ crane, onClose }) => {
                 <Input placeholder='Ingrese el nombre' />
             </Form.Item>
 
-            <Form.Item label='Subasta' name='id_subasta' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+            <Form.Item label='Subasta (Opcional)' name='id_subasta'>
                 <Select
+                    allowClear
                     className='w-100'
                     placeholder='Seleccione una opción'
                     options={autions.filter(item => item.estado).map(item => ({ value: item.id_subasta, label: item.subasta }))}
+                />
+            </Form.Item>
+            <Form.Item label='Costo' name='costo' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                <InputNumber
+                    className='w-100'
+                    addonBefore={
+                        <Form.Item name='moneda' style={{ margin: 0, padding: 0 }}>
+                            <Select
+                                style={{ width: 50 }}
+                                options={Object.keys(Moneda).map(key => ({ value: key, label: Moneda[key as keyof typeof Moneda] }))}
+                            />
+                        </Form.Item>
+                    }
+                    min={0}
+                    placeholder='Ingrese un costo'
                 />
             </Form.Item>
             <Form.Item name='estado' label='Estado' valuePropName='checked'>
