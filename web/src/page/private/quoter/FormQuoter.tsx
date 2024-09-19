@@ -1,21 +1,66 @@
 import { Icon } from '@/components';
-import { Aution, color, Crane, Customer, Port, Quoter, TypeVehicle, Vehicle } from '@/models';
+import { Aution, color, Costo, Crane, Customer, KeysCosto, Moneda, Port, Quoter, TypeVehicle, Vehicle } from '@/models';
 import { httpGetAutions, httpGetCrane, httpGetCustomer, httpGetPorts, httpGetTypeVehicles } from '@/services';
-import { Button, Divider, Form, FormProps, Input, message, Select } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface Props {
     quoter: Quoter;
 }
 
 export const FormQuoter: React.FC<Props> = ({ quoter }) => {
+    const formRef = useRef<FormInstance<Quoter>>(null);
+
     const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [ports, setPorts] = useState<Array<Port>>([]);
     const [typeVehicles, setTypeVehicles] = useState<Array<TypeVehicle>>([]);
     const [vehicles, setVehicles] = useState<Array<Vehicle>>([]);
     const [autions, setAutions] = useState<Array<Aution>>([]);
-    const [cranes, setCranes] = useState<Array<Crane>>([]);
+    const [cranes, setCranes] = useState({
+        USD: [],
+        GTQ: [],
+        all: []
+    });
     const [loading, setLoading] = useState(false);
+    const [costs, setCosts] = useState<Costo>({});
+
+    const handleValuesChange: FormProps<Quoter>['onValuesChange'] = env => {
+        const [key, value] = Object.entries(env)[0];
+
+        if (key === 'id_subasta') {
+            const crane = cranes.all.filter((item: Crane) => item.subasta?.id_subasta === value && item.estado);
+            if (crane) setCranes({ ...cranes, USD: crane });
+            formRef.current?.setFieldValue('id_grua_usd', undefined);
+        }
+
+        handleCalculate();
+    };
+
+    const handleCalculate = () => {
+        const values = formRef.current?.getFieldsValue();
+        if (values && values.id_cliente) {
+            const costos = { ...costs };
+            const customer = customers.find(item => item.id_cliente === values.id_cliente);
+            if (customer) {
+                if (values.id_grua_usd) {
+                    const crane_usd: Crane = cranes.USD.find((item: Crane) => item.id_grua === values.id_grua_usd)!;
+                    if (crane_usd && crane_usd.costo > 0) {
+                        const costo = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_descuento) / 100);
+                        costos[KeysCosto.USD] = crane_usd.moneda + ' ' + costo;
+                    }
+                } else delete costos[KeysCosto.USD];
+
+                if (values.id_grua_gt) {
+                    const crane_gt: Crane = cranes.GTQ.find((item: Crane) => item.id_grua === values.id_grua_gt)!;
+                    if (crane_gt && crane_gt.costo > 0) {
+                        const costo = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_descuento) / 100);
+                        costos[KeysCosto.GT] = crane_gt.moneda + ' ' + costo;
+                    }
+                } else delete costos[KeysCosto.GT];
+            }
+            setCosts(costos);
+        }
+    };
 
     const handleSubmit: FormProps<Quoter>['onFinish'] = async values => {
         try {
@@ -52,12 +97,16 @@ export const FormQuoter: React.FC<Props> = ({ quoter }) => {
             .catch(err => message.error(`Error http get autions: ${err.message}}`));
 
         httpGetCrane()
-            .then(res => setCranes(res?.filter((item: Crane) => item.estado)))
+            .then(res => {
+                const all = res?.filter((item: Crane) => item.estado);
+                const GTQ = all?.filter((item: Crane) => item.moneda === Moneda.GTQ);
+                setCranes({ ...cranes, GTQ, all });
+            })
             .catch(err => message.error(`Error http get cranes: ${err.message}}`));
     }, []);
 
     return (
-        <Form layout='vertical' onFinish={handleSubmit}>
+        <Form ref={formRef} layout='vertical' onFinish={handleSubmit} onValuesChange={handleValuesChange}>
             <div className='vh-75 overflow-y'>
                 <Form.Item label='Cliente' name='id_cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                     <Select
@@ -160,29 +209,39 @@ export const FormQuoter: React.FC<Props> = ({ quoter }) => {
                 <Divider orientation='left'>Tramites EE. UU</Divider>
                 <Form.Item label='Subasta (optional)' name='id_subasta'>
                     <Select
+                        allowClear
                         className='w-100'
                         placeholder='Selecciones una opción'
                         options={autions.map(item => ({ label: item.subasta, value: item.id_subasta }))}
                     />
                 </Form.Item>
-                <Form.Item label='Grua (optional)' name='id_puerto'>
+                <Form.Item label='Grua (optional)' name='id_grua_usd'>
                     <Select
+                        allowClear
                         className='w-100'
                         placeholder='Selecciones una opción'
-                        options={cranes.map(item => ({ label: item.grua, value: item.id_grua }))}
+                        options={cranes.USD?.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
                     />
                 </Form.Item>
 
                 <Divider orientation='left'>Tramites GT</Divider>
                 <Form.Item label='Grua (optional)' name='id_grua_gt'>
                     <Select
+                        allowClear
                         className='w-100'
                         placeholder='Selecciones una opción'
-                        options={cranes.map(item => ({ label: item.grua, value: item.id_grua }))}
+                        options={cranes.GTQ.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
                     />
                 </Form.Item>
 
                 <Divider orientation='left'>Costos</Divider>
+                {Object.keys(costs).map(key => (
+                    <div key={key} className='flex flex-row justify-between gap-3 items-center'>
+                        <strong className='flex-1'>{key}: </strong>
+                        <span>{costs[key as keyof Costo]}</span>
+                        <Button type='link' htmlType='button' icon={<Icon.Edit />} />
+                    </div>
+                ))}
             </div>
 
             <div className='text-right'>

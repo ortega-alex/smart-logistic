@@ -19,3 +19,13 @@ export interface TableParams {
     sortOrder?: SorterResult<any>['order'] | string;
     filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
+
+export enum KeysCosto {
+    USD = 'Grua EE.UU',
+    GT = 'Grua GT'
+}
+
+export interface Costo {
+    [KeysCosto.USD]?: string;
+    [KeysCosto.GT]?: string;
+}

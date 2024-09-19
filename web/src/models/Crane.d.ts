@@ -1,8 +1,8 @@
 import { Aution } from './Aution';
 
 export enum Moneda {
-    USD = '$',
-    GTQ = 'Q'
+    USD = 'USD',
+    GTQ = 'GTQ'
 }
 
 export interface Crane {
