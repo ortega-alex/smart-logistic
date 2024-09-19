@@ -1,8 +1,8 @@
-import { Icon } from '@/components';
+import { Icon, Search } from '@/components';
 import { EmptyProfile, Profile as TypeProfile } from '@/models';
 import { RootState } from '@/redux';
 import { httpGetProfiles } from '@/services';
-import { Button, Input, List, message, Modal, Table } from 'antd';
+import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormProfile } from './FormProfile';
@@ -13,8 +13,18 @@ export const Profile = () => {
 
     const [profile, setProfile] = useState<TypeProfile>(EmptyProfile);
     const [profiles, setProfiles] = useState<Array<TypeProfile>>([]);
+    const [profilesCopy, setProfilesCopy] = useState<Array<TypeProfile>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const handleOnSearch = (value: string) => {
+        let _profiles = [...profilesCopy];
+        if (value.trim() !== '')
+            _profiles = _profiles.filter(
+                item => item.id_perfil === Number(value) || item.perfil.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            );
+        setProfiles(_profiles);
+    };
 
     const handleEdit = (item: TypeProfile) => {
         setProfile(item);
@@ -24,7 +34,10 @@ export const Profile = () => {
     const handleGet = () => {
         setLoading(true);
         httpGetProfiles()
-            .then(res => setProfiles(res))
+            .then(res => {
+                setProfiles(res);
+                setProfilesCopy(res);
+            })
             .catch(err => message.error(`Error http get profiles: ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -38,7 +51,7 @@ export const Profile = () => {
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
                 </div>
                 <Button
                     type='primary'
@@ -77,15 +90,11 @@ export const Profile = () => {
                 <Table
                     size='small'
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={{
-                        position: ['none', 'bottomRight'],
-                        showSizeChanger: true,
-                        pageSizeOptions: [50, 100, 250, 500]
-                    }}
+                    pagination={false}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_subasta'
+                    rowKey='id_perfil'
                     dataSource={profiles}
                     columns={[
                         {
@@ -101,7 +110,7 @@ export const Profile = () => {
                         {
                             title: 'Estado',
                             dataIndex: 'estado',
-                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Actuvi' : 'Inactivo'}</span>
+                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
                             title: 'Opciones',

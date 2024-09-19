@@ -1,11 +1,11 @@
-import { Icon } from '@/components';
+import { Icon, Search } from '@/components';
 import { EmptyCrane, Crane as TypeCrane } from '@/models';
 import { RootState } from '@/redux';
-import { Button, Input, List, message, Modal, Table } from 'antd';
+import { httpGetCrane } from '@/services';
+import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormCrane } from './FormCrane';
-import { httpGetCrane } from '@/services';
 
 export const Crane = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -13,8 +13,21 @@ export const Crane = () => {
 
     const [crane, setCrane] = useState<TypeCrane>(EmptyCrane);
     const [cranes, setCranes] = useState<Array<TypeCrane>>([]);
+    const [cranesCopy, setCranesCopy] = useState<Array<TypeCrane>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const handleOnSearch = (value: string) => {
+        let _cranes = [...cranesCopy];
+        if (value.trim() !== '')
+            _cranes = _cranes.filter(
+                item =>
+                    item.id_grua === Number(value) ||
+                    item.grua.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+                    item.subasta?.subasta.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            );
+        setCranes(_cranes);
+    };
 
     const handleEdit = (item: TypeCrane) => {
         setCrane({ ...item, id_subasta: item.subasta?.id_subasta });
@@ -24,7 +37,10 @@ export const Crane = () => {
     const handleGet = () => {
         setLoading(true);
         httpGetCrane()
-            .then(res => setCranes(res))
+            .then(res => {
+                setCranes(res);
+                setCranesCopy(res);
+            })
             .catch(err => message.error(`Error http get cranes: ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -38,7 +54,7 @@ export const Crane = () => {
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
                 </div>
                 <Button
                     type='primary'
@@ -79,11 +95,7 @@ export const Crane = () => {
                 <Table
                     size='small'
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={{
-                        position: ['none', 'bottomRight'],
-                        showSizeChanger: true,
-                        pageSizeOptions: [50, 100, 250, 500]
-                    }}
+                    pagination={false}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}

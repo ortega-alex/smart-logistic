@@ -1,11 +1,11 @@
-import { Icon, ViewFiles } from '@/components';
-import { CustomerFile, EmptyCustomer, EmptyFile, Customer as TypeCustomer } from '@/models';
-import { Button, Input, List, message, Modal, Popover, Table } from 'antd';
-import { useEffect, useState } from 'react';
-import { FormCustomer } from './FormCustomer';
-import { useSelector } from 'react-redux';
+import { Icon, Search, ViewFiles } from '@/components';
+import { CustomerFile, EmptyCustomer, EmptyFile, TableParams, Customer as TypeCustomer } from '@/models';
 import { RootState } from '@/redux';
-import { httpDeleteCustomerFile, httpGetCustomer, httpGetCustomerById } from '@/services';
+import { httpDeleteCustomerFile, httpGetCustomerById, httpGetCustomerPaginationData } from '@/services';
+import { Button, List, message, Modal, Popover, Table, TableProps } from 'antd';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { FormCustomer } from './FormCustomer';
 
 export const Customer = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -19,13 +19,35 @@ export const Customer = () => {
         preview: false
     });
     const [file, setFile] = useState<CustomerFile>(EmptyFile);
+    const [tableParams, setTableParams] = useState<TableParams>({
+        pagination: {
+            current: 1,
+            pageSize: 250
+        }
+    });
+    const [filter, setFilter] = useState('');
 
     const hamdleChangeModal = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
 
     const handleGet = () => {
         setLoading(true);
-        httpGetCustomer()
-            .then(res => setCustomers(res))
+        httpGetCustomerPaginationData({
+            ...tableParams,
+            current: tableParams.pagination?.current,
+            pageSize: tableParams.pagination?.pageSize,
+            filter,
+            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC'
+        })
+            .then(res => {
+                setCustomers(res.data);
+                setTableParams({
+                    ...tableParams,
+                    pagination: {
+                        ...tableParams.pagination,
+                        total: res.total
+                    }
+                });
+            })
             .catch(err => message.error(`Error http get customers: ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -58,16 +80,27 @@ export const Customer = () => {
         });
     };
 
+    const handleTableChange: TableProps<TypeCustomer>['onChange'] = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+            sortField: Array.isArray(sorter) ? undefined : sorter.field
+        });
+
+        if (pagination.pageSize !== tableParams.pagination?.pageSize) setCustomers([]);
+    };
+
     useEffect(() => {
         handleGet();
-    }, []);
+    }, [JSON.stringify(tableParams), filter]);
 
     return (
         <div className='h-100 flex flex-column p-3'>
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={(value: string) => setFilter(value)} onReset={() => setFilter('')} />
                 </div>
                 <Button
                     type='primary'
@@ -117,9 +150,11 @@ export const Customer = () => {
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
                     pagination={{
                         position: ['none', 'bottomRight'],
+                        ...tableParams.pagination,
                         showSizeChanger: true,
                         pageSizeOptions: [50, 100, 250, 500]
                     }}
+                    onChange={handleTableChange}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
@@ -128,7 +163,8 @@ export const Customer = () => {
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_cliente'
+                            dataIndex: 'id_cliente',
+                            sorter: true
                         },
                         {
                             title: 'Nombre',

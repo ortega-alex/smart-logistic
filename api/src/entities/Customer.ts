@@ -38,9 +38,10 @@ export class Customer extends BaseEntity {
     @Column('varchar', { length: 45 })
     correo: string;
 
-    @Column({
-        default: true
-    })
+    @Column('decimal', { precision: 10, scale: 2, default: 0 })
+    porcentaje_descuento: number;
+
+    @Column({ default: true })
     estado: boolean;
 
     @CreateDateColumn()

@@ -12,7 +12,8 @@ export const privateRoutes: ObjectCustomer = {
     TYPES_OF_VEHICLES: 'type-of-vehicles',
     PROFILES: 'profiles',
     REPORTS: 'reports',
-    ACUTION: 'aution'
+    ACUTION: 'aution',
+    TYPES_OF_CUSTOMERS: 'types-of-customers'
 } as const;
 
 export const publicRoutes = {

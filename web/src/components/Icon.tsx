@@ -1,25 +1,27 @@
 import { Map } from '@/models';
-import { AiFillLock, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
-import { BiEdit, BiUser } from 'react-icons/bi';
-import { BsEye, BsEyeSlash } from 'react-icons/bs';
+import { AiFillLock, AiOutlineClose, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
+import { BiEdit, BiPlus, BiSearch, BiUser } from 'react-icons/bi';
+import { BsArrowDown, BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { GoBell } from 'react-icons/go';
+import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { MdOutlineCalculate } from 'react-icons/md';
 import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
-import { GrAttachment } from 'react-icons/gr';
-import { FaRegTrashAlt } from 'react-icons/fa';
 
 export const Icon = {
     AngleDown: FaAngleDown,
     Attachment: GrAttachment,
+    ArrowDown: BsArrowDown,
     Bell: GoBell,
     Calculate: MdOutlineCalculate,
     Car: LiaCarAltSolid,
     Car2: TbCar,
+    Close: AiOutlineClose,
     Crane: TbCarCrane,
     Edit: BiEdit,
     Eye: BsEye,
@@ -29,11 +31,13 @@ export const Icon = {
     MenuFold: AiOutlineMenuFold,
     MenuUnfold: AiOutlineMenuUnfold,
     Profile: CgProfile,
+    Plus: BiPlus,
     Trash: FaRegTrashAlt,
     Upload: AiOutlineUpload,
     User: BiUser,
     Users: TbUsersPlus,
     Report: HiOutlineDocumentReport,
+    Search: BiSearch,
     Store: IoStorefrontOutline
 };
 

@@ -2,7 +2,7 @@ import { Icon } from '@/components';
 import { Customer } from '@/models';
 import { TypeOfCustomer } from '@/models/TypeOfCustomer';
 import { httpAddCustomer, httpEditCustomer, httpGetTypeOfCustomer } from '@/services';
-import { Button, Form, FormProps, Input, message, Select, Switch, Upload } from 'antd';
+import { Button, Form, FormProps, Input, InputNumber, message, Select, Switch, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -41,6 +41,17 @@ export const FormCustomer: React.FC<Props> = ({ customer, onClose }) => {
             <Form.Item label='Nombre completo' name='cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese el nombre del cliente' />
             </Form.Item>
+            <Form.Item
+                label='Tipo de cliente'
+                name='id_tipo_cliente'
+                className='flex-1'
+                rules={[{ required: true, message: 'El campo es obligatorio' }]}
+            >
+                <Select
+                    placeholder='Seleccione una opción'
+                    options={typeOfCustomers.map(item => ({ value: item.id_tipo_cliente, label: item.tipo_cliente }))}
+                />
+            </Form.Item>
             <div className='flex flex-md-column justify-between gap-1'>
                 <Form.Item
                     label='Teléfono Celular'
@@ -69,20 +80,16 @@ export const FormCustomer: React.FC<Props> = ({ customer, onClose }) => {
                 <Form.Item label='Email' name='correo' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                     <Input placeholder='Ingrese un email' />
                 </Form.Item>
-                <Form.Item
-                    label='Tipo de cliente'
-                    name='id_tipo_cliente'
-                    className='flex-1'
-                    rules={[{ required: true, message: 'El campo es obligatorio' }]}
-                >
-                    <Select
-                        placeholder='Seleccione una opción'
-                        options={typeOfCustomers.map(item => ({ value: item.id_tipo_cliente, label: item.tipo_cliente }))}
-                    />
+                <Form.Item label='Porcentaje de descuento' name='porcentaje_descuento' className='flex-1'>
+                    <InputNumber className='w-100' min={0} max={100} formatter={value => `${value}%`} />
                 </Form.Item>
             </div>
             <div className='flex flex-md-column justify-between gap-1'>
-                <Form.Item name='files' rules={[{ required: customer.id_cliente === 0, message: `El campo es obligatorio` }]}>
+                <Form.Item
+                    name='files'
+                    valuePropName='fileList'
+                    rules={[{ required: customer.id_cliente === 0, message: `El campo es obligatorio` }]}
+                >
                     <Upload
                         style={{ width: 300, border: 'solid black 1px' }}
                         multiple={true}

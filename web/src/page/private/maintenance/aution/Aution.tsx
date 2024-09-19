@@ -1,11 +1,11 @@
-import { Icon } from '@/components';
-import { Aution as TypeAution, EmptyAution } from '@/models';
+import { Icon, Search } from '@/components';
+import { EmptyAution, Aution as TypeAution } from '@/models';
 import { RootState } from '@/redux';
-import { Button, Input, List, message, Modal, Table } from 'antd';
+import { httpGetAutions } from '@/services';
+import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormAution } from './FormAution';
-import { httpGetAutions } from '@/services';
 
 export const Aution = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -13,8 +13,22 @@ export const Aution = () => {
 
     const [aution, setAution] = useState<TypeAution>(EmptyAution);
     const [autions, setAutions] = useState<Array<TypeAution>>([]);
+    const [autionsCopy, setAutionsCopy] = useState<Array<TypeAution>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const handleSearch = (value: string = '') => {
+        let _autions = [...autionsCopy];
+        if (value !== '')
+            _autions = _autions.filter(
+                item =>
+                    item.id_subasta === Number(value) ||
+                    item.alias?.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+                    item.subasta?.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            );
+
+        setAutions(_autions);
+    };
 
     const handleEdit = (item: TypeAution) => {
         setAution(item);
@@ -24,7 +38,10 @@ export const Aution = () => {
     const handleGet = () => {
         setLoading(true);
         httpGetAutions()
-            .then(res => setAutions(res))
+            .then(res => {
+                setAutions(res);
+                setAutionsCopy(res);
+            })
             .catch(err => message.error(`Erro http get autions: ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -38,7 +55,7 @@ export const Aution = () => {
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={handleSearch} onReset={() => handleSearch('')} />
                 </div>
                 <Button
                     type='primary'
@@ -79,11 +96,7 @@ export const Aution = () => {
                 <Table
                     size='small'
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={{
-                        position: ['none', 'bottomRight'],
-                        showSizeChanger: true,
-                        pageSizeOptions: [50, 100, 250, 500]
-                    }}
+                    pagination={false}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}

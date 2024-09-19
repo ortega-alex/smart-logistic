@@ -1,8 +1,8 @@
-import { Icon } from '@/components';
+import { Icon, Search } from '@/components';
 import { EmptyTypeVehicle, TypeVehicle as TypeTypeVehicle } from '@/models';
 import { RootState } from '@/redux';
 import { httpGetTypeVehicles } from '@/services';
-import { Button, Input, List, message, Modal, Table } from 'antd';
+import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormTypeVehicle } from './FormTypeVehicle';
@@ -13,8 +13,18 @@ export const TypeVehicle = () => {
 
     const [typeVehicle, setTypeVehicle] = useState<TypeTypeVehicle>(EmptyTypeVehicle);
     const [typeVehicles, setTypeVehicles] = useState<Array<TypeTypeVehicle>>([]);
+    const [typeVehiclesCopy, setTypeVehiclesCopy] = useState<Array<TypeTypeVehicle>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const handleOnSearch = (value: string) => {
+        let _type_vehicles = [...typeVehiclesCopy];
+        if (value.trim() !== '')
+            _type_vehicles = _type_vehicles.filter(
+                item => item.id_tipo_vehiculo === Number(value) || item.tipo_vehiculo.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            );
+        setTypeVehicles(_type_vehicles);
+    };
 
     const handleEdit = (item: TypeTypeVehicle) => {
         setTypeVehicle(item);
@@ -24,7 +34,10 @@ export const TypeVehicle = () => {
     const handleGet = () => {
         setLoading(true);
         httpGetTypeVehicles()
-            .then(res => setTypeVehicles(res))
+            .then(res => {
+                setTypeVehicles(res);
+                setTypeVehiclesCopy(res);
+            })
             .catch(err => message.error(`Error http get ports: ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -38,7 +51,7 @@ export const TypeVehicle = () => {
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
                 </div>
                 <Button
                     type='primary'

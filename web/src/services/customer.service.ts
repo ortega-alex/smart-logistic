@@ -1,4 +1,4 @@
-import { Customer } from '@/models';
+import { Customer, TableParams } from '@/models';
 import { httpRequest } from '@/utilities';
 
 const path = '/customer';
@@ -29,4 +29,11 @@ export const httpEditCustomer = async (data: Customer) =>
         method: 'PUT',
         data,
         type: 'multipart'
+    });
+
+export const httpGetCustomerPaginationData = async (data: any) =>
+    await httpRequest({
+        path: `${path}/pagination`,
+        method: 'POST',
+        data
     });

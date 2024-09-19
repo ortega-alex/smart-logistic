@@ -1,64 +1,41 @@
-import { Icon, Search } from '@/components';
-import { EmptyPort, Port as TypePort } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetPorts } from '@/services';
-import { Button, List, message, Modal, Table } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Input, List, Modal, Select, Table } from 'antd';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FormPorts } from './FormPort';
+import { EmptyQuoter, Quoter as TypeQuoter } from '@/models';
+import { Icon } from '@/components';
+import { FormQuoter } from './FormQuoter';
 
-export const Port = () => {
+export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
-    const title = 'Puertos';
 
-    const [port, setPort] = useState<TypePort>(EmptyPort);
-    const [ports, setPorts] = useState<Array<TypePort>>([]);
-    const [portsCopy, setPortsCopy] = useState<Array<TypePort>>([]);
-    const [modal, setModal] = useState(false);
+    const [quoters, setQuoters] = useState<Array<TypeQuoter>>([]);
+    const [quoter, setQuoter] = useState<TypeQuoter>(EmptyQuoter);
     const [loading, setLoading] = useState(false);
+    const [modals, setModals] = useState<{ [key: string]: boolean }>({
+        form: false,
+        preview: false
+    });
 
-    const handleOnSearch = (value: string) => {
-        let _ports = [...portsCopy];
-        if (value.trim() !== '')
-            _ports = _ports.filter(
-                item => item.id_puerto === Number(value) || item.puerto.toLowerCase().indexOf(value.toLowerCase()) !== -1
-            );
-        setPorts(_ports);
-    };
-
-    const handleEdit = (item: TypePort) => {
-        setPort(item);
-        setModal(true);
-    };
-
-    const handleGet = () => {
-        setLoading(true);
-        httpGetPorts()
-            .then(res => {
-                setPorts(res);
-                setPortsCopy(res);
-            })
-            .catch(err => message.error(`Error http get ports: ${err.message}`))
-            .finally(() => setLoading(false));
-    };
-
-    useEffect(() => {
-        handleGet();
-    }, []);
+    const handleOnChangeModal = (name: string, open: boolean = true) => setModals({ [name]: open });
+    const handleEdit = (item: TypeQuoter) => console.log(item);
 
     return (
         <div className='h-100 flex flex-column p-3'>
-            <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>{title}</h3>
+            <div className='flex flex-md-column gap-3 justify-between items-end'>
+                <div className='flex flex-column'>
+                    <label htmlFor='cliente'>Cliente</label>
+                    <Select placeholder='Seleccione una opcion' />
+                </div>
                 <div>
-                    <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
+                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
                 </div>
                 <Button
                     type='primary'
                     htmlType='button'
                     onClick={() => {
-                        setPort(EmptyPort);
-                        setModal(true);
+                        setQuoter(EmptyQuoter);
+                        handleOnChangeModal('form');
                     }}
                 >
                     Agregar
@@ -67,14 +44,16 @@ export const Port = () => {
 
             {deviceState ? (
                 <List
-                    dataSource={ports}
+                    dataSource={quoters}
                     loading={loading}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_puerto}>
+                        <div className='item-list' key={item.id_cotizacion}>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.puerto}
+                                <strong>Cliente: </strong>&nbsp;{item.cliente}
                             </div>
-
+                            <div className='flex-1'>
+                                <strong>Vendedor: </strong>&nbsp;{item.vendedor}
+                            </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
                                     <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
@@ -90,20 +69,48 @@ export const Port = () => {
                 <Table
                     size='small'
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={false}
+                    pagination={{
+                        position: ['none', 'bottomRight'],
+                        showSizeChanger: true,
+                        pageSizeOptions: [50, 100, 250, 500]
+                    }}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
                     rowKey='id_subasta'
-                    dataSource={ports}
+                    dataSource={quoters}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_puerto'
+                            dataIndex: 'id_subasta'
                         },
                         {
-                            title: 'Nombre',
-                            dataIndex: 'puerto',
+                            title: 'Fecha',
+                            dataIndex: 'subasta',
+                            ellipsis: true,
+                            sorter: true
+                        },
+                        {
+                            title: 'Vendedor',
+                            dataIndex: 'alias',
+                            ellipsis: true,
+                            sorter: true
+                        },
+                        {
+                            title: 'Cliente',
+                            dataIndex: 'alias',
+                            ellipsis: true,
+                            sorter: true
+                        },
+                        {
+                            title: 'Marca/Modelo',
+                            dataIndex: 'alias',
+                            ellipsis: true,
+                            sorter: true
+                        },
+                        {
+                            title: 'Puerto de salida',
+                            dataIndex: 'alias',
                             ellipsis: true,
                             sorter: true
                         },
@@ -133,24 +140,14 @@ export const Port = () => {
             )}
 
             <Modal
-                open={modal}
-                title={
-                    <h3>
-                        {port.id_puerto > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
-                    </h3>
-                }
+                open={modals.form}
+                title={<h3>{quoter.id_cotizacion > 0 ? 'Editar' : 'Agregar'} Cotización</h3>}
                 footer={null}
-                onCancel={() => setModal(false)}
+                onCancel={() => handleOnChangeModal('form', false)}
                 centered
                 destroyOnClose
             >
-                <FormPorts
-                    port={port}
-                    onClose={() => {
-                        handleGet();
-                        setModal(false);
-                    }}
-                />
+                <FormQuoter quoter={quoter} />
             </Modal>
         </div>
     );

@@ -2,6 +2,7 @@ version: '3.8'
 services:
   app:
     container_name: api-${PROJECT_NAME}
+    restart: unless-stopped
     build: 
       context: .
       target: production

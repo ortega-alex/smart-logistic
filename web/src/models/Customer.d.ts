@@ -14,6 +14,7 @@ export interface Customer {
     id_tipo_cliente?: number;
     archivos?: Array<CustomerFile>;
     tipo_cliente?: TypeOfCustomer;
+    porcentaje_descuento?: number | string;
 }
 
 export const EmptyCustomer: TypeCustomer = {
@@ -24,5 +25,6 @@ export const EmptyCustomer: TypeCustomer = {
     dpi: '',
     nit: '',
     telefono_celular: '',
-    estado: true
+    estado: true,
+    porcentaje_descuento: 0
 };

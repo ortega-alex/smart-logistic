@@ -28,6 +28,11 @@ export const getPermissionMenuByProfileId = async (req: Request, res: Response) 
                 perfil: {
                     id_perfil: Number(id)
                 }
+            },
+            order: {
+                menu: {
+                    menu: 'ASC'
+                }
             }
         });
         return res.json(permissions);

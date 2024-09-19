@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./home/Home').then(module => ({ default: module.Home })));
+const Quoter = lazy(() => import('./quoter/Quoter').then(module => ({ default: module.Quoter })));
 
 // MANTENIMIENTOS
 const Customer = lazy(() => import('./maintenance/custome/Customer').then(module => ({ default: module.Customer })));
@@ -19,6 +20,9 @@ const Crane = lazy(() => import('./maintenance/crane/Crane').then(module => ({ d
 const Port = lazy(() => import('./maintenance/ports/Port').then(module => ({ default: module.Port })));
 const TypeVehicle = lazy(() => import('./maintenance/type-of-vehicle/TypeVehicle').then(module => ({ default: module.TypeVehicle })));
 const Profile = lazy(() => import('./maintenance/profile/Profile').then(module => ({ default: module.Profile })));
+const TypeOfCustomer = lazy(() =>
+    import('./maintenance/type-of-customer/TypeOfCustomer').then(module => ({ default: module.TypeOfCustomer }))
+);
 
 export const Private = () => {
     const dispatch = useDispatch();
@@ -58,6 +62,8 @@ export const Private = () => {
                         <Route path='/' element={<Navigate to={privateRoutes.HOME} />} />
                         <Route path={privateRoutes.HOME} element={<Home />} />
                         <>
+                            {menuState.some(item => item.path === 'QUOTER') && <Route path={privateRoutes.QUOTER} element={<Quoter />} />}
+
                             {menuState.some(item => item.path === 'VEHICLES') && (
                                 <Route path={privateRoutes.VEHICLES} element={<>Vehiculos</>} />
                             )}
@@ -80,6 +86,10 @@ export const Private = () => {
 
                             {menuState.some(item => item.path === 'PROFILES') && (
                                 <Route path={privateRoutes.PROFILES} element={<Profile />} />
+                            )}
+
+                            {menuState.some(item => item.path === 'TYPES_OF_CUSTOMERS') && (
+                                <Route path={privateRoutes.TYPES_OF_CUSTOMERS} element={<TypeOfCustomer />} />
                             )}
                         </>
                     </RoutesWithNotFound>

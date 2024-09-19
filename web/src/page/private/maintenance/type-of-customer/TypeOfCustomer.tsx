@@ -1,44 +1,44 @@
 import { Icon, Search } from '@/components';
-import { EmptyPort, Port as TypePort } from '@/models';
+import { EmptyTypeOfCustomer, TypeOfCustomer as TyTypeOfCustomer } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetPorts } from '@/services';
+import { httpGetTypeOfCustomer } from '@/services';
 import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FormPorts } from './FormPort';
+import { FormTypeOfCustomer } from './FormTypeOfCustomer';
 
-export const Port = () => {
+export const TypeOfCustomer = () => {
     const deviceState = useSelector((store: RootState) => store.device);
-    const title = 'Puertos';
+    const title = 'Tipos de Clientes';
 
-    const [port, setPort] = useState<TypePort>(EmptyPort);
-    const [ports, setPorts] = useState<Array<TypePort>>([]);
-    const [portsCopy, setPortsCopy] = useState<Array<TypePort>>([]);
+    const [typeOfCustomer, setTypeOfCustomer] = useState<TyTypeOfCustomer>(EmptyTypeOfCustomer);
+    const [typeOfCustomers, setTypeOfCustomers] = useState<Array<TyTypeOfCustomer>>([]);
+    const [typeOfCustomersCopy, setTypeOfCustomersCopy] = useState<Array<TyTypeOfCustomer>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleOnSearch = (value: string) => {
-        let _ports = [...portsCopy];
+        let _type_vehicles = [...typeOfCustomersCopy];
         if (value.trim() !== '')
-            _ports = _ports.filter(
-                item => item.id_puerto === Number(value) || item.puerto.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            _type_vehicles = _type_vehicles.filter(
+                item => item.id_tipo_cliente === Number(value) || item.tipo_cliente.toLowerCase().indexOf(value.toLowerCase()) !== -1
             );
-        setPorts(_ports);
+        setTypeOfCustomers(_type_vehicles);
     };
 
-    const handleEdit = (item: TypePort) => {
-        setPort(item);
+    const handleEdit = (item: TyTypeOfCustomer) => {
+        setTypeOfCustomer(item);
         setModal(true);
     };
 
     const handleGet = () => {
         setLoading(true);
-        httpGetPorts()
+        httpGetTypeOfCustomer()
             .then(res => {
-                setPorts(res);
-                setPortsCopy(res);
+                setTypeOfCustomers(res);
+                setTypeOfCustomersCopy(res);
             })
-            .catch(err => message.error(`Error http get ports: ${err.message}`))
+            .catch(err => message.error(`Error http get type of customers: ${err.message}`))
             .finally(() => setLoading(false));
     };
 
@@ -57,7 +57,7 @@ export const Port = () => {
                     type='primary'
                     htmlType='button'
                     onClick={() => {
-                        setPort(EmptyPort);
+                        setTypeOfCustomer(EmptyTypeOfCustomer);
                         setModal(true);
                     }}
                 >
@@ -67,12 +67,12 @@ export const Port = () => {
 
             {deviceState ? (
                 <List
-                    dataSource={ports}
+                    dataSource={typeOfCustomers}
                     loading={loading}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_puerto}>
+                        <div className='item-list' key={item.id_tipo_cliente}>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.puerto}
+                                <strong>Nombre: </strong>&nbsp;{item.id_tipo_cliente}
                             </div>
 
                             <div className='flex flex-row justify-between'>
@@ -90,31 +90,34 @@ export const Port = () => {
                 <Table
                     size='small'
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={false}
+                    pagination={{
+                        position: ['none', 'bottomRight'],
+                        showSizeChanger: true,
+                        pageSizeOptions: [50, 100, 250, 500]
+                    }}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_subasta'
-                    dataSource={ports}
+                    rowKey='id_tipo_cliente'
+                    dataSource={typeOfCustomers}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_puerto'
+                            dataIndex: 'id_tipo_cliente'
                         },
                         {
                             title: 'Nombre',
-                            dataIndex: 'puerto',
+                            dataIndex: 'tipo_cliente',
                             ellipsis: true,
                             sorter: true
                         },
                         {
                             title: 'Estado',
                             dataIndex: 'estado',
-                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Actuvi' : 'Inactivo'}</span>
+                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
                             title: 'Opciones',
-                            dataIndex: 'operacion',
                             width: 80,
                             render: (_, item) => (
                                 <div className='text-center'>
@@ -136,7 +139,7 @@ export const Port = () => {
                 open={modal}
                 title={
                     <h3>
-                        {port.id_puerto > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
+                        {typeOfCustomer.id_tipo_cliente > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
                     </h3>
                 }
                 footer={null}
@@ -144,8 +147,8 @@ export const Port = () => {
                 centered
                 destroyOnClose
             >
-                <FormPorts
-                    port={port}
+                <FormTypeOfCustomer
+                    typeOfCustomer={typeOfCustomer}
                     onClose={() => {
                         handleGet();
                         setModal(false);

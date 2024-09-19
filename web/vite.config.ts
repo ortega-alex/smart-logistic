@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -52,7 +52,10 @@ export default defineConfig({
     ],
     base: './',
     server: {
-        port: 3000
+        port: 3000,
+        hmr: {
+            overlay: false
+        }
     },
     resolve: {
         alias: {

@@ -7,3 +7,31 @@ Authorization: Bearer {{token}}
 GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/2
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### GET CUSTOMER PAGINATION DATA
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/pagination
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "orderField": "id_cliente",
+    "orderDirection": "ASC",
+    "filter": ""
+}
+
+### EDIT CUSTOMER
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "cliente": "El Marzo",
+    "telefono_celular": "6019521325",
+    "telefono_fijo": "3121286800",
+    "direccion": "1600 Fake Street",
+    "nit": "CF",
+    "dpi": "2271023980101",
+    "correo": "test@example.us",
+    "id_tipo_cliente": 3,
+    "porcentaje_descuento": 0.5
+}
