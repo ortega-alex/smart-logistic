@@ -4,7 +4,7 @@ import { enviroment } from '../utils';
 
 export const addCustomer = async (req: Request, res: Response) => {
     try {
-        const { cliente, telefono_celular, telefono_fijo, direccion, nit, dpi, correo, id_tipo_cliente, porcentaje_descuento } = req.body;
+        const { cliente, telefono_celular, telefono_fijo, direccion, nit, dpi, correo, id_tipo_cliente, porcentaje_costo } = req.body;
         if (!cliente) return res.status(203).json({ message: 'El cliente es requerido' });
         if (!telefono_celular) return res.status(203).json({ message: 'El telefono celular es requerido' });
         if (!direccion) return res.status(203).json({ message: 'La direccion es requerida' });
@@ -25,7 +25,7 @@ export const addCustomer = async (req: Request, res: Response) => {
         customer.dpi = dpi;
         customer.correo = correo;
         customer.tipo_cliente = typeOfCustomer;
-        customer.porcentaje_descuento = porcentaje_descuento ?? 0;
+        customer.porcentaje_costo = porcentaje_costo ?? 0;
 
         await customer.save();
 
@@ -79,7 +79,7 @@ export const getCustomerById = async (req: Request, res: Response) => {
 export const updateCustomerById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { cliente, telefono_celular, telefono_fijo, direccion, nit, dpi, correo, id_tipo_cliente, porcentaje_descuento } = req.body;
+        const { cliente, telefono_celular, telefono_fijo, direccion, nit, dpi, correo, id_tipo_cliente, porcentaje_costo } = req.body;
         const customer = await Customer.findOneBy({ id_cliente: Number(id) });
         if (!customer) return res.status(404).json({ message: 'Cliente no exite' });
 
@@ -97,7 +97,7 @@ export const updateCustomerById = async (req: Request, res: Response) => {
                 dpi: dpi ?? customer.dpi,
                 correo: correo ?? customer.correo,
                 tipo_cliente: typeOfCustomer,
-                porcentaje_descuento: porcentaje_descuento ?? customer.porcentaje_descuento
+                porcentaje_costo: porcentaje_costo ?? customer.porcentaje_costo
             }
         );
 

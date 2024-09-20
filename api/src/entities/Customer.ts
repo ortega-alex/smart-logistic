@@ -39,7 +39,7 @@ export class Customer extends BaseEntity {
     correo: string;
 
     @Column('decimal', { precision: 10, scale: 2, default: 0 })
-    porcentaje_descuento: number;
+    porcentaje_costo: number;
 
     @Column({ default: true })
     estado: boolean;

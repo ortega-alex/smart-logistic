@@ -8,6 +8,12 @@ export class Port extends BaseEntity {
     @Column('varchar', { length: 45 })
     puerto: string;
 
+    @Column('decimal', { precision: 10, scale: 2, default: 0 })
+    costo_embarque: number;
+
+    @Column('decimal', { precision: 10, scale: 2, default: 0 })
+    costo_aduanal: number;
+
     @Column({ default: true })
     estado: boolean;
 

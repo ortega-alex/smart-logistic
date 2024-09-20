@@ -8,6 +8,9 @@ export class TypeVehicle extends BaseEntity {
     @Column('varchar', { length: 45 })
     tipo_vehiculo: string;
 
+    @Column('decimal', { precision: 10, scale: 2, default: 0 })
+    porcentaje_costo: number;
+
     @Column({ default: true })
     estado: boolean;
 
