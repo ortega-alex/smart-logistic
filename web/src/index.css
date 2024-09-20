@@ -228,6 +228,10 @@
     height: 100vh !important;
 }
 
+.vhm-75 {
+    max-height: 75vh !important;
+}
+
 .flex-1 {
     flex: 1;
 }

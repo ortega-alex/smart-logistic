@@ -1,6 +1,7 @@
 import { Icon } from '@/components';
 import { Aution, color, Costo, Crane, Customer, KeysCosto, Moneda, Port, Quoter, TypeVehicle, Vehicle } from '@/models';
 import { httpGetAutions, httpGetCrane, httpGetCustomer, httpGetPorts, httpGetTypeVehicles } from '@/services';
+import { commaSeparateNumber } from '@/utilities';
 import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -41,20 +42,35 @@ export const FormQuoter: React.FC<Props> = ({ quoter }) => {
         if (values && values.id_cliente) {
             const costos = { ...costs };
             const customer = customers.find(item => item.id_cliente === values.id_cliente);
+
+            const port = ports.find(item => item.id_puerto === values.id_puerto);
+            if (port) {
+                costos[KeysCosto.PORT_DOCUMENT_OR_EXP] = Moneda.USD + ' ' + commaSeparateNumber(port.costo_aduanal);
+
+                const typeVehicle = typeVehicles.find(item => item.id_tipo_vehiculo === values.id_tipo_vehiculo);
+                if (typeVehicle)
+                    costos[KeysCosto.PORT_SHIPPING] =
+                        Moneda.USD +
+                        ' ' +
+                        commaSeparateNumber(
+                            Number(port.costo_embarque) + Number(port.costo_embarque) * (Number(typeVehicle.porcentaje_costo) / 100)
+                        );
+            }
+
             if (customer) {
                 if (values.id_grua_usd) {
                     const crane_usd: Crane = cranes.USD.find((item: Crane) => item.id_grua === values.id_grua_usd)!;
                     if (crane_usd && crane_usd.costo > 0) {
-                        const costo = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_descuento) / 100);
-                        costos[KeysCosto.USD] = crane_usd.moneda + ' ' + costo;
+                        const costo = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_costo) / 100);
+                        costos[KeysCosto.USD] = crane_usd.moneda + ' ' + commaSeparateNumber(costo);
                     }
                 } else delete costos[KeysCosto.USD];
 
                 if (values.id_grua_gt) {
                     const crane_gt: Crane = cranes.GTQ.find((item: Crane) => item.id_grua === values.id_grua_gt)!;
                     if (crane_gt && crane_gt.costo > 0) {
-                        const costo = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_descuento) / 100);
-                        costos[KeysCosto.GT] = crane_gt.moneda + ' ' + costo;
+                        const costo = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_costo) / 100);
+                        costos[KeysCosto.GT] = crane_gt.moneda + ' ' + commaSeparateNumber(costo);
                     }
                 } else delete costos[KeysCosto.GT];
             }
@@ -107,144 +123,153 @@ export const FormQuoter: React.FC<Props> = ({ quoter }) => {
 
     return (
         <Form ref={formRef} layout='vertical' onFinish={handleSubmit} onValuesChange={handleValuesChange}>
-            <div className='vh-75 overflow-y'>
-                <Form.Item label='Cliente' name='id_cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
-                    <Select
-                        className='w-100'
-                        placeholder='Selecciones una opción'
-                        options={customers.map(item => ({ label: item.cliente, value: item.id_cliente }))}
-                    />
-                </Form.Item>
-                <Form.Item label='Puerto' name='id_puerto' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
-                    <Select
-                        className='w-100'
-                        placeholder='Selecciones una opción'
-                        options={ports.map(item => ({ label: item.puerto, value: item.id_puerto }))}
-                    />
-                </Form.Item>
-                <Divider orientation='left'>Información del vehículo</Divider>
-                {vehicles.map((item, i) => (
-                    <div key={i}>
-                        {item.id && (
-                            <>
-                                <Divider>
-                                    <Button
-                                        icon={<Icon.ArrowDown />}
-                                        size='small'
-                                        type='link'
-                                        htmlType='button'
-                                        danger
-                                        onClick={() => {
-                                            const _vehicles = [...vehicles].filter(_item => _item.id !== item.id);
-                                            setVehicles(_vehicles);
-                                        }}
+            <div className='vhm-75 overflow-y'>
+                <div className='flex flex-md-column justify-between'>
+                    <div className='flex-1 p-3'>
+                        <Divider orientation='left'>Información del Cliente/Puerto</Divider>
+                        <Form.Item label='Cliente' name='id_cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                            <Select
+                                className='w-100'
+                                placeholder='Selecciones una opción'
+                                options={customers.map(item => ({ label: item.cliente, value: item.id_cliente }))}
+                            />
+                        </Form.Item>
+                        <Form.Item label='Puerto' name='id_puerto' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                            <Select
+                                className='w-100'
+                                placeholder='Selecciones una opción'
+                                options={ports.map(item => ({ label: item.puerto, value: item.id_puerto }))}
+                            />
+                        </Form.Item>
+                        <Divider orientation='left'>Información del vehículo</Divider>
+                        {vehicles.map((item, i) => (
+                            <div key={i}>
+                                {item.id && (
+                                    <>
+                                        <Divider>
+                                            <Button
+                                                icon={<Icon.ArrowDown />}
+                                                size='small'
+                                                type='link'
+                                                htmlType='button'
+                                                danger
+                                                onClick={() => {
+                                                    const _vehicles = [...vehicles].filter(_item => _item.id !== item.id);
+                                                    setVehicles(_vehicles);
+                                                }}
+                                            >
+                                                Eliminar
+                                            </Button>
+                                        </Divider>
+                                    </>
+                                )}
+                                <div className='flex flex-md-column gap-3 justify-between item-end'>
+                                    <Form.Item
+                                        label='Tipo de Vehículo'
+                                        name={`${item.id ? item.id + '-' : ''}id_tipo_vehiculo`}
+                                        rules={[{ required: true, message: 'El campo es requerido' }]}
+                                        className='w-100'
                                     >
-                                        Eliminar
-                                    </Button>
-                                </Divider>
-                            </>
-                        )}
-                        <div className='flex flex-md-column gap-3 justify-between item-end'>
-                            <Form.Item
-                                label='Tipo de Vehículo'
-                                name={`${item.id ? item.id + '-' : ''}id_tipo_vehiculo`}
-                                rules={[{ required: true, message: 'El campo es requerido' }]}
-                                className='w-100'
+                                        <Select
+                                            className='w-100'
+                                            placeholder='Selecciones una opción'
+                                            options={typeVehicles.map(item => ({
+                                                label: item.tipo_vehiculo,
+                                                value: item.id_tipo_vehiculo
+                                            }))}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label='Año'
+                                        name={`${item.id ? item.id + '-' : ''}anio`}
+                                        rules={[{ required: true, message: 'El campo es requerido' }]}
+                                        className='w-100'
+                                    >
+                                        <Input placeholder='Ingrese un año' />
+                                    </Form.Item>
+                                </div>
+                                <div className='flex flex-md-column gap-3 justify-between item-end'>
+                                    <Form.Item
+                                        label='Marca'
+                                        name={`${item.id ? item.id + '-' : ''}marca`}
+                                        rules={[{ required: true, message: 'El campo es requerido' }]}
+                                        className='w-100'
+                                    >
+                                        <Input placeholder='Ingrese una Marca' />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label='Modelo'
+                                        name={`${item.id ? item.id + '-' : ''}modelo`}
+                                        rules={[{ required: true, message: 'El campo es requerido' }]}
+                                        className='w-100'
+                                    >
+                                        <Input placeholder='Ingrese un Modelo' />
+                                    </Form.Item>
+                                </div>
+                            </div>
+                        ))}
+                        <div className='text-right'>
+                            <Button
+                                type='primary'
+                                style={{ color: color.secondary, borderColor: color.secondary }}
+                                ghost
+                                size='small'
+                                htmlType='button'
+                                icon={<Icon.Plus />}
+                                onClick={() => {
+                                    const _vehicles = [...vehicles];
+                                    _vehicles.push({
+                                        id: String(Math.random())
+                                    });
+                                    setVehicles(_vehicles);
+                                }}
                             >
-                                <Select
-                                    className='w-100'
-                                    placeholder='Selecciones una opción'
-                                    options={typeVehicles.map(item => ({ label: item.tipo_vehiculo, value: item.id_tipo_vehiculo }))}
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                label='Año'
-                                name={`${item.id ? item.id + '-' : ''}anio`}
-                                rules={[{ required: true, message: 'El campo es requerido' }]}
-                                className='w-100'
-                            >
-                                <Input placeholder='Ingrese un año' />
-                            </Form.Item>
-                        </div>
-                        <div className='flex flex-md-column gap-3 justify-between item-end'>
-                            <Form.Item
-                                label='Marca'
-                                name={`${item.id ? item.id + '-' : ''}marca`}
-                                rules={[{ required: true, message: 'El campo es requerido' }]}
-                                className='w-100'
-                            >
-                                <Input placeholder='Ingrese una Marca' />
-                            </Form.Item>
-                            <Form.Item
-                                label='Modelo'
-                                name={`${item.id ? item.id + '-' : ''}modelo`}
-                                rules={[{ required: true, message: 'El campo es requerido' }]}
-                                className='w-100'
-                            >
-                                <Input placeholder='Ingrese un Modelo' />
-                            </Form.Item>
+                                Agregar
+                            </Button>
                         </div>
                     </div>
-                ))}
-                <div className='text-right'>
-                    <Button
-                        type='primary'
-                        style={{ color: color.secondary, borderColor: color.secondary }}
-                        ghost
-                        size='small'
-                        htmlType='button'
-                        icon={<Icon.Plus />}
-                        onClick={() => {
-                            const _vehicles = [...vehicles];
-                            _vehicles.push({
-                                id: String(Math.random())
-                            });
-                            setVehicles(_vehicles);
-                        }}
-                    >
-                        Agregar
-                    </Button>
+                    <div className='flex-1 p-3'>
+                        <Divider orientation='left'>Tramites EE. UU</Divider>
+                        <Form.Item label='Subasta (optional)' name='id_subasta'>
+                            <Select
+                                allowClear
+                                className='w-100'
+                                placeholder='Selecciones una opción'
+                                options={autions.map(item => ({ label: item.subasta, value: item.id_subasta }))}
+                            />
+                        </Form.Item>
+                        <Form.Item label='Grua (optional)' name='id_grua_usd'>
+                            <Select
+                                allowClear
+                                className='w-100'
+                                placeholder='Selecciones una opción'
+                                options={cranes.USD?.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
+                            />
+                        </Form.Item>
+
+                        <Divider orientation='left'>Tramites GT</Divider>
+                        <Form.Item label='Grua (optional)' name='id_grua_gt'>
+                            <Select
+                                allowClear
+                                className='w-100'
+                                placeholder='Selecciones una opción'
+                                options={cranes.GTQ.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
+                            />
+                        </Form.Item>
+
+                        <Divider orientation='left'>Costos</Divider>
+                        {Object.keys(costs).map(key => (
+                            <div key={key} className='flex flex-row justify-between gap-3 items-center'>
+                                <strong className='flex-1'>{key}: </strong>
+                                <span>{costs[key as keyof Costo]}</span>
+                                <Button type='link' htmlType='button' icon={<Icon.Edit />} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-
-                <Divider orientation='left'>Tramites EE. UU</Divider>
-                <Form.Item label='Subasta (optional)' name='id_subasta'>
-                    <Select
-                        allowClear
-                        className='w-100'
-                        placeholder='Selecciones una opción'
-                        options={autions.map(item => ({ label: item.subasta, value: item.id_subasta }))}
-                    />
-                </Form.Item>
-                <Form.Item label='Grua (optional)' name='id_grua_usd'>
-                    <Select
-                        allowClear
-                        className='w-100'
-                        placeholder='Selecciones una opción'
-                        options={cranes.USD?.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
-                    />
-                </Form.Item>
-
-                <Divider orientation='left'>Tramites GT</Divider>
-                <Form.Item label='Grua (optional)' name='id_grua_gt'>
-                    <Select
-                        allowClear
-                        className='w-100'
-                        placeholder='Selecciones una opción'
-                        options={cranes.GTQ.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
-                    />
-                </Form.Item>
-
-                <Divider orientation='left'>Costos</Divider>
-                {Object.keys(costs).map(key => (
-                    <div key={key} className='flex flex-row justify-between gap-3 items-center'>
-                        <strong className='flex-1'>{key}: </strong>
-                        <span>{costs[key as keyof Costo]}</span>
-                        <Button type='link' htmlType='button' icon={<Icon.Edit />} />
-                    </div>
-                ))}
             </div>
 
-            <div className='text-right'>
+            <div className='text-right mt-3'>
                 <Button type='primary' htmlType='submit' loading={loading} disabled={loading}>
                     Generar
                 </Button>

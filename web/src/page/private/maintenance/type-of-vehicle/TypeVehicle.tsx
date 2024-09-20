@@ -74,6 +74,9 @@ export const TypeVehicle = () => {
                             <div className='flex-1'>
                                 <strong>Nombre: </strong>&nbsp;{item.tipo_vehiculo}
                             </div>
+                            <div className='flex-1'>
+                                <strong>Costo: </strong>&nbsp;{item.porcentaje_costo}%
+                            </div>
 
                             <div className='flex flex-row justify-between'>
                                 <div>
@@ -110,6 +113,12 @@ export const TypeVehicle = () => {
                             dataIndex: 'tipo_vehiculo',
                             ellipsis: true,
                             sorter: true
+                        },
+                        {
+                            title: 'Costo',
+                            dataIndex: 'porcentaje_costo',
+                            sorter: true,
+                            render: value => `${value}%`
                         },
                         {
                             title: 'Estado',

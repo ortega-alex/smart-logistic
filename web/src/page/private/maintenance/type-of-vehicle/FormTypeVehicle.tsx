@@ -1,5 +1,5 @@
 import { TypeVehicle } from '@/models';
-import { Button, Form, FormProps, Input, message, Switch } from 'antd';
+import { Button, Form, FormProps, Input, InputNumber, message, Switch } from 'antd';
 import { useState } from 'react';
 import { httpAddTypeVehicle, httpUpdateTypeVehicle } from '@/services';
 
@@ -33,6 +33,10 @@ export const FormTypeVehicle: React.FC<Props> = ({ typeVehicle, onClose }) => {
         <Form layout='vertical' initialValues={typeVehicle} onFinish={handleSubmit}>
             <Form.Item label='Nombre' name='tipo_vehiculo' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese el nombre' />
+            </Form.Item>
+
+            <Form.Item label='Costo' name='porcentaje_costo' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                <InputNumber className='w-100' min={0} max={100} formatter={value => `${value}%`} />
             </Form.Item>
 
             <Form.Item name='estado' label='Estado' valuePropName='checked'>

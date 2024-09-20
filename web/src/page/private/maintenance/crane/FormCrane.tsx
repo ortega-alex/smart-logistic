@@ -55,9 +55,9 @@ export const FormCrane: React.FC<Props> = ({ crane, onClose }) => {
                 <InputNumber
                     className='w-100'
                     addonBefore={
-                        <Form.Item name='moneda' style={{ margin: 0, padding: 0 }}>
+                        <Form.Item name='moneda' style={{ margin: 0, padding: 0, width: 80 }}>
                             <Select
-                                style={{ width: 50 }}
+                                className='w-100'
                                 options={Object.keys(Moneda).map(key => ({ value: key, label: Moneda[key as keyof typeof Moneda] }))}
                             />
                         </Form.Item>

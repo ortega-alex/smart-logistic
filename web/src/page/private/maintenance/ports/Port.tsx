@@ -6,6 +6,7 @@ import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormPorts } from './FormPort';
+import { commaSeparateNumber } from '@/utilities';
 
 export const Port = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -74,6 +75,12 @@ export const Port = () => {
                             <div className='flex-1'>
                                 <strong>Nombre: </strong>&nbsp;{item.puerto}
                             </div>
+                            <div className='flex-1'>
+                                <strong>Costo Embarque: </strong>&nbsp;${commaSeparateNumber(item.costo_embarque)}
+                            </div>
+                            <div className='flex-1'>
+                                <strong>Costo Aduanal: </strong>&nbsp;${commaSeparateNumber(item.costo_aduanal)}
+                            </div>
 
                             <div className='flex flex-row justify-between'>
                                 <div>
@@ -106,6 +113,18 @@ export const Port = () => {
                             dataIndex: 'puerto',
                             ellipsis: true,
                             sorter: true
+                        },
+                        {
+                            title: 'Costo Embarque',
+                            dataIndex: 'costo_embarque',
+                            sorter: true,
+                            render: (_, item) => commaSeparateNumber(item.costo_embarque)
+                        },
+                        {
+                            title: 'Costo Aduanal (Doc/Exp)',
+                            dataIndex: 'costo_aduanal',
+                            sorter: true,
+                            render: (_, item) => commaSeparateNumber(item.costo_aduanal)
                         },
                         {
                             title: 'Estado',

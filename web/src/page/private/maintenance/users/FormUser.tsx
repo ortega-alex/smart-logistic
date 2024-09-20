@@ -1,5 +1,6 @@
-import { Profile, User } from '@/models';
+import { Profile, User, ValidatorName } from '@/models';
 import { httpAddUser, httpEditUser, httpGetProfiles } from '@/services';
+import { mailIsValied, phoneNumberIsValid } from '@/utilities';
 import { Button, Form, FormProps, Input, message, Select, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -27,6 +28,14 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
         }
     };
 
+    const handleValidate = async (name: ValidatorName, value: string) => {
+        let error = null;
+        if (value && value.trim() === '') error = 'El campo es obligatorio';
+        else if (name === ValidatorName.PhoneNumber) error = await phoneNumberIsValid(value);
+        else if (name === ValidatorName.Mail) error = await mailIsValied(value);
+        if (error) throw new Error(error);
+    };
+
     useEffect(() => {
         httpGetProfiles()
             .then(res => setProfiles(res))
@@ -46,11 +55,21 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
                     options={profiles.filter(item => item.estado).map(item => ({ value: item.id_perfil, label: item.perfil }))}
                 />
             </Form.Item>
-            <Form.Item label='Teléfono' name='telefono' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+            <Form.Item
+                label='Teléfono'
+                name='telefono'
+                className='flex-1'
+                rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.PhoneNumber, value) }]}
+            >
                 <Input placeholder='Ingrese un número de teléfono' />
             </Form.Item>
 
-            <Form.Item label='Correo' name='correo' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+            <Form.Item
+                label='Correo'
+                name='correo'
+                className='flex-1'
+                rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.Mail, value) }]}
+            >
                 <Input placeholder='Ingrese un email' />
             </Form.Item>
 

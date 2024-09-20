@@ -146,6 +146,7 @@ export const Quoter = () => {
                 onCancel={() => handleOnChangeModal('form', false)}
                 centered
                 destroyOnClose
+                width={1200}
             >
                 <FormQuoter quoter={quoter} />
             </Modal>
