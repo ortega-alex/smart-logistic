@@ -129,11 +129,7 @@ export const FormCustomer: React.FC<Props> = ({ customer, onClose }) => {
                 </Form.Item>
             </div>
             <div className='flex flex-md-column justify-between gap-1'>
-                <Form.Item
-                    name='files'
-                    valuePropName='fileList'
-                    rules={[{ required: customer.id_cliente === 0, message: `El campo es obligatorio` }]}
-                >
+                <Form.Item name='files' rules={[{ required: customer.id_cliente === 0, message: `El campo es obligatorio` }]}>
                     <Upload
                         style={{ width: 300, border: 'solid black 1px' }}
                         multiple={true}
