@@ -1,22 +1,16 @@
-import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CustomerFile } from './CustomerFile';
-import { TypeOfCustomer } from './TypeOfCustomer';
 import { Quoter } from './Quoter';
+import { TypeOfCustomer } from './TypeOfCustomer';
 
 @Entity('cliente')
 export class Customer extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_cliente: number;
+
+    @ManyToOne(() => TypeOfCustomer, tipo_cliente => tipo_cliente.tipos_clientes)
+    @JoinColumn({ name: 'id_tipo_cliente' })
+    tipo_cliente: TypeOfCustomer;
 
     @Column('varchar', { length: 100 })
     cliente: string;
@@ -45,18 +39,21 @@ export class Customer extends BaseEntity {
     @Column({ default: true })
     estado: boolean;
 
-    @CreateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     fecha_creacion: Date;
 
-    @UpdateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP'
+    })
     fecha_edicion: Date;
 
     @OneToMany(() => CustomerFile, archivos => archivos.cliente)
     archivos: CustomerFile[];
-
-    @ManyToOne(() => TypeOfCustomer, tipo_cliente => tipo_cliente.tipos_clientes)
-    @JoinColumn({ name: 'id_tipo_cliente' })
-    tipo_cliente: TypeOfCustomer;
 
     @OneToMany(() => Quoter, clientes => clientes.cliente)
     clientes: Quoter[];

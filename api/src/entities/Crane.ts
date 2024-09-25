@@ -1,20 +1,14 @@
-import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Aution, Quoter } from './';
 
 @Entity('grua')
 export class Crane extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_grua: number;
+
+    @ManyToOne(() => Aution, aution => aution.gruas, { nullable: true })
+    @JoinColumn({ name: 'id_subasta' })
+    subasta: Aution;
 
     @Column('varchar', { length: 45 })
     grua: string;
@@ -28,15 +22,18 @@ export class Crane extends BaseEntity {
     @Column({ default: true })
     estado: boolean;
 
-    @CreateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     fecha_creacion: Date;
 
-    @UpdateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP'
+    })
     fecha_edicion: Date;
-
-    @ManyToOne(() => Aution, aution => aution.gruas, { nullable: true })
-    @JoinColumn({ name: 'id_subasta' })
-    subasta: Aution;
 
     @OneToMany(() => Quoter, gruas_usd => gruas_usd.grua_usd)
     gruas_usd: Quoter[];

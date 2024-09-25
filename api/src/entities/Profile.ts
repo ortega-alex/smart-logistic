@@ -1,17 +1,5 @@
-import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinTable,
-    ManyToMany,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
-import { User } from './User';
-import { Menu } from './Menu';
-import { ProfileMenuPermission } from './ProfimeMenuPermissions';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ProfileMenuPermission, User } from './';
 
 @Entity('perfil')
 export class Profile extends BaseEntity {
@@ -28,10 +16,17 @@ export class Profile extends BaseEntity {
     })
     estado: boolean;
 
-    @CreateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     fecha_creacion: Date;
 
-    @UpdateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP'
+    })
     fecha_edicion: Date;
 
     @OneToMany(() => User, perfiles => perfiles.perfil)

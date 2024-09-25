@@ -1,20 +1,14 @@
-import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile, Quoter } from './';
 
 @Entity('usuario')
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_usuario: number;
+
+    @ManyToOne(() => Profile, perfil => perfil.perfiles)
+    @JoinColumn({ name: 'id_perfil' })
+    perfil: Profile;
 
     @Column()
     nombre: string;
@@ -38,15 +32,18 @@ export class User extends BaseEntity {
     })
     estado: boolean;
 
-    @CreateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     fecha_creacion: Date;
 
-    @UpdateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP'
+    })
     fecha_edicion: Date;
-
-    @ManyToOne(() => Profile, perfil => perfil.perfiles)
-    @JoinColumn({ name: 'id_perfil' })
-    perfil: Profile;
 
     @OneToMany(() => Quoter, vendedores => vendedores.vendedor)
     vendedores: Quoter[];

@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Costo } from '../model';
 import { Aution, Crane, Customer, Port, TypeVehicle, User } from './';
 
@@ -6,27 +6,6 @@ import { Aution, Crane, Customer, Port, TypeVehicle, User } from './';
 export class Quoter extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_cotizacion: number;
-
-    @Column('varchar', { length: 45 })
-    marca: string;
-
-    @Column('varchar', { length: 45 })
-    modelo: string;
-
-    @Column('varchar', { length: 45 })
-    anio: string;
-
-    @Column('json', { default: null })
-    costos?: Array<Costo>;
-
-    @Column({ default: true })
-    estado: boolean;
-
-    @CreateDateColumn()
-    fecha_creacion: Date;
-
-    @UpdateDateColumn()
-    fecha_edicion: Date;
 
     @ManyToOne(() => Customer, customer => customer.clientes, { nullable: false })
     @JoinColumn({ name: 'id_cliente' })
@@ -55,4 +34,32 @@ export class Quoter extends BaseEntity {
     @ManyToOne(() => Crane, grua_gt => grua_gt.gruas_gt)
     @JoinColumn({ name: 'id_grua_gt' })
     grua_gt: Crane;
+
+    @Column('varchar', { length: 45 })
+    marca: string;
+
+    @Column('varchar', { length: 45 })
+    modelo: string;
+
+    @Column('varchar', { length: 45 })
+    anio: string;
+
+    @Column('json', { default: null })
+    costos?: Array<Costo>;
+
+    @Column({ default: true })
+    estado: boolean;
+
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
+    fecha_creacion: Date;
+
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP'
+    })
+    fecha_edicion: Date;
 }

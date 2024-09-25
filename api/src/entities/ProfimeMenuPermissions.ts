@@ -1,7 +1,5 @@
 import { BaseEntity, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Menu } from './Menu';
-import { Permission } from './Permission';
-import { Profile } from './Profile';
+import { Menu, Permission, Profile } from './';
 
 @Entity('perfil_memu_permiso')
 export class ProfileMenuPermission extends BaseEntity {

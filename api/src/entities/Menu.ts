@@ -25,10 +25,16 @@ export class Menu extends BaseEntity {
     })
     estado: boolean;
 
-    @CreateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     fecha_creacion: Date;
 
-    @UpdateDateColumn()
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     fecha_edicion: Date;
 
     @OneToMany(() => ProfileMenuPermission, menus => menus.menu)
