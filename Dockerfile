@@ -48,6 +48,9 @@ COPY --from=build $DIR/node_modules $DIR/node_modules
 COPY --from=build $DIR/dist $DIR/dist
 COPY --from=build $DIR/src/public $DIR/dist/public
 
+# Aquí agregamos permisos de escritura para el usuario node
+RUN chown -R node:node /app/dist/public && chmod -R 755 /app/dist/public
+
 ENV NODE_ENV=produccion
 EXPOSE 4001
 USER $USER
