@@ -14,6 +14,9 @@ services:
       - .env
     depends_on:
       - db
+    volumes:
+      - ./api/src/public/files:/app/dist/public/files
+      - ./api/src/public/images:/app/dist/public/images
   app-dev:
     container_name: api-${PROJECT_NAME}-dev
     restart: unless-stopped
