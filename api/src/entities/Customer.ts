@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { CustomerFile } from './CustomerFile';
 import { TypeOfCustomer } from './TypeOfCustomer';
+import { Quoter } from './Quoter';
 
 @Entity('cliente')
 export class Customer extends BaseEntity {
@@ -56,4 +57,7 @@ export class Customer extends BaseEntity {
     @ManyToOne(() => TypeOfCustomer, tipo_cliente => tipo_cliente.tipos_clientes)
     @JoinColumn({ name: 'id_tipo_cliente' })
     tipo_cliente: TypeOfCustomer;
+
+    @OneToMany(() => Quoter, clientes => clientes.cliente)
+    clientes: Quoter[];
 }

@@ -1,3 +1,5 @@
+import dayjs, { Dayjs } from 'dayjs';
+
 /**
  * Capital Letter First Letter
  * @param {String} text
@@ -17,3 +19,19 @@ export const commaSeparateNumber = (number: string | number): string => {
     }
     return number;
 };
+
+/**
+ *
+ * @param {String} text
+ * @param {String} formatReq
+ * @returns {Dayjs}
+ */
+export const getDateFromString = (text: string, format?: string): Dayjs => dayjs(dayjs(text, format || 'YYYY/MM/DD'));
+
+/**
+ *
+ * @param {Dayjs} date
+ * @param {String} format
+ * @returns {String}
+ */
+export const getDateFormat = (date: Dayjs, format?: string): string => dayjs(date ?? undefined).format(format || 'DD/MM/YYYY HH:MM');

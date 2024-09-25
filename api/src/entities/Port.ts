@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Quoter } from './Quoter';
 
 @Entity('puerto')
 export class Port extends BaseEntity {
@@ -22,4 +23,7 @@ export class Port extends BaseEntity {
 
     @UpdateDateColumn()
     fecha_edicion: Date;
+
+    @OneToMany(() => Quoter, puertos => puertos.puerto)
+    puertos: Quoter[];
 }

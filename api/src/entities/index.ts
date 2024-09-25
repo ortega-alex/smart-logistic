@@ -7,6 +7,7 @@ export * from './Permission';
 export * from './Port';
 export * from './Profile';
 export * from './ProfimeMenuPermissions';
+export * from './Quoter';
 export * from './TypeOfCustomer';
 export * from './TypeVehicle';
 export * from './User';

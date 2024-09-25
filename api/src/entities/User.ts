@@ -1,5 +1,15 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Profile } from './Profile';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
+import { Profile, Quoter } from './';
 
 @Entity('usuario')
 export class User extends BaseEntity {
@@ -37,4 +47,7 @@ export class User extends BaseEntity {
     @ManyToOne(() => Profile, perfil => perfil.perfiles)
     @JoinColumn({ name: 'id_perfil' })
     perfil: Profile;
+
+    @OneToMany(() => Quoter, vendedores => vendedores.vendedor)
+    vendedores: Quoter[];
 }

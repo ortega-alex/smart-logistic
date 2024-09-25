@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Quoter } from './Quoter';
 
 @Entity('tipo_vehiculo')
 export class TypeVehicle extends BaseEntity {
@@ -19,4 +20,7 @@ export class TypeVehicle extends BaseEntity {
 
     @UpdateDateColumn()
     fecha_edicion: Date;
+
+    @OneToMany(() => Quoter, tipos_vehiculos => tipos_vehiculos.tipo_veniculo)
+    tipos_vehiculos: Quoter[];
 }

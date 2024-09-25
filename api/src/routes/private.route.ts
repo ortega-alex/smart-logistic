@@ -5,6 +5,7 @@ import {
     addCustomer,
     addPort,
     addProfile,
+    addQuoter,
     addTypeOfCustomer,
     addTypeVehicle,
     addUser,
@@ -19,6 +20,7 @@ import {
     getPermissionMenuByProfileId,
     getPort,
     getProfile,
+    getQuoters,
     getTypeOfCustomers,
     getTypeVehicle,
     getUsers,
@@ -27,6 +29,7 @@ import {
     updateCustomerById,
     updatePort,
     updateProfile,
+    updateQuoter,
     updateTypeOfCustomerById,
     updateTypeVehicle,
     updateUser
@@ -75,5 +78,9 @@ routes.put('/type-vehicle/:id', updateTypeVehicle);
 
 routes.get('/permission', getPermission);
 routes.get('/permission/:id', getPermissionMenuByProfileId);
+
+routes.get('/quoter', getQuoters);
+routes.post('/quoter', addQuoter);
+routes.put('/quoter/:id', updateQuoter);
 
 export const privateRoutes = routes;

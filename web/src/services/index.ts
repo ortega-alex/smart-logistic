@@ -6,6 +6,7 @@ export * from './menu.sevices';
 export * from './permission.service';
 export * from './port.service';
 export * from './profile.service';
+export * from './quoter.service';
 export * from './store.service';
 export * from './type-of-customer.service';
 export * from './type-vehicle.service';

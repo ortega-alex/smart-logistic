@@ -1,10 +1,12 @@
 import { RootState } from '@/redux';
-import { Button, Input, List, Modal, Select, Table } from 'antd';
-import { useState } from 'react';
+import { Button, Input, List, message, Modal, Select, Table } from 'antd';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EmptyQuoter, Quoter as TypeQuoter } from '@/models';
 import { Icon } from '@/components';
 import { FormQuoter } from './FormQuoter';
+import { httpGetQuoters } from '@/services';
+import { getDateFormat } from '@/utilities';
 
 export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -18,7 +20,31 @@ export const Quoter = () => {
     });
 
     const handleOnChangeModal = (name: string, open: boolean = true) => setModals({ [name]: open });
-    const handleEdit = (item: TypeQuoter) => console.log(item);
+    const handleEdit = (item: TypeQuoter) => {
+        setQuoter({
+            ...item,
+            id_cliente: item.cliente?.id_cliente,
+            id_vendedor: item.vendedor?.id_usuario,
+            id_tipo_vehiculo: item.tipo_veniculo?.id_tipo_vehiculo,
+            id_puerto: item.puerto?.id_puerto,
+            id_subasta: item.subasta?.id_subasta,
+            id_grua_usd: item.grua_usd?.id_grua,
+            id_grua_gt: item.grua_gt?.id_grua
+        });
+        handleOnChangeModal('form');
+    };
+
+    const handleGet = () => {
+        setLoading(true);
+        httpGetQuoters()
+            .then(res => setQuoters(res))
+            .catch(err => message.error(`Error http get quoters: ${err.message}`))
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        handleGet();
+    }, []);
 
     return (
         <div className='h-100 flex flex-column p-3'>
@@ -49,10 +75,10 @@ export const Quoter = () => {
                     renderItem={item => (
                         <div className='item-list' key={item.id_cotizacion}>
                             <div className='flex-1'>
-                                <strong>Cliente: </strong>&nbsp;{item.cliente}
+                                <strong>Cliente: </strong>&nbsp;{item.cliente?.cliente}
                             </div>
                             <div className='flex-1'>
-                                <strong>Vendedor: </strong>&nbsp;{item.vendedor}
+                                <strong>Vendedor: </strong>&nbsp;{item.vendedor?.nombre}
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
@@ -77,47 +103,50 @@ export const Quoter = () => {
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_subasta'
+                    rowKey='id_cotizacion'
                     dataSource={quoters}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_subasta'
+                            dataIndex: 'id_cotizacion'
                         },
                         {
                             title: 'Fecha',
-                            dataIndex: 'subasta',
+                            dataIndex: 'fecha_creacion',
                             ellipsis: true,
-                            sorter: true
+                            sorter: true,
+                            render: value => <span>{getDateFormat(value, 'DD/MM/YYYY')}</span>
                         },
                         {
                             title: 'Vendedor',
-                            dataIndex: 'alias',
+                            dataIndex: 'vendedor',
                             ellipsis: true,
-                            sorter: true
+                            sorter: true,
+                            render: value => <span>{value.nombre}</span>
                         },
                         {
                             title: 'Cliente',
-                            dataIndex: 'alias',
+                            dataIndex: 'cliente',
+                            ellipsis: true,
+                            sorter: true,
+                            render: value => <span>{value.cliente}</span>
+                        },
+                        {
+                            title: 'Marca',
+                            dataIndex: 'marca',
                             ellipsis: true,
                             sorter: true
                         },
                         {
-                            title: 'Marca/Modelo',
-                            dataIndex: 'alias',
-                            ellipsis: true,
-                            sorter: true
-                        },
-                        {
-                            title: 'Puerto de salida',
-                            dataIndex: 'alias',
+                            title: 'Modelo',
+                            dataIndex: 'modelo',
                             ellipsis: true,
                             sorter: true
                         },
                         {
                             title: 'Estado',
                             dataIndex: 'estado',
-                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Actuvi' : 'Inactivo'}</span>
+                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
                             title: 'Opciones',
@@ -148,7 +177,13 @@ export const Quoter = () => {
                 destroyOnClose
                 width={1200}
             >
-                <FormQuoter quoter={quoter} />
+                <FormQuoter
+                    quoter={quoter}
+                    onClose={() => {
+                        handleGet();
+                        handleOnChangeModal('form', false);
+                    }}
+                />
             </Modal>
         </div>
     );

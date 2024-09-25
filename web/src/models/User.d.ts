@@ -3,6 +3,7 @@ import { Profile } from './Profile';
 export interface User {
     id_usuario: number;
     id_perfil?: number;
+    id_vendedor?: number;
     usuario: string;
     correo: string;
     telefono: string;

@@ -1,0 +1,4 @@
+### GET QUOTERS
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter
+Content-Type: application/json
+Authorization: Bearer {{token}}

@@ -9,6 +9,7 @@ import {
     Port,
     Profile,
     ProfileMenuPermission,
+    Quoter,
     TypeOfCustomer,
     TypeVehicle,
     User
@@ -34,7 +35,8 @@ export const AppDataSource = new DataSource({
         Port,
         TypeVehicle,
         Permission,
-        ProfileMenuPermission
+        ProfileMenuPermission,
+        Quoter
     ],
     synchronize: enviroment.NODE_ENV === 'development',
     namingStrategy: new SnakeNamingStrategy()

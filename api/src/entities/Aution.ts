@@ -1,5 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Crane } from './Crane';
+import { Crane, Quoter } from './';
 
 @Entity('subasta')
 export class Aution extends BaseEntity {
@@ -23,4 +23,7 @@ export class Aution extends BaseEntity {
 
     @OneToMany(() => Crane, gruas => gruas.grua)
     gruas: Crane[];
+
+    @OneToMany(() => Quoter, subastas => subastas.subasta)
+    subastas: Quoter[];
 }

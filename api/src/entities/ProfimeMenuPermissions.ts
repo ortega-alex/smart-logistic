@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Menu } from './Menu';
 import { Permission } from './Permission';
 import { Profile } from './Profile';
