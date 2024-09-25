@@ -1,4 +1,4 @@
-import { Customer, TableParams } from '@/models';
+import { Customer } from '@/models';
 import { httpRequest } from '@/utilities';
 
 const path = '/customer';
