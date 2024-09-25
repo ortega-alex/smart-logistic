@@ -1,3 +1,4 @@
+import crypto from 'crypto-js';
 import { Request } from 'express';
 import fs from 'fs';
 import multer from 'multer';
@@ -20,7 +21,7 @@ export const ImageStorage = multer.diskStorage({
         }
     },
     filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const uuid = String(CryptoJS.lib.WordArray.random(16));
+        const uuid = String(crypto.lib.WordArray.random(16));
         const name = uuid + path.extname(file.originalname);
         cb(null, name);
     }
@@ -39,7 +40,7 @@ export const fileStorage = multer.diskStorage({
         }
     },
     filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const uuid = String(CryptoJS.lib.WordArray.random(16));
+        const uuid = String(crypto.lib.WordArray.random(16));
         const name = uuid + path.extname(file.originalname);
         cb(null, name);
     }
