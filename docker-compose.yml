@@ -50,17 +50,6 @@ services:
       - ${MYSQL_VOLUMES}:/var/lib/mysql  
     env_file:
       - .env
-  php:
-    build: ../Avalia_CRM/api
-    container_name: php-avalia
-    ports: 
-      - 80:80
-    volumes:
-      - ../Avalia_CRM/api/:/var/www/html/
-    env_file:
-      - .env   
-    depends_on:
-      - db
 
 volumes:
   node_modules:
