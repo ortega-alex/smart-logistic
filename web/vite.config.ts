@@ -7,7 +7,7 @@ export default defineConfig({
     plugins: [
         react(),
         VitePWA({
-            registerType: 'prompt',
+            registerType: 'autoUpdate',
             devOptions: {
                 enabled: true
             },
@@ -52,7 +52,7 @@ export default defineConfig({
     ],
     base: './',
     server: {
-        port: 3000,
+        port: 3001,
         hmr: {
             overlay: false
         }

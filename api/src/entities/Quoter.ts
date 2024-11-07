@@ -44,6 +44,12 @@ export class Quoter extends BaseEntity {
     @Column('varchar', { length: 45 })
     anio: string;
 
+    @Column('varchar', { length: 45 })
+    serie: string;
+
+    @Column('varchar', { length: 45 })
+    vin: string;
+
     @Column('json', { default: null })
     costos?: Array<Costo>;
 

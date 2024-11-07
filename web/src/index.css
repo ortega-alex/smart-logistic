@@ -3,7 +3,7 @@
     --primary: #cfae1e;
     --secondary: #09262d;
     --success: #28a745;
-    --warning: #ffc107;
+    --warning: rgb(255, 193, 7);
     --danger: #cf561e;
     --white: #f8f9fa;
     --black: #242424;
@@ -16,6 +16,10 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.ant-divider {
+    margin: 0 !important;
 }
 
 .overflow-y {

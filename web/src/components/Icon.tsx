@@ -3,14 +3,14 @@ import { AiFillLock, AiOutlineClose, AiOutlineLogout, AiOutlineMenuFold, AiOutli
 import { BiEdit, BiPlus, BiSearch, BiUser } from 'react-icons/bi';
 import { BsArrowDown, BsEye, BsEyeSlash } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt, FaRegFilePdf } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
-import { MdOutlineCalculate } from 'react-icons/md';
+import { MdOutlineCalculate, MdOutlineMail } from 'react-icons/md';
 import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
 export const Icon = {
@@ -24,8 +24,10 @@ export const Icon = {
     Close: AiOutlineClose,
     Crane: TbCarCrane,
     Edit: BiEdit,
+    EMail: MdOutlineMail,
     Eye: BsEye,
     EyeSlash: BsEyeSlash,
+    FilePdf: FaRegFilePdf,
     Lock: AiFillLock,
     Logout: AiOutlineLogout,
     MenuFold: AiOutlineMenuFold,

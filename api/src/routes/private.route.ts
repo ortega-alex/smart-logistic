@@ -10,6 +10,7 @@ import {
     addTypeVehicle,
     addUser,
     deleteCustomerFile,
+    generatePdf,
     getAution,
     getCrane,
     getCustomer,
@@ -82,5 +83,6 @@ routes.get('/permission/:id', getPermissionMenuByProfileId);
 routes.get('/quoter', getQuoters);
 routes.post('/quoter', addQuoter);
 routes.put('/quoter/:id', updateQuoter);
+routes.get('/quoter/pdf/:id', generatePdf);
 
 export const privateRoutes = routes;
