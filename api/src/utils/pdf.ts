@@ -144,8 +144,8 @@ export const createPdfWithTable = async (quoter: Quoter, data: string[][]) => {
         const valueText = data[rowIndex][1];
 
         // Texto truncado para evitar superposición
-        const truncatedConceptText = conceptText.length > 25 ? `${conceptText.slice(0, 22)}...` : conceptText;
-        const truncatedValueText = valueText.length > 10 ? `${valueText.slice(0, 7)}...` : valueText;
+        const truncatedConceptText = conceptText.length > 53 ? `${conceptText.slice(0, 50)}...` : conceptText;
+        const truncatedValueText = valueText.length > 21 ? `${valueText.slice(0, 18)}...` : valueText;
 
         page.drawText(truncatedConceptText, {
             x: startX + 5,

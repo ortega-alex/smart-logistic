@@ -10,6 +10,7 @@ import {
     Profile,
     ProfileMenuPermission,
     Quoter,
+    QuoterDetail,
     TypeOfCustomer,
     TypeVehicle,
     User
@@ -36,7 +37,8 @@ export const AppDataSource = new DataSource({
         TypeVehicle,
         Permission,
         ProfileMenuPermission,
-        Quoter
+        Quoter,
+        QuoterDetail
     ],
     synchronize: enviroment.NODE_ENV === 'development',
     namingStrategy: new SnakeNamingStrategy()

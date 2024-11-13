@@ -1,6 +1,35 @@
 import { Request, Response } from 'express';
-import { Aution, Crane, Customer, Port, Quoter, TypeVehicle, User } from '../entities';
-import { createPdfWithTable, unionEndPfd } from '../utils';
+import { Aution, Crane, Customer, Port, Quoter, QuoterDetail, TypeVehicle, User } from '../entities';
+import { commaSeparateNumber, createPdfWithTable, unionEndPfd } from '../utils';
+import archiver from 'archiver';
+
+const validate = (data: any) => {
+    const errors: any = {};
+    if (!data.id_cliente) errors.id_cliente = 'El cliente es requerido';
+    if (!data.id_vendedor) errors.id_vendedor = 'El vendedor es requerido';
+    if (!data.id_tipo_vehiculo) errors.id_tipo_vehiculo = 'El tipo de vehiculo es requerido';
+    if (!data.marca) errors.marca = 'La marca es requerida';
+    if (!data.modelo) errors.modelo = 'El modelo es requerido';
+    if (!data.anio) errors.anio = 'El año es requerido';
+    if (!data.detalles) errors.detalles = 'Los costos son requeridos';
+    if (!data.serie) errors.serie = 'La serie es requerida';
+    if (!data.vin) errors.vin = 'El VIN es requerido';
+    return errors;
+};
+
+const insertDetail = async (quoter: Quoter, detalles: any) => {
+    return detalles?.map(async (item: any) => {
+        const quoterDetail = new QuoterDetail();
+
+        quoterDetail.quoter = quoter;
+        quoterDetail.nombre = item.nombre;
+        quoterDetail.valor = Number(item.valor);
+        quoterDetail.moneda = item.moneda;
+
+        await quoterDetail.save();
+        return quoterDetail;
+    });
+};
 
 export const getQuoters = async (_req: Request, res: Response) => {
     try {
@@ -12,7 +41,8 @@ export const getQuoters = async (_req: Request, res: Response) => {
                 puerto: true,
                 grua_usd: true,
                 grua_gt: true,
-                subasta: true
+                subasta: true,
+                details: true
             }
         });
         if (!quoter) return res.status(404).json({ message: 'Cotización no existe' });
@@ -36,20 +66,14 @@ export const addQuoter = async (req: Request, res: Response) => {
             id_subasta,
             id_grua_usd,
             id_grua_gt,
-            costos,
+            detalles,
             serie,
             vin
         } = req.body;
         req.body;
-        if (!id_cliente) return res.status(203).json({ message: 'El cliente es requerido' });
-        if (!id_vendedor) return res.status(203).json({ message: 'El vendedor es requerido' });
-        if (!id_tipo_vehiculo) return res.status(203).json({ message: 'El tipo de vehiculo es requerido' });
-        if (!marca) return res.status(203).json({ message: 'La marca es requerida' });
-        if (!modelo) return res.status(203).json({ message: 'El modelo es requerido' });
-        if (!anio) return res.status(203).json({ message: 'El año es requerido' });
-        if (!costos) return res.status(203).json({ message: 'Los costos son requeridos' });
-        if (!serie) return res.status(203).json({ message: 'La serie es requerida' });
-        if (!vin) return res.status(203).json({ message: 'El VIN es requerido' });
+
+        const errors = validate(req.body);
+        if (Object.keys(errors).length > 0) return res.status(203).json({ message: errors });
 
         const customer = await Customer.findOneBy({ id_cliente: Number(id_cliente) });
         if (!customer) return res.status(203).json({ message: 'Cliente no existe' });
@@ -84,7 +108,6 @@ export const addQuoter = async (req: Request, res: Response) => {
         const quoter = new Quoter();
         quoter.marca = marca;
         quoter.modelo = modelo;
-        quoter.costos = costos;
         quoter.anio = anio;
         quoter.serie = serie;
         quoter.vin = vin;
@@ -97,6 +120,7 @@ export const addQuoter = async (req: Request, res: Response) => {
         quoter.grua_gt = crane_gt;
 
         await quoter.save();
+        await insertDetail(quoter, detalles);
 
         return res.json(quoter);
     } catch (error) {
@@ -118,7 +142,7 @@ export const updateQuoter = async (req: Request, res: Response) => {
             id_subasta,
             id_grua_usd,
             id_grua_gt,
-            costos,
+            detalles,
             serie,
             vin
         } = req.body;
@@ -126,33 +150,33 @@ export const updateQuoter = async (req: Request, res: Response) => {
         const quoter = await Quoter.findOneBy({ id_cotizacion: Number(id) });
         if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
 
-        const customer = await Customer.findOneBy({ id_cliente: Number(id_cliente) });
+        const customer = await Customer.findOneBy({ id_cliente: id_cliente });
         if (!customer) return res.status(203).json({ message: 'Cliente no existe' });
 
-        const typeVehicle = await TypeVehicle.findOneBy({ id_tipo_vehiculo: Number(id_tipo_vehiculo) });
+        const typeVehicle = await TypeVehicle.findOneBy({ id_tipo_vehiculo: id_tipo_vehiculo });
         if (!typeVehicle) return res.status(203).json({ message: 'Tipo de vehiculo no existe' });
 
-        const port = await Port.findOneBy({ id_puerto: Number(id_puerto) });
+        const port = await Port.findOneBy({ id_puerto: id_puerto });
         if (!port) return res.status(203).json({ message: 'Puerto no existe' });
 
-        const trader = await User.findOneBy({ id_usuario: Number(id_vendedor) });
+        const trader = await User.findOneBy({ id_usuario: id_vendedor });
         if (!trader) return res.status(203).json({ message: 'Vendedor no existe' });
 
         let aution = null;
         if (id_subasta) {
-            aution = await Aution.findOneBy({ id_subasta: Number(id_subasta) });
+            aution = await Aution.findOneBy({ id_subasta: id_subasta });
             if (!aution) return res.status(203).json({ message: 'Subasta no existe' });
         }
 
         let crane_usd = null;
         if (id_grua_usd) {
-            crane_usd = await Crane.findOneBy({ id_grua: Number(id_grua_usd) });
+            crane_usd = await Crane.findOneBy({ id_grua: id_grua_usd });
             if (!crane_usd) return res.status(203).json({ message: 'Grua USD no existe' });
         }
 
         let crane_gt = null;
         if (id_grua_gt) {
-            crane_gt = await Crane.findOneBy({ id_grua: Number(id_grua_gt) });
+            crane_gt = await Crane.findOneBy({ id_grua: id_grua_gt });
             if (!crane_gt) return res.status(203).json({ message: 'Grua GT no existe' });
         }
 
@@ -166,7 +190,6 @@ export const updateQuoter = async (req: Request, res: Response) => {
                 subasta: aution ?? quoter.subasta,
                 grua_usd: crane_usd ?? quoter.grua_usd,
                 grua_gt: crane_gt ?? quoter.grua_gt,
-                costos: costos ?? quoter.costos,
                 marca: marca ?? quoter.marca,
                 modelo: modelo ?? quoter.modelo,
                 anio: anio ?? quoter.anio,
@@ -175,6 +198,8 @@ export const updateQuoter = async (req: Request, res: Response) => {
             }
         );
 
+        await QuoterDetail.createQueryBuilder().delete().where({ quoter: quoter }).execute();
+        await insertDetail(quoter, detalles);
         if ((update?.affected ?? 0) > 0) return res.json(quoter);
 
         return res.status(203).json({ message: 'No se pudo actualizar la cotización' });
@@ -190,30 +215,47 @@ export const generatePdf = async (req: Request, res: Response) => {
             where: { id_cotizacion: Number(id) },
             relations: {
                 cliente: true,
-                vendedor: true
-                // tipo_vehiculo: true,
-                // puerto: true,
-                // grua_usd: true,
-                // grua_gt: true,
-                // subasta: true
+                vendedor: true,
+                details: true
             }
         });
         if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
 
-        const costos = quoter.costos?.map(item => [item.nombre, item.valor]);
-        const total = quoter.costos?.reduce((acum, item) => acum + Number(String(item.valor).replace(/,/g, '')), 0);
+        const dollars = quoter.details?.filter(item => item.moneda === '$');
+        const quetzales = quoter.details?.filter(item => item.moneda === 'Q');
 
-        // Crear PDF con tabla
-        const tablePdfDoc = await createPdfWithTable(quoter, [['CONCEPTO', 'VALOR'], ...(<[]>costos), ['TOTAL', String(total)]]);
+        const zip = archiver('zip', { zlib: { level: 9 } });
 
-        const pdfBytes = await unionEndPfd(tablePdfDoc);
+        if (dollars.length > 0) {
+            const detail_dollars = dollars?.map(item => [item.nombre, `${item.moneda}. ${commaSeparateNumber(item.valor)}`]);
+            const total_dollars = dollars?.reduce((acum, item) => acum + Number(String(item.valor).replace(/,/g, '')), 0);
+            const tablePdfDoc = await createPdfWithTable(quoter, [
+                ['CONCEPTO', 'VALOR'],
+                ...(<[]>detail_dollars),
+                ['TOTAL', `$. ${commaSeparateNumber(total_dollars)}`]
+            ]);
+            const pdfBytes = await unionEndPfd(tablePdfDoc);
+            zip.append(Buffer.from(pdfBytes), { name: `${quoter.cliente?.cliente ?? 'cotizacion'}-dolares.pdf` });
+        }
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=${quoter.cliente?.cliente ?? 'cotizacion'}.pdf`);
-        res.send(Buffer.from(pdfBytes));
+        if (quetzales.length > 0) {
+            const detail_quetzales = quetzales?.map(item => [item.nombre, `${item.moneda}. ${commaSeparateNumber(item.valor)}`]);
+            const total_quetzales = quetzales?.reduce((acum, item) => acum + Number(String(item.valor).replace(/,/g, '')), 0);
+            const tablePdfDoc = await createPdfWithTable(quoter, [
+                ['CONCEPTO', 'VALOR'],
+                ...(<[]>detail_quetzales),
+                ['TOTAL', `Q. ${commaSeparateNumber(total_quetzales)}`]
+            ]);
+            const pdfBytes = await unionEndPfd(tablePdfDoc);
+            zip.append(Buffer.from(pdfBytes), { name: `${quoter.cliente?.cliente ?? 'cotizacion'}-quetzales.pdf` });
+        }
 
-        // res.json({ message: 'PDF generado' });
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader('Content-Disposition', 'attachment; filename="cotizaciones.zip"');
+
+        zip.pipe(res);
+        zip.finalize();
     } catch (error) {
-        return res.status(500).json({ message: (error as Error).message });
+        return res.status(500).json({ message: (error as Error).message, res: 'papas' });
     }
 };

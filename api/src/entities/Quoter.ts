@@ -1,6 +1,6 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Costo } from '../model';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Aution, Crane, Customer, Port, TypeVehicle, User } from './';
+import { QuoterDetail } from './QuoterDetail';
 
 @Entity('cotizacion')
 export class Quoter extends BaseEntity {
@@ -50,9 +50,6 @@ export class Quoter extends BaseEntity {
     @Column('varchar', { length: 45 })
     vin: string;
 
-    @Column('json', { default: null })
-    costos?: Array<Costo>;
-
     @Column({ default: true })
     estado: boolean;
 
@@ -68,4 +65,7 @@ export class Quoter extends BaseEntity {
         onUpdate: 'CURRENT_TIMESTAMP'
     })
     fecha_edicion: Date;
+
+    @OneToMany(() => QuoterDetail, details => details.quoter)
+    details: QuoterDetail[];
 }
