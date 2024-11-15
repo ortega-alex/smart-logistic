@@ -1,4 +1,4 @@
-import { Aution, Moneda } from './';
+import { Aution } from './';
 
 export interface Crane {
     id_grua: number;
@@ -7,13 +7,13 @@ export interface Crane {
     id_subasta?: number;
     estado: boolean;
     costo: number;
-    moneda: Moneda;
+    moneda: string;
 }
 
 export const EmptyCrane: Crane = {
     id_grua: 0,
     grua: '',
     estado: true,
-    moneda: Moneda.USD || '$',
+    moneda: '$',
     costo: 0
 };
