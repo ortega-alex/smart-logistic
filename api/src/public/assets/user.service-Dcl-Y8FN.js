@@ -1,0 +1,1 @@
+import"./index-Cg6e7MPW.js";import{N as a}from"./method-http.utility-DXTioPMu.js";const s="/user",e=async t=>await a({path:"/login",method:"POST",data:t}),i=async()=>await a({path:s,method:"GET"}),n=async t=>await a({path:s,data:t,method:"POST"}),p=async t=>await a({path:`${s}/${t.id_usuario}`,data:t,method:"PUT"});export{p as a,n as b,i as c,e as h};
