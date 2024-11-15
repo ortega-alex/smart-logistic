@@ -1,6 +1,6 @@
 import { _SERVER, RequesParam } from '@/models';
 import axios from 'axios';
-import { decryptResponse } from './encrypt.utility';
+// import { decryptResponse, encryptRequest } from './encrypt.utility';
 
 export const httpRequest = async (payload: RequesParam) => {
     try {
@@ -27,7 +27,7 @@ export const httpRequest = async (payload: RequesParam) => {
         });
 
         // VALIDA SI LA RESPUESTA ESTA CIFRADA
-        if (res.data?.iv) return decryptResponse(res.data);
+        // if (res.data?.iv) return decryptResponse(res.data);
 
         return res.data;
     } catch (error) {
