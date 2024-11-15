@@ -15,7 +15,6 @@ export const encryptRequest = (data: object | string): { iv: string; content: st
     const iv = String(CryptoJS.lib.WordArray.random(16));
     const _IV = CryptoJS.enc.Hex.parse(iv);
     const content = CryptoJS.AES.encrypt(JSON.stringify(data), _KEY, { iv: _IV }).toString();
-    console.log('content', content, 'iv', iv);
     return { iv, content };
 };
 
