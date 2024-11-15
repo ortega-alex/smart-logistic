@@ -1,6 +1,6 @@
 import { _SERVER, RequesParam } from '@/models';
 import axios from 'axios';
-import { decryptResponse, encryptRequest } from './encrypt.utility';
+import { decryptResponse } from './encrypt.utility';
 
 export const httpRequest = async (payload: RequesParam) => {
     try {
@@ -15,8 +15,8 @@ export const httpRequest = async (payload: RequesParam) => {
         } else data = payload?.data;
 
         // CIFRA LA INFORMACION POST | PUT, PRODUCCION
-        if (process.env.NODE_ENV !== 'development' && data && payload?.type !== 'multipart' && payload?.responseType !== 'blob')
-            data = encryptRequest(data);
+        // if (process.env.NODE_ENV !== 'development' && data && payload?.type !== 'multipart' && payload?.responseType !== 'blob')
+        //     data = encryptRequest(data);
 
         const res = await axios({
             method: payload.method,
