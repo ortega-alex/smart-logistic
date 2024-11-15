@@ -1,7 +1,9 @@
-import { Aution, Costo, Crane, Customer, KeysCosto, Moneda, Port, Quoter, Sesion, TypeVehicle } from '@/models';
+import { Icon } from '@/components';
+import { Aution, Crane, Customer, KeysCosto, Moneda, Port, Quoter, Sesion, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
 import { RootState } from '@/redux';
 import {
     httpAddQuoter,
+    httpDowloadInvoice,
     httpGetAutions,
     httpGetCrane,
     httpGetCustomer,
@@ -9,12 +11,11 @@ import {
     httpGetTypeVehicles,
     httpUpdateQuoter
 } from '@/services';
-import { commaSeparateNumber } from '@/utilities';
+import { commaSeparateNumber, downloadFile } from '@/utilities';
 import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Cost } from './Cost';
-import { Icon } from '@/components';
+import { QuoterDetail } from './QuoterDetail';
 
 interface Props {
     quoter: Quoter;
@@ -35,7 +36,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
         all: []
     });
     const [loading, setLoading] = useState(false);
-    const [costs, setCosts] = useState<Array<Costo>>([]);
+    const [details, setDetails] = useState<Array<TypeQuoterDetail>>([]);
 
     const handleValuesChange: FormProps<Quoter>['onValuesChange'] = env => {
         const [key, value] = Object.entries(env)[0];
@@ -52,17 +53,17 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
     const handleCalculate = () => {
         const value = formRef.current?.getFieldsValue();
         if (value && value.id_cliente) {
-            let costos = [...costs];
+            let detalles = [...details];
             const customer = customers.find(item => item.id_cliente === value.id_cliente);
 
             const port = ports.find(item => item.id_puerto === value.id_puerto);
             if (port) {
-                const indexPort = costs.findIndex(item => item.nombre === KeysCosto.PORT_DOCUMENT_OR_EXP);
+                const indexPort = details.findIndex(item => item.nombre === KeysCosto.PORT_DOCUMENT_OR_EXP);
                 if (indexPort > -1) {
-                    const costo = costs[indexPort];
-                    costo.valor = commaSeparateNumber(port.costo_aduanal);
+                    const detalle = details[indexPort];
+                    detalle.valor = commaSeparateNumber(port.costo_aduanal);
                 } else {
-                    costos.push({
+                    detalles.push({
                         nombre: KeysCosto.PORT_DOCUMENT_OR_EXP,
                         moneda: Moneda.USD,
                         valor: commaSeparateNumber(port.costo_aduanal)
@@ -71,14 +72,14 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
 
                 const typeVehicle = typeVehicles.find(item => item.id_tipo_vehiculo === value.id_tipo_vehiculo);
                 if (typeVehicle) {
-                    const indexTypeVehicle = costs.findIndex(item => item.nombre === KeysCosto.PORT_SHIPPING);
+                    const indexTypeVehicle = details.findIndex(item => item.nombre === KeysCosto.PORT_SHIPPING);
                     const value = Number(port.costo_embarque) + Number(port.costo_embarque) * (Number(typeVehicle.porcentaje_costo) / 100);
 
                     if (indexTypeVehicle > -1) {
-                        const costo = costs[indexTypeVehicle];
-                        costo.valor = commaSeparateNumber(value);
+                        const detalle = details[indexTypeVehicle];
+                        detalle.valor = commaSeparateNumber(value);
                     } else {
-                        costos.push({
+                        detalles.push({
                             nombre: KeysCosto.PORT_SHIPPING,
                             moneda: Moneda.USD,
                             valor: commaSeparateNumber(value)
@@ -92,47 +93,55 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
                     const crane_usd: Crane = cranes.USD.find((item: Crane) => item.id_grua === value.id_grua_usd)!;
                     if (crane_usd && crane_usd.costo > 0) {
                         const value = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_costo) / 100);
-                        const index = costs.findIndex(item => item.nombre === KeysCosto.USD);
+                        const index = details.findIndex(item => item.nombre === KeysCosto.USD);
                         if (index > -1) {
-                            const costo = costs[index];
-                            costo.valor = commaSeparateNumber(value);
+                            const detalle = details[index];
+                            detalle.valor = commaSeparateNumber(value);
                         } else {
-                            costos.push({
+                            detalles.push({
                                 nombre: KeysCosto.USD,
                                 moneda: crane_usd.moneda,
                                 valor: commaSeparateNumber(value)
                             });
                         }
                     }
-                } else costos = costos.filter(item => item.nombre !== KeysCosto.USD);
+                } else detalles = detalles.filter(item => item.nombre !== KeysCosto.USD);
 
                 if (value.id_grua_gt) {
                     const crane_gt: Crane = cranes.GTQ.find((item: Crane) => item.id_grua === value.id_grua_gt)!;
                     if (crane_gt && crane_gt.costo > 0) {
                         const value = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_costo) / 100);
-                        const index = costs.findIndex(item => item.nombre === KeysCosto.GT);
+                        const index = details.findIndex(item => item.nombre === KeysCosto.GTQ);
                         if (index > -1) {
-                            const costo = costs[index];
-                            costo.valor = commaSeparateNumber(value);
+                            const detalle = details[index];
+                            detalle.valor = commaSeparateNumber(value);
                         } else {
-                            costos.push({
-                                nombre: KeysCosto.GT,
+                            detalles.push({
+                                nombre: KeysCosto.GTQ,
                                 moneda: crane_gt.moneda,
                                 valor: commaSeparateNumber(value)
                             });
                         }
                     }
-                } else costos = costos.filter(item => item.nombre !== KeysCosto.GT);
+                } else detalles = detalles.filter(item => item.nombre !== KeysCosto.GTQ);
             }
-            setCosts(costos);
+            setDetails(detalles);
         }
+    };
+
+    const handleDownloadInvoice = async () => {
+        setLoading(true);
+        httpDowloadInvoice(quoter.id_cotizacion)
+            .then(res => downloadFile(res, `${quoter.cliente?.cliente ?? 'cotizacion'}-invoice.zip`))
+            .catch(err => message.error(`Error http download invoice: ${err.message}`))
+            .finally(() => setLoading(false));
     };
 
     const handleSubmit: FormProps<Quoter>['onFinish'] = async value => {
         try {
             setLoading(true);
             let res;
-            const _quoter = { ...quoter, ...value, costos: costs };
+            const _quoter = { ...quoter, ...value, detalles: details };
             if (quoter.id_cotizacion === 0) res = await httpAddQuoter({ ..._quoter, id_vendedor: sessionState.id_sesion });
             else res = await httpUpdateQuoter(_quoter);
 
@@ -146,7 +155,8 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
     };
 
     useEffect(() => {
-        if (quoter.costos) setCosts(quoter.costos);
+        if (quoter.details) setDetails(quoter.details);
+        console.log(quoter);
 
         httpGetCustomer()
             .then(res => setCustomers(res?.filter((item: Customer) => item.estado)))
@@ -293,8 +303,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
                                 />
                             </Form.Item>
 
-                            <Divider orientation='left'>Costos</Divider>
-                            <Cost costs={costs} onSubmit={setCosts} />
+                            <QuoterDetail details={details} onSubmit={setDetails} />
                         </div>
                     </div>
                 </div>
@@ -307,6 +316,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
                         disabled={loading || quoter.id_cotizacion === 0}
                         danger
                         icon={<Icon.FilePdf />}
+                        onClick={() => handleDownloadInvoice()}
                     >
                         Imprimir
                     </Button>

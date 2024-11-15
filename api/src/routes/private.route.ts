@@ -22,6 +22,7 @@ import {
     getPort,
     getProfile,
     getQuoters,
+    getQuotersById,
     getTypeOfCustomers,
     getTypeVehicle,
     getUsers,
@@ -81,8 +82,9 @@ routes.get('/permission', getPermission);
 routes.get('/permission/:id', getPermissionMenuByProfileId);
 
 routes.get('/quoter', getQuoters);
+routes.get('/quoter/:id', getQuotersById);
+routes.get('/quoter/invoice/:id', generatePdf);
 routes.post('/quoter', addQuoter);
 routes.put('/quoter/:id', updateQuoter);
-routes.get('/quoter/pdf/:id', generatePdf);
 
 export const privateRoutes = routes;

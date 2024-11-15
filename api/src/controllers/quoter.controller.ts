@@ -23,7 +23,7 @@ const insertDetail = async (quoter: Quoter, detalles: any) => {
 
         quoterDetail.quoter = quoter;
         quoterDetail.nombre = item.nombre;
-        quoterDetail.valor = Number(item.valor);
+        quoterDetail.valor = Number(String(item.valor).replace(/,/g, '') ?? 0);
         quoterDetail.moneda = item.moneda;
 
         await quoterDetail.save();
@@ -34,6 +34,24 @@ const insertDetail = async (quoter: Quoter, detalles: any) => {
 export const getQuoters = async (_req: Request, res: Response) => {
     try {
         const quoter = await Quoter.find({
+            relations: {
+                cliente: true,
+                vendedor: true
+            }
+        });
+        if (!quoter) return res.status(404).json({ message: 'Cotización no existe' });
+
+        return res.json(quoter);
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+export const getQuotersById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const quoter = await Quoter.findOne({
+            where: { id_cotizacion: Number(id) },
             relations: {
                 cliente: true,
                 vendedor: true,

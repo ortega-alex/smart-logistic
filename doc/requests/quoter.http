@@ -3,6 +3,12 @@ GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+### GET QUOTERS BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/4
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
 ### GET PDF
 GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/pdf
 Content-Type: application/json

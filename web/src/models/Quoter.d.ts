@@ -1,5 +1,11 @@
 import { Crane, Customer, Port, TypeVehicle, User } from './';
 
+export interface QuoterDetail {
+    nombre: string;
+    valor: string;
+    moneda: string;
+}
+
 export interface Quoter {
     id_cotizacion: number;
     id_cliente: number | Customer.id_cliente;
@@ -20,7 +26,7 @@ export interface Quoter {
     id_grua_usd?: number | Crane.id_grua;
     grua_gt?: Crane;
     id_grua_gt?: number | Crane.id_grua;
-    costos?: Array<Costo>;
+    details?: Array<QuoterDetail>;
 }
 
 export const EmptyQuoter: Quoter = {
@@ -35,9 +41,15 @@ export const EmptyQuoter: Quoter = {
     estado: true
 };
 
+export const EmptyQuoterDetail: QuoterDetail = {
+    nombre: '',
+    valor: '',
+    moneda: ''
+};
+
 export enum KeysCosto {
     USD = 'Grua EE.UU',
-    GT = 'Grua GT',
+    GTQ = 'Grua GT',
     PORT_SHIPPING = 'Embarque',
     PORT_DOCUMENT_OR_EXP = 'ADUANA Y DOCS. EXP'
 }

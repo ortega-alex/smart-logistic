@@ -58,7 +58,7 @@ export const FormCrane: React.FC<Props> = ({ crane, onClose }) => {
                         <Form.Item name='moneda' style={{ margin: 0, padding: 0, width: 80 }}>
                             <Select
                                 className='w-100'
-                                options={Object.keys(Moneda).map(key => ({ value: key, label: Moneda[key as keyof typeof Moneda] }))}
+                                options={Object.keys(Moneda).map(key => ({ value: Moneda[key as keyof typeof Moneda], label: key }))}
                             />
                         </Form.Item>
                     }

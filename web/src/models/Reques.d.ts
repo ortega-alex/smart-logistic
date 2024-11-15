@@ -3,4 +3,5 @@ export interface RequesParam {
     method: string;
     data?: ObjectCustomer;
     type?: string;
+    responseType?: any;
 }

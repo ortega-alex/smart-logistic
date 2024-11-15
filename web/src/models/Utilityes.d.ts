@@ -28,3 +28,8 @@ export enum ValidatorName {
     Nit = 'nitIsValid',
     Dpi = 'noDpiIsValid'
 }
+
+export enum Moneda {
+    USD = '$',
+    GTQ = 'Q'
+}

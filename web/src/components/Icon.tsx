@@ -8,7 +8,7 @@ import { FaAngleDown } from 'react-icons/fa6';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { IoStorefrontOutline } from 'react-icons/io5';
+import { IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { MdOutlineCalculate, MdOutlineMail } from 'react-icons/md';
 import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
@@ -34,6 +34,7 @@ export const Icon = {
     MenuUnfold: AiOutlineMenuUnfold,
     Profile: CgProfile,
     Plus: BiPlus,
+    Reload: IoReload,
     Trash: FaRegTrashAlt,
     Upload: AiOutlineUpload,
     User: BiUser,

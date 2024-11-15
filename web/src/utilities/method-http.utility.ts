@@ -21,7 +21,8 @@ export const httpRequest = async (payload: RequesParam) => {
             method: payload.method,
             url: _SERVER.apiUrl + payload.path,
             data,
-            timeout: 20000
+            timeout: 20000,
+            responseType: payload.responseType || 'json'
         });
 
         // VALIDA SI LA RESPUESTA ESTA CIFRADA

@@ -1,11 +1,11 @@
 import { RootState } from '@/redux';
-import { Button, Input, List, message, Modal, Select, Table } from 'antd';
+import { Button, Input, List, message, Modal, Select, Table, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EmptyQuoter, Quoter as TypeQuoter } from '@/models';
 import { Icon } from '@/components';
 import { FormQuoter } from './FormQuoter';
-import { httpGetQuoters } from '@/services';
+import { httpGetQuoters, httpGetQuotersById } from '@/services';
 import { getDateFormat } from '@/utilities';
 
 export const Quoter = () => {
@@ -20,18 +20,23 @@ export const Quoter = () => {
     });
 
     const handleOnChangeModal = (name: string, open: boolean = true) => setModals({ [name]: open });
-    const handleEdit = (item: TypeQuoter) => {
-        setQuoter({
-            ...item,
-            id_cliente: item.cliente?.id_cliente,
-            id_vendedor: item.vendedor?.id_usuario,
-            id_tipo_vehiculo: item.tipo_veniculo?.id_tipo_vehiculo,
-            id_puerto: item.puerto?.id_puerto,
-            id_subasta: item.subasta?.id_subasta,
-            id_grua_usd: item.grua_usd?.id_grua,
-            id_grua_gt: item.grua_gt?.id_grua
-        });
-        handleOnChangeModal('form');
+
+    const handleEdit = (id_cotizacion: number) => {
+        httpGetQuotersById(id_cotizacion)
+            .then(res => {
+                setQuoter({
+                    ...res,
+                    id_cliente: res.cliente?.id_cliente,
+                    id_vendedor: res.vendedor?.id_usuario,
+                    id_tipo_vehiculo: res.tipo_veniculo?.id_tipo_vehiculo,
+                    id_puerto: res.puerto?.id_puerto,
+                    id_subasta: res.subasta?.id_subasta,
+                    id_grua_usd: res.grua_usd?.id_grua,
+                    id_grua_gt: res.grua_gt?.id_grua
+                });
+                handleOnChangeModal('form');
+            })
+            .catch(err => message.error(`Error http get quoters: ${err.message}`));
     };
 
     const handleGet = () => {
@@ -53,7 +58,11 @@ export const Quoter = () => {
                     <label htmlFor='cliente'>Cliente</label>
                     <Select placeholder='Seleccione una opcion' />
                 </div>
-                <div>
+
+                <div className='flex flex-row gap-2 items-center'>
+                    <Tooltip title='Recargar'>
+                        <Button type='text' htmlType='button' icon={<Icon.Reload />} onClick={() => handleGet()} />
+                    </Tooltip>
                     <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
                 </div>
                 <Button
@@ -84,7 +93,13 @@ export const Quoter = () => {
                                 <div>
                                     <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                <Button
+                                    type='link'
+                                    danger
+                                    htmlType='button'
+                                    icon={<Icon.Edit />}
+                                    onClick={() => handleEdit(item.id_cotizacion)}
+                                >
                                     Editar
                                 </Button>
                             </div>
@@ -159,7 +174,7 @@ export const Quoter = () => {
                                         icon={<Icon.Edit />}
                                         type='primary'
                                         size='small'
-                                        onClick={() => handleEdit(item)}
+                                        onClick={() => handleEdit(item.id_cotizacion)}
                                     />
                                 </div>
                             )

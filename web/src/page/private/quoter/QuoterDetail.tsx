@@ -1,28 +1,28 @@
 import { Icon } from '@/components';
-import { color, Costo, EmptyCosto, Moneda } from '@/models';
+import { color, Costo, EmptyCosto, EmptyQuoterDetail, Moneda, QuoterDetail as TypeQuoterDetail } from '@/models';
 import { commaSeparateNumber } from '@/utilities';
-import { Button, Form, FormProps, Input, InputNumber, Modal, Select } from 'antd';
+import { Button, Divider, Form, FormProps, Input, InputNumber, Modal, Select } from 'antd';
 import { useState } from 'react';
 
 interface Props {
-    costs: Array<Costo>;
-    onSubmit: (costs: Array<Costo>) => void;
+    details: Array<TypeQuoterDetail>;
+    onSubmit: (details: Array<TypeQuoterDetail>) => void;
 }
 
-export const Cost: React.FC<Props> = ({ costs, onSubmit }) => {
+export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
     const [cost, setCost] = useState<Costo>(EmptyCosto);
     const [modal, setModal] = useState(false);
 
     const handleSubmitCost: FormProps<Costo>['onFinish'] = async values => {
-        const _costs = [...costs];
-        _costs[cost.index ?? 0] = { ...values, valor: commaSeparateNumber(values.valor ?? '') };
-        onSubmit(_costs);
+        const _details = [...details];
+        _details[cost.index ?? 0] = { ...values, valor: commaSeparateNumber(values.valor ?? '') };
+        onSubmit(_details);
         setModal(false);
     };
 
-    return (
+    const renderDetail = (details: Array<TypeQuoterDetail>) => (
         <>
-            {costs.map((item, i) => (
+            {details.map((item, i) => (
                 <div key={i} className='flex flex-row justify-between gap-3 items-center'>
                     <strong className='flex-1'>{item.nombre}: </strong>
                     <span>{item.moneda}</span>
@@ -44,11 +44,21 @@ export const Cost: React.FC<Props> = ({ costs, onSubmit }) => {
                             size='small'
                             htmlType='button'
                             icon={<Icon.Trash />}
-                            onClick={() => onSubmit(costs.filter((_item, index) => index !== i))}
+                            onClick={() => onSubmit(details.filter((_item, index) => index !== i))}
                         />
                     </div>
                 </div>
             ))}
+        </>
+    );
+
+    return (
+        <>
+            <Divider orientation='left'>Costos USD</Divider>
+            {renderDetail(details.filter(item => item.moneda === Moneda.USD))}
+
+            <Divider orientation='left'>Costos GTQ</Divider>
+            {renderDetail(details.filter(item => item.moneda === Moneda.GTQ))}
             <div className='text-right mt-3'>
                 <Button
                     type='primary'
@@ -58,12 +68,12 @@ export const Cost: React.FC<Props> = ({ costs, onSubmit }) => {
                     htmlType='button'
                     icon={<Icon.Plus />}
                     onClick={() => {
-                        const _costs = [...costs];
-                        _costs.push(EmptyCosto);
-                        onSubmit(_costs);
+                        const _details = [...details];
+                        _details.push(EmptyQuoterDetail);
+                        onSubmit(_details);
                         setCost({
                             ...EmptyCosto,
-                            index: _costs.length - 1
+                            index: _details.length - 1
                         });
                         setModal(true);
                     }}
@@ -82,7 +92,7 @@ export const Cost: React.FC<Props> = ({ costs, onSubmit }) => {
                             allowClear
                             className='w-100'
                             placeholder='Selecciones una opción'
-                            options={Object.keys(Moneda).map(item => ({ label: item, value: item }))}
+                            options={Object.keys(Moneda).map(key => ({ label: key, value: Moneda[key as keyof typeof Moneda] }))}
                         />
                     </Form.Item>
                     <Form.Item label='Valor' name='valor' rules={[{ required: true, message: 'El campo es requerido' }]}>

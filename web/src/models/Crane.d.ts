@@ -1,9 +1,4 @@
-import { Aution } from './Aution';
-
-export enum Moneda {
-    USD = 'USD',
-    GTQ = 'GTQ'
-}
+import { Aution, Moneda } from './';
 
 export interface Crane {
     id_grua: number;
