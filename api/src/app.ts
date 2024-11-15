@@ -13,6 +13,7 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(decrypt);
 app.use(encrypt);
 
