@@ -14,6 +14,6 @@ export const EmptyCrane: Crane = {
     id_grua: 0,
     grua: '',
     estado: true,
-    moneda: Moneda.USD,
+    moneda: Moneda.USD || '$',
     costo: 0
 };

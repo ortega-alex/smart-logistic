@@ -1,0 +1,1 @@
+import"./index-Fe-UtBBT.js";import{N as e}from"./method-http.utility-G1MRCV-Z.js";const a="/type-vehicle",o=async()=>await e({path:a,method:"GET"}),s=async t=>await e({path:a,method:"POST",data:t}),c=async t=>await e({path:`${a}/${t.id_tipo_vehiculo}`,method:"PUT",data:t});export{c as a,s as b,o as h};
