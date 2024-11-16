@@ -32,6 +32,7 @@ export const encrypt = (_req: Request, res: Response, nex: NextFunction) => {
 
 export const decrypt = (req: Request, _res: Response, nex: NextFunction) => {
     const { iv } = req.body;
+
     if (iv) {
         const decrypt = decryptData(req.body);
         req.body = { ...decrypt, iv };

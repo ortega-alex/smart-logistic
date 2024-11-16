@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(decrypt);
-// app.use(encrypt);
+app.use(decrypt);
+app.use(encrypt);
 
 // STATIC FILES
 app.use(express.static(path.join(__dirname, './public')));

@@ -8,10 +8,10 @@ GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/4
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-
 ### GET PDF
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/pdf
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/invoice/4
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### ADD QUOTER
 POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter
