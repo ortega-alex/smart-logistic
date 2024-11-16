@@ -1,0 +1,1 @@
+import"./index-CDpb26wA.js";import{N as e}from"./method-http.utility-DJp8EY4u.js";const a="/type-vehicle",o=async()=>await e({path:a,method:"GET"}),s=async t=>await e({path:a,method:"POST",data:t}),c=async t=>await e({path:`${a}/${t.id_tipo_vehiculo}`,method:"PUT",data:t});export{c as a,s as b,o as h};

@@ -50,6 +50,9 @@ export class Quoter extends BaseEntity {
     @Column('varchar', { length: 45 })
     vin: string;
 
+    @Column({ default: false })
+    aprobada: boolean;
+
     @Column({ default: true })
     estado: boolean;
 

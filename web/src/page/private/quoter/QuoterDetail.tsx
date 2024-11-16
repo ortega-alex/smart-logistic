@@ -1,5 +1,5 @@
 import { Icon } from '@/components';
-import { color, Costo, EmptyCosto, EmptyQuoterDetail, Moneda, QuoterDetail as TypeQuoterDetail } from '@/models';
+import { color, Costo, EmptyCosto, Moneda, QuoterDetail as TypeQuoterDetail } from '@/models';
 import { commaSeparateNumber } from '@/utilities';
 import { Button, Divider, Form, FormProps, Input, InputNumber, Modal, Select } from 'antd';
 import { useState } from 'react';
@@ -15,18 +15,18 @@ export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
 
     const handleSubmitCost: FormProps<Costo>['onFinish'] = async values => {
         const _details = [...details];
-        _details[cost.index ?? 0] = { ...values, valor: commaSeparateNumber(values.valor ?? '') };
+        _details.push({ ...values, valor: commaSeparateNumber(values.valor ?? '') });
         onSubmit(_details);
         setModal(false);
     };
 
-    const renderDetail = (details: Array<TypeQuoterDetail>) => (
+    const renderDetail = (_details: Array<TypeQuoterDetail>) => (
         <>
-            {details.map((item, i) => (
+            {_details.map((item, i) => (
                 <div key={i} className='flex flex-row justify-between gap-3 items-center'>
                     <strong className='flex-1'>{item.nombre}: </strong>
                     <span>{item.moneda}</span>
-                    <span>{item.valor}</span>
+                    <span>{commaSeparateNumber(item.valor ?? 0)}</span>
                     <div>
                         <Button
                             type='link'
@@ -44,7 +44,11 @@ export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
                             size='small'
                             htmlType='button'
                             icon={<Icon.Trash />}
-                            onClick={() => onSubmit(details.filter((_item, index) => index !== i))}
+                            onClick={() => {
+                                const values = details.filter(_item => _item.moneda !== item.moneda);
+                                const deleted = _details.filter((_item, index) => index !== i);
+                                onSubmit([...values, ...deleted]);
+                            }}
                         />
                     </div>
                 </div>
@@ -54,11 +58,12 @@ export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
 
     return (
         <>
-            <Divider orientation='left'>Costos USD</Divider>
+            {details.some(item => item.moneda === Moneda.USD) && <Divider orientation='left'>Costos USD</Divider>}
             {renderDetail(details.filter(item => item.moneda === Moneda.USD))}
 
-            <Divider orientation='left'>Costos GTQ</Divider>
+            {details.some(item => item.moneda === Moneda.GTQ) && <Divider orientation='left'>Costos GTQ</Divider>}
             {renderDetail(details.filter(item => item.moneda === Moneda.GTQ))}
+
             <div className='text-right mt-3'>
                 <Button
                     type='primary'
@@ -67,16 +72,7 @@ export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
                     size='small'
                     htmlType='button'
                     icon={<Icon.Plus />}
-                    onClick={() => {
-                        const _details = [...details];
-                        _details.push(EmptyQuoterDetail);
-                        onSubmit(_details);
-                        setCost({
-                            ...EmptyCosto,
-                            index: _details.length - 1
-                        });
-                        setModal(true);
-                    }}
+                    onClick={() => setModal(true)}
                 >
                     Agregar
                 </Button>

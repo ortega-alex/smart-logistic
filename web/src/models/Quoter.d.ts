@@ -19,6 +19,7 @@ export interface Quoter {
     anio: string;
     id_puerto: number | Port.id_puerto;
     puerto?: Port;
+    aprobada: boolean;
     estado: boolean;
     subasta?: Aution;
     id_subasta?: number | Aution.id_subasta;

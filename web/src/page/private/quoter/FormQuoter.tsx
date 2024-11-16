@@ -1,30 +1,20 @@
 import { Icon } from '@/components';
-import { Aution, Crane, Customer, KeysCosto, Moneda, Port, Quoter, Sesion, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
-import { RootState } from '@/redux';
-import {
-    httpAddQuoter,
-    httpDowloadInvoice,
-    httpGetAutions,
-    httpGetCrane,
-    httpGetCustomer,
-    httpGetPorts,
-    httpGetTypeVehicles,
-    httpUpdateQuoter
-} from '@/services';
-import { commaSeparateNumber, downloadFile } from '@/utilities';
+import { Aution, Crane, Customer, KeysCosto, Moneda, Port, Quoter, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
+import { httpGetAutions, httpGetCrane, httpGetCustomer, httpGetPorts, httpGetTypeVehicles } from '@/services';
+import { commaSeparateNumber } from '@/utilities';
 import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { QuoterDetail } from './QuoterDetail';
 
 interface Props {
     quoter: Quoter;
-    onClose: () => void;
+    loading: boolean;
+    onSubmit: (values: any, details: Array<TypeQuoterDetail>) => void;
+    onDownloadInvoice: (item: Quoter) => void;
 }
 
-export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
+export const FormQuoter: React.FC<Props> = ({ quoter, loading, onSubmit, onDownloadInvoice }) => {
     const formRef = useRef<FormInstance<Quoter>>(null);
-    const sessionState: Sesion = useSelector((store: RootState) => store.session);
 
     const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [ports, setPorts] = useState<Array<Port>>([]);
@@ -35,7 +25,6 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
         GTQ: [],
         all: []
     });
-    const [loading, setLoading] = useState(false);
     const [details, setDetails] = useState<Array<TypeQuoterDetail>>([]);
 
     const handleValuesChange: FormProps<Quoter>['onValuesChange'] = env => {
@@ -129,34 +118,8 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
         }
     };
 
-    const handleDownloadInvoice = async () => {
-        setLoading(true);
-        httpDowloadInvoice(quoter.id_cotizacion)
-            .then(res => downloadFile(res, `${quoter.cliente?.cliente ?? 'cotizacion'}-invoice.zip`))
-            .catch(err => message.error(`Error http download invoice: ${err.message}`))
-            .finally(() => setLoading(false));
-    };
-
-    const handleSubmit: FormProps<Quoter>['onFinish'] = async value => {
-        try {
-            setLoading(true);
-            let res;
-            const _quoter = { ...quoter, ...value, detalles: details };
-            if (quoter.id_cotizacion === 0) res = await httpAddQuoter({ ..._quoter, id_vendedor: sessionState.id_sesion });
-            else res = await httpUpdateQuoter(_quoter);
-
-            if (res.message) message.warning(res.message);
-            else onClose();
-        } catch (error) {
-            message.error(`Error add or edit ouoter: ${(error as Error).message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        if (quoter.details) setDetails(quoter.details);
-        console.log(quoter);
+        if (quoter.details) setDetails(quoter.details.map(item => ({ ...item, id: Math.random().toString() })));
 
         httpGetCustomer()
             .then(res => setCustomers(res?.filter((item: Customer) => item.estado)))
@@ -190,7 +153,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
                 ref={formRef}
                 initialValues={quoter.id_cotizacion === 0 ? {} : quoter}
                 layout='vertical'
-                onFinish={handleSubmit}
+                onFinish={values => onSubmit(values, details)}
                 onValuesChange={handleValuesChange}
             >
                 <div className='vhm-75 overflow-y'>
@@ -303,33 +266,45 @@ export const FormQuoter: React.FC<Props> = ({ quoter, onClose }) => {
                                 />
                             </Form.Item>
 
-                            <QuoterDetail details={details} onSubmit={setDetails} />
+                            <QuoterDetail details={details} onSubmit={details => setDetails(details)} />
                         </div>
                     </div>
                 </div>
 
                 <div className='flex flex-row justify-end gap-2'>
                     <Button
-                        type='text'
+                        type='link'
                         htmlType='button'
                         loading={loading}
                         disabled={loading || quoter.id_cotizacion === 0}
-                        danger
-                        icon={<Icon.FilePdf />}
-                        onClick={() => handleDownloadInvoice()}
+                        icon={<Icon.Download />}
+                        onClick={() => onDownloadInvoice(quoter)}
                     >
-                        Imprimir
+                        Descargar
                     </Button>
                     <Button
-                        type='text'
+                        type='dashed'
                         htmlType='button'
                         loading={loading}
                         disabled={loading || quoter.id_cotizacion === 0}
                         icon={<Icon.EMail />}
                     >
-                        Correo
+                        Enviar Correo
                     </Button>
-                    <Button type='primary' htmlType='submit' loading={loading} disabled={loading}>
+                    {!quoter.aprobada && (
+                        <Button
+                            type='primary'
+                            ghost
+                            htmlType='button'
+                            loading={loading}
+                            disabled={loading || quoter.id_cotizacion === 0}
+                            icon={<Icon.Done />}
+                            onClick={() => onDownloadInvoice(quoter)}
+                        >
+                            Aprobar
+                        </Button>
+                    )}
+                    <Button type='primary' htmlType='submit' icon={<Icon.Save />} loading={loading} disabled={loading || quoter.aprobada}>
                         Guardar
                     </Button>
                 </div>

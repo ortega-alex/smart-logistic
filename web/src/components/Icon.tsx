@@ -1,16 +1,18 @@
 import { Map } from '@/models';
 import { AiFillLock, AiOutlineClose, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
-import { BiEdit, BiPlus, BiSearch, BiUser } from 'react-icons/bi';
-import { BsArrowDown, BsEye, BsEyeSlash } from 'react-icons/bs';
+import { BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi';
+import { BsArrowDown, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
+import { CiMenuKebab } from 'react-icons/ci';
 import { FaRegTrashAlt, FaRegFilePdf } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { IoReload, IoStorefrontOutline } from 'react-icons/io5';
+import { IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
-import { MdOutlineCalculate, MdOutlineMail } from 'react-icons/md';
+import { LuDownload } from 'react-icons/lu';
+import { MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
 import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
 export const Icon = {
@@ -23,6 +25,8 @@ export const Icon = {
     Car2: TbCar,
     Close: AiOutlineClose,
     Crane: TbCarCrane,
+    Done: IoCheckmarkDone,
+    Download: LuDownload,
     Edit: BiEdit,
     EMail: MdOutlineMail,
     Eye: BsEye,
@@ -31,7 +35,9 @@ export const Icon = {
     Lock: AiFillLock,
     Logout: AiOutlineLogout,
     MenuFold: AiOutlineMenuFold,
+    MenuKebab: CiMenuKebab,
     MenuUnfold: AiOutlineMenuUnfold,
+    Printshop: MdOutlineLocalPrintshop,
     Profile: CgProfile,
     Plus: BiPlus,
     Reload: IoReload,
@@ -40,8 +46,10 @@ export const Icon = {
     User: BiUser,
     Users: TbUsersPlus,
     Report: HiOutlineDocumentReport,
+    Save: BiSave,
     Search: BiSearch,
-    Store: IoStorefrontOutline
+    Store: IoStorefrontOutline,
+    Workspace: BsPersonWorkspace
 };
 
 export const IconEnun: Map = {
