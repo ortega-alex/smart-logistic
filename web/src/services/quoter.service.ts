@@ -13,3 +13,10 @@ export const httpUpdateQuoter = async (quoter: any) =>
 
 export const httpDowloadInvoice = async (id: number) =>
     await httpRequest({ path: `${path}/invoice/${id}`, method: 'GET', responseType: 'blob' });
+
+export const httpGetQuoterPaginationData = async (data: any) =>
+    await httpRequest({
+        path: `${path}/pagination`,
+        method: 'POST',
+        data
+    });

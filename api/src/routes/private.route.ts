@@ -21,6 +21,7 @@ import {
     getPermissionMenuByProfileId,
     getPort,
     getProfile,
+    getQuoterPaginatedData,
     getQuoters,
     getQuotersById,
     getTypeOfCustomers,
@@ -86,5 +87,6 @@ routes.get('/quoter/:id', getQuotersById);
 routes.get('/quoter/invoice/:id', generatePdf);
 routes.post('/quoter', addQuoter);
 routes.put('/quoter/:id', updateQuoter);
+routes.post('/quoter/pagination', getQuoterPaginatedData);
 
 export const privateRoutes = routes;

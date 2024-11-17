@@ -13,6 +13,17 @@ GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/invoice/4
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+### GET CUSTOMER PAGINATION DATA
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/pagination
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "orderField": "id_cotizacion",
+    "orderDirection": "ASC",
+    "filter": ""
+}
+
 ### ADD QUOTER
 POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter
 Content-Type: application/json

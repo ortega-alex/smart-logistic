@@ -1,16 +1,25 @@
-import { Icon } from '@/components';
-import { EmptyQuoter, QuoterDetail, Sesion, Quoter as TypeQuoter } from '@/models';
+import { Icon, Search } from '@/components';
+import { Customer, EmptyQuoter, privateRoutes, QuoterDetail, Sesion, TableParams, Quoter as TypeQuoter } from '@/models';
 import { RootState } from '@/redux';
-import { httpAddQuoter, httpDowloadInvoice, httpGetQuoters, httpGetQuotersById, httpUpdateQuoter } from '@/services';
+import {
+    httpAddQuoter,
+    httpDowloadInvoice,
+    httpGetCustomer,
+    httpGetQuoterPaginationData,
+    httpGetQuotersById,
+    httpUpdateQuoter
+} from '@/services';
 import { downloadFile, getDateFormat } from '@/utilities';
-import { Button, Input, List, message, Modal, Select, Table, Tag, Tooltip } from 'antd';
+import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormQuoter } from './FormQuoter';
+import { useNavigate } from 'react-router-dom';
 
 export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
     const sessionState: Sesion = useSelector((store: RootState) => store.session);
+    const navigate = useNavigate();
 
     const [quoters, setQuoters] = useState<Array<TypeQuoter>>([]);
     const [quoter, setQuoter] = useState<TypeQuoter>(EmptyQuoter);
@@ -22,6 +31,14 @@ export const Quoter = () => {
         form: false,
         preview: false
     });
+    const [tableParams, setTableParams] = useState<TableParams>({
+        pagination: {
+            current: 1,
+            pageSize: 250
+        }
+    });
+    const [filter, setFilter] = useState('');
+    const [customers, setCustomers] = useState<Array<Customer>>([]);
 
     const handleOnChangeModal = (name: string, open: boolean = true) => setModals({ [name]: open });
     const handleOnChangeLoading = (name: string, value: boolean) => setLoading({ ...loading, [name]: value });
@@ -72,31 +89,91 @@ export const Quoter = () => {
             .finally(() => handleOnChangeLoading('services', false));
     };
 
+    const handleAproveQuoter = async (item: TypeQuoter) => {
+        Modal.confirm({
+            title: '¿Estás seguro de aprobar esta cotización?',
+            content: 'Esta acción no se puede deshacer',
+            okText: 'Si',
+            cancelText: 'No',
+            onOk: () => {
+                handleOnChangeLoading('services', true);
+                httpUpdateQuoter({ ...item, aprobada: true })
+                    .then(res => {
+                        message[res.error ? 'warning' : 'success'](res.message);
+                        if (!res.error) {
+                            handleGet();
+                            handleOnChangeModal('form', false);
+                        }
+                    })
+                    .catch(err => message.error(`Error http approve quoter: ${err.message}`))
+                    .finally(() => handleOnChangeLoading('services', false));
+            }
+        });
+    };
+
     const handleGet = () => {
         handleOnChangeLoading('data', true);
-        httpGetQuoters()
-            .then(res => setQuoters(res))
+        httpGetQuoterPaginationData({
+            ...tableParams,
+            current: tableParams.pagination?.current,
+            pageSize: tableParams.pagination?.pageSize,
+            filter,
+            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC'
+        })
+            .then(res => {
+                setQuoters(res.data);
+                setTableParams({
+                    ...tableParams,
+                    pagination: {
+                        ...tableParams.pagination,
+                        total: res.total
+                    }
+                });
+            })
             .catch(err => message.error(`Error http get quoters: ${err.message}`))
             .finally(() => handleOnChangeLoading('data', false));
     };
 
+    const handleTableChange: TableProps<TypeQuoter>['onChange'] = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+            sortField: Array.isArray(sorter) ? undefined : sorter.field
+        });
+
+        if (pagination.pageSize !== tableParams.pagination?.pageSize) setQuoters([]);
+    };
+
+    useEffect(() => {
+        httpGetCustomer()
+            .then(res => setCustomers(res?.filter((item: Customer) => item.estado)))
+            .catch(err => message.error(`Error http get customers: ${err.message}}`));
+    }, []);
+
     useEffect(() => {
         handleGet();
-    }, []);
+    }, [JSON.stringify(tableParams), filter]);
 
     return (
         <div className='h-100 flex flex-column p-3'>
-            <div className='flex flex-md-column gap-3 justify-between items-end'>
+            <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
                 <div className='flex flex-column'>
                     <label htmlFor='cliente'>Cliente</label>
-                    <Select placeholder='Seleccione una opcion' />
+                    <Select
+                        placeholder='Selecciones una opción'
+                        options={customers.filter(item => item.estado).map(item => ({ label: item.cliente, value: item.id_cliente }))}
+                        onChange={value => setFilter(value)}
+                        allowClear
+                        style={{ minWidth: 200 }}
+                    />
                 </div>
 
                 <div className='flex flex-row gap-2 items-center'>
                     <Tooltip title='Recargar'>
                         <Button type='text' htmlType='button' icon={<Icon.Reload />} onClick={() => handleGet()} />
                     </Tooltip>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={(value: string) => setFilter(value)} onReset={() => setFilter('')} />
                 </div>
                 <Button
                     type='primary'
@@ -145,9 +222,11 @@ export const Quoter = () => {
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
                     pagination={{
                         position: ['none', 'bottomRight'],
+                        ...tableParams.pagination,
                         showSizeChanger: true,
                         pageSizeOptions: [50, 100, 250, 500]
                     }}
+                    onChange={handleTableChange}
                     className='table'
                     loading={loading.data}
                     showSorterTooltip={false}
@@ -156,7 +235,8 @@ export const Quoter = () => {
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_cotizacion'
+                            dataIndex: 'id_cotizacion',
+                            sorter: true
                         },
                         {
                             title: 'Fecha',
@@ -182,29 +262,23 @@ export const Quoter = () => {
                         {
                             title: 'Marca',
                             dataIndex: 'marca',
-                            ellipsis: true,
-                            sorter: true
+                            ellipsis: true
                         },
                         {
                             title: 'Modelo',
                             dataIndex: 'modelo',
-                            ellipsis: true,
-                            sorter: true
+                            ellipsis: true
                         },
                         {
                             title: 'Aprobada',
                             dataIndex: 'aprobada',
+                            sorter: true,
                             align: 'center',
                             render: value => (
                                 <span className={value ? 'text-success' : 'text-danger'}>
                                     <Tag color={value ? 'success' : 'error'}>{value ? 'Sí' : 'No'}</Tag>
                                 </span>
                             )
-                        },
-                        {
-                            title: 'Estado',
-                            dataIndex: 'estado',
-                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
                             title: 'Opciones',
@@ -239,7 +313,7 @@ export const Quoter = () => {
                                                 icon={<Icon.Done />}
                                                 type='text'
                                                 size='small'
-                                                onClick={() => handleDownloadInvoice(item)}
+                                                onClick={() => handleAproveQuoter(item)}
                                                 disabled={loading.services}
                                             />
                                         </Tooltip>
@@ -251,7 +325,9 @@ export const Quoter = () => {
                                                 icon={<Icon.Workspace />}
                                                 type='text'
                                                 size='small'
-                                                onClick={() => handleDownloadInvoice(item)}
+                                                onClick={() =>
+                                                    navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${item.id_cotizacion}`)
+                                                }
                                                 disabled={loading.services}
                                             />
                                         </Tooltip>
@@ -272,7 +348,14 @@ export const Quoter = () => {
                 destroyOnClose
                 width={1200}
             >
-                <FormQuoter quoter={quoter} loading={loading.services} onSubmit={handleSubmit} onDownloadInvoice={handleDownloadInvoice} />
+                <FormQuoter
+                    quoter={quoter}
+                    loading={loading.services}
+                    customers={customers}
+                    onSubmit={handleSubmit}
+                    onDownloadInvoice={handleDownloadInvoice}
+                    onAproveQuoter={handleAproveQuoter}
+                />
             </Modal>
         </div>
     );

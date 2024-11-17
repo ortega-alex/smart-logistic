@@ -1,4 +1,4 @@
-import { TypeVehicle } from './TypeVehicle';
+import { Customer, Port, Quoter, TypeVehicle, User } from './';
 
 export interface Vehicle {
     id?: string;
@@ -6,4 +6,12 @@ export interface Vehicle {
     anio?: string;
     marca?: string;
     modelo?: string;
+}
+
+export interface LandService {
+    id: string;
+    fecha: string;
+    lote: string;
+    quote: Quoter;
+    estado: string;
 }

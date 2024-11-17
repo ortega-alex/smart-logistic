@@ -1,1 +1,0 @@
-import"./index-CDpb26wA.js";import{N as a}from"./method-http.utility-DJp8EY4u.js";const s="/user",e=async t=>await a({path:"/login",method:"POST",data:t}),i=async()=>await a({path:s,method:"GET"}),n=async t=>await a({path:s,data:t,method:"POST"}),p=async t=>await a({path:`${s}/${t.id_usuario}`,data:t,method:"PUT"});export{p as a,n as b,i as c,e as h};

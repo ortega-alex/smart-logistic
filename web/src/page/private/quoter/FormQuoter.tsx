@@ -1,6 +1,6 @@
 import { Icon } from '@/components';
 import { Aution, Crane, Customer, KeysCosto, Moneda, Port, Quoter, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
-import { httpGetAutions, httpGetCrane, httpGetCustomer, httpGetPorts, httpGetTypeVehicles } from '@/services';
+import { httpGetAutions, httpGetCrane, httpGetPorts, httpGetTypeVehicles } from '@/services';
 import { commaSeparateNumber } from '@/utilities';
 import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
@@ -9,14 +9,15 @@ import { QuoterDetail } from './QuoterDetail';
 interface Props {
     quoter: Quoter;
     loading: boolean;
+    customers: Array<Customer>;
     onSubmit: (values: any, details: Array<TypeQuoterDetail>) => void;
     onDownloadInvoice: (item: Quoter) => void;
+    onAproveQuoter: (item: Quoter) => void;
 }
 
-export const FormQuoter: React.FC<Props> = ({ quoter, loading, onSubmit, onDownloadInvoice }) => {
+export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubmit, onDownloadInvoice, onAproveQuoter }) => {
     const formRef = useRef<FormInstance<Quoter>>(null);
 
-    const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [ports, setPorts] = useState<Array<Port>>([]);
     const [typeVehicles, setTypeVehicles] = useState<Array<TypeVehicle>>([]);
     const [autions, setAutions] = useState<Array<Aution>>([]);
@@ -120,10 +121,6 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, onSubmit, onDownl
 
     useEffect(() => {
         if (quoter.details) setDetails(quoter.details.map(item => ({ ...item, id: Math.random().toString() })));
-
-        httpGetCustomer()
-            .then(res => setCustomers(res?.filter((item: Customer) => item.estado)))
-            .catch(err => message.error(`Error http get customers: ${err.message}}`));
 
         httpGetPorts()
             .then(res => setPorts(res?.filter((item: Port) => item.estado)))
@@ -299,7 +296,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, onSubmit, onDownl
                             loading={loading}
                             disabled={loading || quoter.id_cotizacion === 0}
                             icon={<Icon.Done />}
-                            onClick={() => onDownloadInvoice(quoter)}
+                            onClick={() => onAproveQuoter(quoter)}
                         >
                             Aprobar
                         </Button>

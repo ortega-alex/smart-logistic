@@ -20,7 +20,6 @@ export const Navbar = () => {
     const [sideMenu, setSideMenu] = useState(false);
 
     const handleNavigation = (path: string) => {
-        console.log(path);
         navigate(path);
         setSideMenu(false);
     };
