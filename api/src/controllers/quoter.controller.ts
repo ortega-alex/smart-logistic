@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { Aution, Crane, Customer, Port, Quoter, QuoterDetail, TypeVehicle, User } from '../entities';
+import { Aution, Crane, Customer, ImportState, Port, Quoter, QuoterDetail, TypeVehicle, User } from '../entities';
 import { commaSeparateNumber, createPdfWithTable, unionEndPfd } from '../utils';
 import archiver from 'archiver';
+import { newVehicle } from './vehicles.controller';
 
 const validate = (data: any) => {
     const errors: any = {};
@@ -21,7 +22,7 @@ const insertDetail = async (quoter: Quoter, detalles: any) => {
     return detalles?.map(async (item: any) => {
         const quoterDetail = new QuoterDetail();
 
-        quoterDetail.quoter = quoter;
+        quoterDetail.detalle = quoter;
         quoterDetail.nombre = item.nombre;
         quoterDetail.valor = Number(String(item.valor).replace(/,/g, '') ?? 0);
         quoterDetail.moneda = item.moneda;
@@ -39,8 +40,6 @@ export const getQuoters = async (_req: Request, res: Response) => {
                 vendedor: true
             }
         });
-        if (!quoter) return res.status(404).json({ message: 'Cotización no existe' });
-
         return res.json(quoter);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -60,7 +59,7 @@ export const getQuotersById = async (req: Request, res: Response) => {
                 grua_usd: true,
                 grua_gt: true,
                 subasta: true,
-                details: true
+                detalles: true
             }
         });
         if (!quoter) return res.status(404).json({ message: 'Cotización no existe' });
@@ -169,33 +168,39 @@ export const updateQuoter = async (req: Request, res: Response) => {
         const quoter = await Quoter.findOneBy({ id_cotizacion: Number(id) });
         if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
 
-        const customer = await Customer.findOneBy({ id_cliente: id_cliente });
+        const customer = await Customer.findOneBy({ id_cliente: Number(id_cliente) });
         if (!customer) return res.status(203).json({ message: 'Cliente no existe' });
 
-        const typeVehicle = await TypeVehicle.findOneBy({ id_tipo_vehiculo: id_tipo_vehiculo });
-        if (!typeVehicle) return res.status(203).json({ message: 'Tipo de vehiculo no existe' });
-
-        const port = await Port.findOneBy({ id_puerto: id_puerto });
-        if (!port) return res.status(203).json({ message: 'Puerto no existe' });
-
-        const trader = await User.findOneBy({ id_usuario: id_vendedor });
+        const trader = await User.findOneBy({ id_usuario: Number(id_vendedor) });
         if (!trader) return res.status(203).json({ message: 'Vendedor no existe' });
+
+        let typeVehicle = null;
+        if (id_tipo_vehiculo) {
+            typeVehicle = await TypeVehicle.findOneBy({ id_tipo_vehiculo: Number(id_tipo_vehiculo) });
+            if (!typeVehicle) return res.status(203).json({ message: 'Tipo de vehiculo no existe' });
+        }
+
+        let port = null;
+        if (id_puerto) {
+            port = await Port.findOneBy({ id_puerto: Number(id_puerto) });
+            if (!port) return res.status(203).json({ message: 'Puerto no existe' });
+        }
 
         let aution = null;
         if (id_subasta) {
-            aution = await Aution.findOneBy({ id_subasta: id_subasta });
+            aution = await Aution.findOneBy({ id_subasta: Number(id_subasta) });
             if (!aution) return res.status(203).json({ message: 'Subasta no existe' });
         }
 
         let crane_usd = null;
         if (id_grua_usd) {
-            crane_usd = await Crane.findOneBy({ id_grua: id_grua_usd });
+            crane_usd = await Crane.findOneBy({ id_grua: Number(id_grua_usd) });
             if (!crane_usd) return res.status(203).json({ message: 'Grua USD no existe' });
         }
 
         let crane_gt = null;
         if (id_grua_gt) {
-            crane_gt = await Crane.findOneBy({ id_grua: id_grua_gt });
+            crane_gt = await Crane.findOneBy({ id_grua: Number(id_grua_gt) });
             if (!crane_gt) return res.status(203).json({ message: 'Grua GT no existe' });
         }
 
@@ -225,6 +230,10 @@ export const updateQuoter = async (req: Request, res: Response) => {
             if ((update?.affected ?? 0) > 0) return res.json(quoter);
             return res.status(203).json({ message: 'No se pudo actualizar la cotización' });
         } else {
+            const estado_importacion = await ImportState.findOneBy({ id_estado_importacion: 1 });
+            if (!estado_importacion) return res.status(203).json({ message: 'estado de importacion no encontrado' });
+            await newVehicle({ lote: String(Math.floor(Math.random() * 99999999)) }, quoter, estado_importacion);
+
             if ((update?.affected ?? 0) > 0) return res.json({ message: 'Cotización aprobada' });
             return res.status(203).json({ error: true, message: 'No se pudo aprobar la cotización' });
         }
@@ -241,13 +250,13 @@ export const generatePdf = async (req: Request, res: Response) => {
             relations: {
                 cliente: true,
                 vendedor: true,
-                details: true
+                detalles: true
             }
         });
         if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
 
-        const dollars = quoter.details?.filter(item => item.moneda === '$');
-        const quetzales = quoter.details?.filter(item => item.moneda === 'Q');
+        const dollars = quoter.detalles?.filter(item => item.moneda === '$');
+        const quetzales = quoter.detalles?.filter(item => item.moneda === 'Q');
 
         const zip = archiver('zip', { zlib: { level: 9 } });
 

@@ -1,7 +1,7 @@
 import { Icon, Search } from '@/components';
-import { Customer, LandService, TableParams } from '@/models';
+import { Customer, Vehicles as TypeVehicles, TableParams } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetCustomer } from '@/services';
+import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
 import { getDateFormat } from '@/utilities';
 import { Button, List, message, Select, Table, TableProps, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
@@ -11,8 +11,8 @@ export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
 
     const [customers, setCustomers] = useState<Array<Customer>>([]);
-    const [landServices, setLandServices] = useState<Array<LandService>>([]);
-    const [loading] = useState({
+    const [vehicles, setVehicles] = useState<Array<TypeVehicles>>([]);
+    const [loading, setLoading] = useState({
         data: false,
         services: false
     });
@@ -24,7 +24,9 @@ export const Vehicles = () => {
     });
     const [filter, setFilter] = useState('');
 
-    const handleTableChange: TableProps<LandService>['onChange'] = (pagination, filters, sorter) => {
+    const handleOnChangeLoading = (name: string, value: boolean) => setLoading({ ...loading, [name]: value });
+
+    const handleTableChange: TableProps<TypeVehicles>['onChange'] = (pagination, filters, sorter) => {
         setTableParams({
             pagination,
             filters,
@@ -32,14 +34,35 @@ export const Vehicles = () => {
             sortField: Array.isArray(sorter) ? undefined : sorter.field
         });
 
-        if (pagination.pageSize !== tableParams.pagination?.pageSize) setLandServices([]);
+        if (pagination.pageSize !== tableParams.pagination?.pageSize) setVehicles([]);
     };
 
-    const handleEdit = (id: string) => {
-        console.log(id);
+    const handleEdit = (id_vehiculo: number) => {
+        console.log(id_vehiculo);
     };
 
-    const handleGet = () => {};
+    const handleGet = () => {
+        handleOnChangeLoading('data', true);
+        httpGetVehiclesPagination({
+            ...tableParams,
+            current: tableParams.pagination?.current,
+            pageSize: tableParams.pagination?.pageSize,
+            filter,
+            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC'
+        })
+            .then(res => {
+                setVehicles(res.data);
+                setTableParams({
+                    ...tableParams,
+                    pagination: {
+                        ...tableParams.pagination,
+                        total: res.total
+                    }
+                });
+            })
+            .catch(err => message.error(`Error http get vehicles: ${err.message}`))
+            .finally(() => handleOnChangeLoading('data', false));
+    };
 
     useEffect(() => {
         httpGetCustomer()
@@ -54,7 +77,7 @@ export const Vehicles = () => {
     return (
         <div className='h-100 flex flex-column p-3'>
             <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
-                <div className='flex flex-column'>
+                <div className='flex flex-column w-md-100'>
                     <label htmlFor='cliente'>Cliente</label>
                     <Select
                         placeholder='Selecciones una opción'
@@ -65,34 +88,40 @@ export const Vehicles = () => {
                     />
                 </div>
 
-                <div className='flex flex-row gap-2 items-center'>
+                <div className='flex flex-row gap-2 items-center w-md-100'>
                     <Tooltip title='Recargar'>
                         <Button type='text' htmlType='button' icon={<Icon.Reload />} onClick={() => handleGet()} />
                     </Tooltip>
                     <Search onSearch={(value: string) => setFilter(value)} onReset={() => setFilter('')} />
                 </div>
-                <Button type='primary' htmlType='button' onClick={() => {}}>
+                <Button type='primary' htmlType='button' onClick={() => {}} className='w-md-100'>
                     Agregar
                 </Button>
             </div>
 
             {deviceState ? (
                 <List
-                    dataSource={landServices}
+                    dataSource={vehicles}
                     loading={loading.data}
                     renderItem={item => (
-                        <div className='item-list' key={item.id}>
+                        <div className='item-list' key={item.id_vehiculo}>
                             <div className='flex-1'>
-                                <strong>Cliente: </strong>&nbsp;{item.quote.cliente?.cliente}
+                                <strong>Cliente: </strong>&nbsp;{item.cotizacion.cliente?.cliente}
                             </div>
                             <div className='flex-1'>
-                                <strong>Vendedor: </strong>&nbsp;{item.quote.vendedor?.nombre}
+                                <strong>Vendedor: </strong>&nbsp;{item.cotizacion.vendedor?.nombre}
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
                                     <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item.id)}>
+                                <Button
+                                    type='link'
+                                    danger
+                                    htmlType='button'
+                                    icon={<Icon.Edit />}
+                                    onClick={() => handleEdit(item.id_vehiculo)}
+                                >
                                     Editar
                                 </Button>
                             </div>
@@ -113,12 +142,12 @@ export const Vehicles = () => {
                     className='table'
                     loading={loading.data}
                     showSorterTooltip={false}
-                    rowKey='id'
-                    dataSource={landServices}
+                    rowKey='id_vehiculo'
+                    dataSource={vehicles}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id',
+                            dataIndex: 'id_vehiculo',
                             sorter: true
                         },
                         {
@@ -139,23 +168,30 @@ export const Vehicles = () => {
                             dataIndex: 'vendedor',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{value.nombre}</span>
+                            render: (_, { cotizacion }) => <span>{cotizacion?.vendedor?.nombre}</span>
                         },
                         {
                             title: 'Cliente',
                             dataIndex: 'cliente',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{value.quote.cliente}</span>
+                            render: (_, { cotizacion }) => <span>{cotizacion?.cliente?.cliente}</span>
                         },
                         {
                             title: 'Marca y Modelo',
+                            dataIndex: 'cotizacion',
                             ellipsis: true,
                             render: value => (
                                 <span>
-                                    {value.quote.marca} - {value.quote.modelo}
+                                    {value.marca} - {value.modelo}
                                 </span>
                             )
+                        },
+                        {
+                            title: 'Estado',
+                            dataIndex: 'estado_importacion',
+                            sorter: true,
+                            render: value => <span>{value.estado_importacion}</span>
                         },
                         {
                             title: 'Opciones',
@@ -167,7 +203,7 @@ export const Vehicles = () => {
                                     icon={<Icon.Edit />}
                                     type='text'
                                     size='small'
-                                    onClick={() => handleEdit(item.id)}
+                                    onClick={() => handleEdit(item.id_vehiculo)}
                                 >
                                     Ver
                                 </Button>

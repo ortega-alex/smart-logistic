@@ -6,9 +6,9 @@ export class QuoterDetail extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id_cotizacion_detalle: string;
 
-    @ManyToOne(() => Quoter, quoter => quoter.details, { nullable: false })
+    @ManyToOne(() => Quoter, quoter => quoter.detalles, { nullable: false })
     @JoinColumn({ name: 'id_cotizacion' })
-    quoter: Quoter;
+    detalle: Quoter;
 
     @Column('varchar', { length: 45 })
     nombre: string;

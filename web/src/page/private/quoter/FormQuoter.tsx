@@ -120,7 +120,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
     };
 
     useEffect(() => {
-        if (quoter.details) setDetails(quoter.details.map(item => ({ ...item, id: Math.random().toString() })));
+        if (quoter.detalles) setDetails(quoter.detalles.map(item => ({ ...item, id: Math.random().toString() })));
 
         httpGetPorts()
             .then(res => setPorts(res?.filter((item: Port) => item.estado)))

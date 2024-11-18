@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Profile, Quoter } from './';
+import { ImportHistory, Profile, Quoter } from './';
 
 @Entity('usuario')
 export class User extends BaseEntity {
@@ -47,4 +47,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Quoter, vendedores => vendedores.vendedor)
     vendedores: Quoter[];
+
+    @OneToMany(() => ImportHistory, import_history => import_history.usuario)
+    usuarios_importacion_historial: ImportHistory[];
 }

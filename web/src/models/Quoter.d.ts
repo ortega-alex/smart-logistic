@@ -27,7 +27,7 @@ export interface Quoter {
     id_grua_usd?: number | Crane.id_grua;
     grua_gt?: Crane;
     id_grua_gt?: number | Crane.id_grua;
-    details?: Array<QuoterDetail>;
+    detalles?: Array<QuoterDetail>;
 }
 
 export const EmptyQuoter: Quoter = {

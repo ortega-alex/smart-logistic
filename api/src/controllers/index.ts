@@ -10,3 +10,4 @@ export * from './quoter.controller';
 export * from './type-of-customer.controller';
 export * from './type-vehivle.controller';
 export * from './user.controller';
+export * from './vehicles.controller';

@@ -1,6 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Aution, Crane, Customer, Port, TypeVehicle, User } from './';
-import { QuoterDetail } from './QuoterDetail';
+import { Aution, Crane, Customer, Port, QuoterDetail, TypeVehicle, User, Vehicles } from './';
 
 @Entity('cotizacion')
 export class Quoter extends BaseEntity {
@@ -69,6 +68,9 @@ export class Quoter extends BaseEntity {
     })
     fecha_edicion: Date;
 
-    @OneToMany(() => QuoterDetail, details => details.quoter)
-    details: QuoterDetail[];
+    @OneToMany(() => QuoterDetail, details => details.detalle)
+    detalles: QuoterDetail[];
+
+    @OneToMany(() => Vehicles, vehiculos => vehiculos.cotizacion)
+    cotizaciones: Vehicles[];
 }

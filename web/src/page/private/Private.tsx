@@ -11,7 +11,7 @@ import { Navigate, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./home/Home').then(module => ({ default: module.Home })));
 const Quoter = lazy(() => import('./quoter/Quoter').then(module => ({ default: module.Quoter })));
-const Vehicles = lazy(() => import('./vehicle/Vehicles').then(module => ({ default: module.Vehicles })));
+const Vehicles = lazy(() => import('./vehicles/Vehicles').then(module => ({ default: module.Vehicles })));
 
 // MANTENIMIENTOS
 const Customer = lazy(() => import('./maintenance/custome/Customer').then(module => ({ default: module.Customer })));
@@ -52,6 +52,10 @@ export const Private = () => {
         return () => window.removeEventListener('resize', eventListenerResize);
     }, []);
 
+    useEffect(() => {
+        console.log(menuState);
+    }, [menuState]);
+
     return (
         <div className='flex flex-column vh-100'>
             <Navbar />
@@ -63,34 +67,44 @@ export const Private = () => {
                         <Route path='/' element={<Navigate to={privateRoutes.HOME} />} />
                         <Route path={privateRoutes.HOME} element={<Home />} />
                         <>
-                            {menuState.some(item => item.path === 'QUOTER') && <Route path={privateRoutes.QUOTER} element={<Quoter />} />}
+                            {menuState.some(item => item.path === privateRoutes.QUOTER) && (
+                                <Route path={privateRoutes.QUOTER} element={<Quoter />} />
+                            )}
 
-                            {menuState.some(item => item.path === 'VEHICLES') &&
+                            {menuState.some(item => item.path === privateRoutes.VEHICLES) &&
                                 [privateRoutes.VEHICLES, `${privateRoutes.VEHICLES}/:id`].map(item => (
                                     <Route key={item} path={item} element={<Vehicles />} />
                                 ))}
 
-                            {menuState.some(item => item.path === 'CUSTOMERS') && (
+                            {menuState.some(item => item.path === privateRoutes.CUSTOMERS) && (
                                 <Route path={privateRoutes.CUSTOMERS} element={<Customer />} />
                             )}
 
-                            {menuState.some(item => item.path === 'USERS') && <Route path={privateRoutes.USERS} element={<User />} />}
+                            {menuState.some(item => item.path === privateRoutes.USERS) && (
+                                <Route path={privateRoutes.USERS} element={<User />} />
+                            )}
 
-                            {menuState.some(item => item.path === 'ACUTION') && <Route path={privateRoutes.ACUTION} element={<Aution />} />}
+                            {menuState.some(item => item.path === privateRoutes.ACUTION) && (
+                                <Route path={privateRoutes.ACUTION} element={<Aution />} />
+                            )}
 
-                            {menuState.some(item => item.path === 'CRANES') && <Route path={privateRoutes.CRANES} element={<Crane />} />}
+                            {menuState.some(item => item.path === privateRoutes.CRANES) && (
+                                <Route path={privateRoutes.CRANES} element={<Crane />} />
+                            )}
 
-                            {menuState.some(item => item.path === 'PORTS') && <Route path={privateRoutes.PORTS} element={<Port />} />}
+                            {menuState.some(item => item.path === privateRoutes.PORTS) && (
+                                <Route path={privateRoutes.PORTS} element={<Port />} />
+                            )}
 
-                            {menuState.some(item => item.path === 'TYPES_OF_VEHICLES') && (
+                            {menuState.some(item => item.path === privateRoutes.TYPES_OF_VEHICLES) && (
                                 <Route path={privateRoutes.TYPES_OF_VEHICLES} element={<TypeVehicle />} />
                             )}
 
-                            {menuState.some(item => item.path === 'PROFILES') && (
+                            {menuState.some(item => item.path === privateRoutes.PROFILES) && (
                                 <Route path={privateRoutes.PROFILES} element={<Profile />} />
                             )}
 
-                            {menuState.some(item => item.path === 'TYPES_OF_CUSTOMERS') && (
+                            {menuState.some(item => item.path === privateRoutes.TYPES_OF_CUSTOMERS) && (
                                 <Route path={privateRoutes.TYPES_OF_CUSTOMERS} element={<TypeOfCustomer />} />
                             )}
                         </>

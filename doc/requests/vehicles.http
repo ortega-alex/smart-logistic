@@ -1,0 +1,32 @@
+### GET VEHICLES
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicles
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET VEHICLES BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicles/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### GET VEHICLES PAGINATION DATA
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicles/pagination
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "orderField": "id_vehiculo",
+    "orderDirection": "ASC",
+    "filter": ""
+}
+
+### ADD VEHICLES
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicles
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "lote": "75682073",
+    "id_cotizacion": 4,
+    "id_estado_importacion": 1
+}

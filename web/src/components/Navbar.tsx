@@ -50,12 +50,12 @@ export const Navbar = () => {
 
                 {!show && !deviceState && (
                     <div className='flex-1 flex justify-end text-white gap-3 mr-3'>
-                        {menuState.some(item => item.path === 'QUOTER') && (
+                        {menuState.some(item => item.path === privateRoutes.QUOTER) && (
                             <Link to={privateRoutes.QUOTER} style={{ color: color.white, textDecoration: 'none' }}>
                                 <span className='text-white'>Cotizador</span>
                             </Link>
                         )}
-                        {menuState.some(item => item.path === 'VEHICLES') && (
+                        {menuState.some(item => item.path === privateRoutes.VEHICLES) && (
                             <Link to={privateRoutes.VEHICLES} style={{ color: color.white, textDecoration: 'none' }}>
                                 <span className='text-white'>Vehiculos</span>
                             </Link>
@@ -68,7 +68,7 @@ export const Navbar = () => {
                                         .map(item => ({
                                             key: item.id_menu,
                                             label: (
-                                                <Link to={privateRoutes[item.path]} style={{ textDecoration: 'none' }}>
+                                                <Link to={item.path} style={{ textDecoration: 'none' }}>
                                                     <span>{item.menu}</span>
                                                 </Link>
                                             )
@@ -113,7 +113,7 @@ export const Navbar = () => {
                         <img src={icon} height='80' className='d-inline-block align-top' alt='' />
                     </Link>
 
-                    {menuState.some(item => item.path === 'QUOTER') && (
+                    {menuState.some(item => item.path === privateRoutes.QUOTER) && (
                         <Button
                             type='link'
                             icon={<Icon.Calculate color='white' />}
@@ -126,7 +126,7 @@ export const Navbar = () => {
                         </Button>
                     )}
 
-                    {menuState.some(item => item.path === 'VEHICLES') && (
+                    {menuState.some(item => item.path === privateRoutes.VEHICLES) && (
                         <Button
                             type='link'
                             icon={<Icon.Car color='white' />}
@@ -148,7 +148,7 @@ export const Navbar = () => {
                                         key: item.path,
                                         label: <span>{item.menu}</span>
                                     })),
-                                onClick: value => handleNavigation(privateRoutes[value.key])
+                                onClick: value => handleNavigation(value.key)
                             }}
                             placement='bottomLeft'
                             arrow

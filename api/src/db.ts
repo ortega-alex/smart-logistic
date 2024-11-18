@@ -4,6 +4,8 @@ import {
     Crane,
     Customer,
     CustomerFile,
+    ImportHistory,
+    ImportState,
     Menu,
     Permission,
     Port,
@@ -13,7 +15,8 @@ import {
     QuoterDetail,
     TypeOfCustomer,
     TypeVehicle,
-    User
+    User,
+    Vehicles
 } from './entities';
 import { enviroment } from './utils';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -38,7 +41,10 @@ export const AppDataSource = new DataSource({
         Permission,
         ProfileMenuPermission,
         Quoter,
-        QuoterDetail
+        QuoterDetail,
+        ImportState,
+        ImportHistory,
+        Vehicles
     ],
     synchronize: enviroment.NODE_ENV === 'development',
     namingStrategy: new SnakeNamingStrategy()

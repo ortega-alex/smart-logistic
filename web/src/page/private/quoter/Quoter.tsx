@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormQuoter } from './FormQuoter';
 import { useNavigate } from 'react-router-dom';
+import { QuoterAdapter } from '@/adapter';
 
 export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -46,16 +47,7 @@ export const Quoter = () => {
     const handleEdit = (id_cotizacion: number) => {
         httpGetQuotersById(id_cotizacion)
             .then(res => {
-                setQuoter({
-                    ...res,
-                    id_cliente: res.cliente?.id_cliente,
-                    id_vendedor: res.vendedor?.id_usuario,
-                    id_tipo_vehiculo: res.tipo_veniculo?.id_tipo_vehiculo,
-                    id_puerto: res.puerto?.id_puerto,
-                    id_subasta: res.subasta?.id_subasta,
-                    id_grua_usd: res.grua_usd?.id_grua,
-                    id_grua_gt: res.grua_gt?.id_grua
-                });
+                setQuoter(QuoterAdapter(res));
                 handleOnChangeModal('form');
             })
             .catch(err => message.error(`Error http get quoters: ${err.message}`));
@@ -97,7 +89,7 @@ export const Quoter = () => {
             cancelText: 'No',
             onOk: () => {
                 handleOnChangeLoading('services', true);
-                httpUpdateQuoter({ ...item, aprobada: true })
+                httpUpdateQuoter(QuoterAdapter({ ...item, aprobada: true }))
                     .then(res => {
                         message[res.error ? 'warning' : 'success'](res.message);
                         if (!res.error) {
@@ -158,18 +150,17 @@ export const Quoter = () => {
     return (
         <div className='h-100 flex flex-column p-3'>
             <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
-                <div className='flex flex-column'>
+                <div className='flex flex-column w-md-100'>
                     <label htmlFor='cliente'>Cliente</label>
                     <Select
                         placeholder='Selecciones una opción'
                         options={customers.filter(item => item.estado).map(item => ({ label: item.cliente, value: item.id_cliente }))}
                         onChange={value => setFilter(value)}
-                        allowClear
                         style={{ minWidth: 200 }}
+                        allowClear
                     />
                 </div>
-
-                <div className='flex flex-row gap-2 items-center'>
+                <div className='flex flex-row gap-2 items-center w-md-100'>
                     <Tooltip title='Recargar'>
                         <Button type='text' htmlType='button' icon={<Icon.Reload />} onClick={() => handleGet()} />
                     </Tooltip>
@@ -178,6 +169,7 @@ export const Quoter = () => {
                 <Button
                     type='primary'
                     htmlType='button'
+                    className='w-md-100'
                     onClick={() => {
                         setQuoter(EmptyQuoter);
                         handleOnChangeModal('form');

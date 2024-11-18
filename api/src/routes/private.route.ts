@@ -9,6 +9,7 @@ import {
     addTypeOfCustomer,
     addTypeVehicle,
     addUser,
+    addVehicles,
     deleteCustomerFile,
     generatePdf,
     getAution,
@@ -27,6 +28,9 @@ import {
     getTypeOfCustomers,
     getTypeVehicle,
     getUsers,
+    getVechiclesPaginatedData,
+    getVehicles,
+    getVehiclesById,
     updateAution,
     updateCrane,
     updateCustomerById,
@@ -88,5 +92,10 @@ routes.get('/quoter/invoice/:id', generatePdf);
 routes.post('/quoter', addQuoter);
 routes.put('/quoter/:id', updateQuoter);
 routes.post('/quoter/pagination', getQuoterPaginatedData);
+
+routes.get('/vehicles', getVehicles);
+routes.get('/vehicles/:id', getVehiclesById);
+routes.post('/vehicles', addVehicles);
+routes.post('/vehicles/pagination', getVechiclesPaginatedData);
 
 export const privateRoutes = routes;
