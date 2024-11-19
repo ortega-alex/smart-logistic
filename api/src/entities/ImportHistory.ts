@@ -1,24 +1,35 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ImportState, User } from './';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Customer, ImportState, User, Vehicles } from './';
 
 @Entity('historial_importacion')
 export class ImportHistory extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id_historial_importacion: string;
 
-    @ManyToMany(() => ImportState, inport_state => inport_state.historial_estados, { nullable: false })
+    @ManyToOne(() => Vehicles, vehicles => vehicles.historial_vechiculo, { nullable: false })
+    @JoinColumn({ name: 'id_vehiculo' })
+    vehiculo: ImportState;
+
+    @ManyToOne(() => ImportState, inport_state => inport_state.historial_estados, { nullable: false })
     @JoinColumn({ name: 'id_estado_importacion' })
     historial_estado: ImportState;
 
-    @ManyToMany(() => User, user => user.usuarios_importacion_historial, { nullable: false })
+    @ManyToOne(() => User, user => user.usuarios_importacion_historial, { nullable: false })
     @JoinColumn({ name: 'id_usuario' })
     usuario: User;
+
+    @ManyToOne(() => Customer, customer => customer.clientes_importacion_historial)
+    @JoinColumn({ name: 'id_cliente' })
+    cliente: Customer;
 
     @Column('varchar', { length: 300 })
     descripcion: string;
 
     @Column('varchar', { length: 300 })
     archivo: string;
+
+    @Column({ default: false })
+    visible_cliente: boolean;
 
     @Column({
         type: 'timestamp',

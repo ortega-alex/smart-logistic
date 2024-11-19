@@ -7,6 +7,7 @@
     --danger: #cf561e;
     --white: #f8f9fa;
     --black: #242424;
+    --gray: #f1f1f1;
 
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -136,6 +137,10 @@
     background: var(--secondary) !important;
 }
 
+.bg-gray {
+    background: var(--gray) !important;
+}
+
 .navbar-dark {
     background-color: var(--secondary);
 }
@@ -163,6 +168,9 @@
     align-items: center;
 }
 
+.w-75 {
+    width: 75% !important;
+}
 .w-100,
 .w-full {
     width: 100% !important;

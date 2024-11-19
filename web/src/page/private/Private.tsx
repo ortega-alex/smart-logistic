@@ -72,7 +72,7 @@ export const Private = () => {
                             )}
 
                             {menuState.some(item => item.path === privateRoutes.VEHICLES) &&
-                                [privateRoutes.VEHICLES, `${privateRoutes.VEHICLES}/:id`].map(item => (
+                                [privateRoutes.VEHICLES, `${privateRoutes.VEHICLES}/:lote`].map(item => (
                                     <Route key={item} path={item} element={<Vehicles />} />
                                 ))}
 

@@ -44,7 +44,7 @@ export class Quoter extends BaseEntity {
     anio: string;
 
     @Column('varchar', { length: 45 })
-    serie: string;
+    lote: string;
 
     @Column('varchar', { length: 45 })
     vin: string;

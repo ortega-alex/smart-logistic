@@ -33,7 +33,7 @@ export const Home = () => {
                     <div className={`flex ${item > 1 ? 'menu-bottom' : ''}`} key={item}>
                         {menuState.slice(inicio, final).map(menu => (
                             <Link
-                                to={`/${privateRoutes.PRIVATE}/${privateRoutes[menu.path]}`}
+                                to={`/${privateRoutes.PRIVATE}/${menu.path}`}
                                 replace={true}
                                 key={menu.id_menu}
                                 style={{ textDecoration: 'none' }}

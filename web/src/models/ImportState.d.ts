@@ -3,3 +3,9 @@ export interface ImportState {
     estado_importacion: string;
     estado: boolean;
 }
+
+export const EmptyImportState: ImportState = {
+    id_estado_importacion: 0,
+    estado_importacion: '',
+    estado: true
+};

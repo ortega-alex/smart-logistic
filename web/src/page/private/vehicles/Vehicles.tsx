@@ -1,17 +1,22 @@
 import { Icon, Search } from '@/components';
-import { Customer, Vehicles as TypeVehicles, TableParams } from '@/models';
+import { Customer, Vehicles as TypeVehicles, TableParams, privateRoutes, EmptyVehicle } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
+import { httpGetCustomer, httpGetVehiclesGetById, httpGetVehiclesPagination } from '@/services';
 import { getDateFormat } from '@/utilities';
-import { Button, List, message, Select, Table, TableProps, Tooltip } from 'antd';
+import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ViewVehicles } from './ViewVehicles';
 
 export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
+    const { lote } = useParams();
+    const navigate = useNavigate();
 
     const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [vehicles, setVehicles] = useState<Array<TypeVehicles>>([]);
+    const [vehicle, setVehicle] = useState<TypeVehicles>(EmptyVehicle);
     const [loading, setLoading] = useState({
         data: false,
         services: false
@@ -23,6 +28,7 @@ export const Vehicles = () => {
         }
     });
     const [filter, setFilter] = useState('');
+    const [modal, setModal] = useState(false);
 
     const handleOnChangeLoading = (name: string, value: boolean) => setLoading({ ...loading, [name]: value });
 
@@ -38,7 +44,14 @@ export const Vehicles = () => {
     };
 
     const handleEdit = (id_vehiculo: number) => {
-        console.log(id_vehiculo);
+        handleOnChangeLoading('services', true);
+        httpGetVehiclesGetById(id_vehiculo)
+            .then(res => {
+                setVehicle(res);
+                setModal(true);
+            })
+            .catch(err => message.error(`Error http get vehicles: ${err.message}`))
+            .finally(() => handleOnChangeLoading('services', false));
     };
 
     const handleGet = () => {
@@ -59,6 +72,12 @@ export const Vehicles = () => {
                         total: res.total
                     }
                 });
+
+                if (lote) {
+                    const item = res.data.find((item: TypeVehicles) => item.cotizacion.lote === lote);
+                    if (item) handleEdit(item.id_vehiculo);
+                    navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}`, { replace: true });
+                }
             })
             .catch(err => message.error(`Error http get vehicles: ${err.message}`))
             .finally(() => handleOnChangeLoading('data', false));
@@ -161,7 +180,8 @@ export const Vehicles = () => {
                             title: 'Loter',
                             dataIndex: 'lote',
                             ellipsis: true,
-                            sorter: true
+                            sorter: true,
+                            render: (_, { cotizacion }) => <span>{cotizacion?.lote}</span>
                         },
                         {
                             title: 'Vendedor',
@@ -212,6 +232,22 @@ export const Vehicles = () => {
                     ]}
                 />
             )}
+
+            <Modal
+                open={modal}
+                title={
+                    <h3>
+                        Vehiculo <Tag color='success'>{vehicle.estado_importacion.estado_importacion}</Tag>
+                    </h3>
+                }
+                footer={null}
+                onCancel={() => setModal(false)}
+                centered
+                destroyOnClose
+                width={1200}
+            >
+                <ViewVehicles vehicle={vehicle} />
+            </Modal>
         </div>
     );
 };

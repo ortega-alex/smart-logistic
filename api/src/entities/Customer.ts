@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGe
 import { CustomerFile } from './CustomerFile';
 import { Quoter } from './Quoter';
 import { TypeOfCustomer } from './TypeOfCustomer';
+import { ImportHistory } from './ImportHistory';
 
 @Entity('cliente')
 export class Customer extends BaseEntity {
@@ -57,4 +58,7 @@ export class Customer extends BaseEntity {
 
     @OneToMany(() => Quoter, clientes => clientes.cliente)
     clientes: Quoter[];
+
+    @OneToMany(() => ImportHistory, clientes => clientes.cliente)
+    clientes_importacion_historial: Quoter[];
 }

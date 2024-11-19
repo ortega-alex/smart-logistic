@@ -217,8 +217,8 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                             </div>
                             <div className='flex flex-md-column gap-3 justify-between item-end'>
                                 <Form.Item
-                                    label='Serie'
-                                    name='serie'
+                                    label='No. Lote'
+                                    name='lote'
                                     rules={[{ required: true, message: 'El campo es requerido' }]}
                                     className='w-100'
                                 >
@@ -263,7 +263,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                                 />
                             </Form.Item>
 
-                            <QuoterDetail details={details} onSubmit={details => setDetails(details)} />
+                            <QuoterDetail details={details} onSubmit={details => setDetails(details)} aprobado={quoter.aprobada} />
                         </div>
                     </div>
                 </div>

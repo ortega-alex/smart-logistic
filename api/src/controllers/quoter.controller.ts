@@ -13,7 +13,7 @@ const validate = (data: any) => {
     if (!data.modelo) errors.modelo = 'El modelo es requerido';
     if (!data.anio) errors.anio = 'El año es requerido';
     if (!data.detalles) errors.detalles = 'Los costos son requeridos';
-    if (!data.serie) errors.serie = 'La serie es requerida';
+    if (!data.lote) errors.lote = 'La lote es requerida';
     if (!data.vin) errors.vin = 'El VIN es requerido';
     return errors;
 };
@@ -84,7 +84,7 @@ export const addQuoter = async (req: Request, res: Response) => {
             id_grua_usd,
             id_grua_gt,
             detalles,
-            serie,
+            lote,
             vin
         } = req.body;
         req.body;
@@ -126,7 +126,7 @@ export const addQuoter = async (req: Request, res: Response) => {
         quoter.marca = marca;
         quoter.modelo = modelo;
         quoter.anio = anio;
-        quoter.serie = serie;
+        quoter.lote = lote;
         quoter.vin = vin;
         quoter.cliente = customer;
         quoter.puerto = port; // @ts-ignore
@@ -160,7 +160,7 @@ export const updateQuoter = async (req: Request, res: Response) => {
             id_grua_usd,
             id_grua_gt,
             detalles,
-            serie,
+            lote,
             vin,
             aprobada = false
         } = req.body;
@@ -217,7 +217,7 @@ export const updateQuoter = async (req: Request, res: Response) => {
                 marca: marca ?? quoter.marca,
                 modelo: modelo ?? quoter.modelo,
                 anio: anio ?? quoter.anio,
-                serie: serie ?? quoter.serie,
+                lote: lote ?? quoter.lote,
                 vin: vin ?? quoter.vin,
                 aprobada: aprobada ?? quoter.aprobada
             }
@@ -232,7 +232,7 @@ export const updateQuoter = async (req: Request, res: Response) => {
         } else {
             const estado_importacion = await ImportState.findOneBy({ id_estado_importacion: 1 });
             if (!estado_importacion) return res.status(203).json({ message: 'estado de importacion no encontrado' });
-            await newVehicle({ lote: String(Math.floor(Math.random() * 99999999)) }, quoter, estado_importacion);
+            await newVehicle(quoter, estado_importacion);
 
             if ((update?.affected ?? 0) > 0) return res.json({ message: 'Cotización aprobada' });
             return res.status(203).json({ error: true, message: 'No se pudo aprobar la cotización' });

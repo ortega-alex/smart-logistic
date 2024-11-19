@@ -1,0 +1,1 @@
+import{aI as o}from"./index-DUTae07C.js";const r=t=>{for(t=parseFloat(String(t)).toFixed(2);/(\d+)(\d{3})/.test(t);)t=String(t).replace(/(\d+)(\d{3})/,"$1,$2");return t},s=(t,a)=>o(t??void 0).format(a);export{r as c,s as g};

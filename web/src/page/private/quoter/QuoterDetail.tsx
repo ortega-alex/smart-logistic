@@ -5,11 +5,12 @@ import { Button, Divider, Form, FormProps, Input, InputNumber, Modal, Select } f
 import { useState } from 'react';
 
 interface Props {
+    aprobado: boolean;
     details: Array<TypeQuoterDetail>;
     onSubmit: (details: Array<TypeQuoterDetail>) => void;
 }
 
-export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
+export const QuoterDetail: React.FC<Props> = ({ aprobado, details, onSubmit }) => {
     const [cost, setCost] = useState<Costo>(EmptyCosto);
     const [modal, setModal] = useState(false);
 
@@ -33,6 +34,7 @@ export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
                             htmlType='button'
                             size='small'
                             icon={<Icon.Edit />}
+                            disabled={aprobado}
                             onClick={() => {
                                 setCost({ ...item, index: i });
                                 setModal(true);
@@ -44,6 +46,7 @@ export const QuoterDetail: React.FC<Props> = ({ details, onSubmit }) => {
                             size='small'
                             htmlType='button'
                             icon={<Icon.Trash />}
+                            disabled={aprobado}
                             onClick={() => {
                                 const values = details.filter(_item => _item.moneda !== item.moneda);
                                 const deleted = _details.filter((_item, index) => index !== i);

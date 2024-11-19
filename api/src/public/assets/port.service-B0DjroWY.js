@@ -1,1 +1,0 @@
-import"./index-C_I45hcy.js";import{N as o}from"./method-http.utility-DRGzK4dc.js";const a="/port",h=async()=>await o({path:a,method:"GET"}),e=async t=>await o({path:a,method:"POST",data:t}),r=async t=>await o({path:`${a}/${t.id_puerto}`,method:"PUT",data:t});export{r as a,e as b,h};

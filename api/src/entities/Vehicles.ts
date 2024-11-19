@@ -1,5 +1,5 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ImportState, Quoter } from './';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ImportHistory, ImportState, Quoter } from './';
 
 @Entity('vehiculos')
 export class Vehicles extends BaseEntity {
@@ -13,9 +13,6 @@ export class Vehicles extends BaseEntity {
     @ManyToOne(() => ImportState, inport_state => inport_state.estados_importacion, { nullable: false })
     @JoinColumn({ name: 'id_estado_importacion' })
     estado_importacion: ImportState;
-
-    @Column('varchar', { length: 45 })
-    lote: string;
 
     @Column({
         default: true
@@ -34,4 +31,7 @@ export class Vehicles extends BaseEntity {
         onUpdate: 'CURRENT_TIMESTAMP'
     })
     fecha_edicion: Date;
+
+    @OneToMany(() => ImportHistory, import_history => import_history.vehiculo)
+    historial_vechiculo: Vehicles[];
 }

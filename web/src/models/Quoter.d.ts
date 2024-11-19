@@ -17,6 +17,8 @@ export interface Quoter {
     marca: string;
     modelo: string;
     anio: string;
+    vin: string;
+    lote: string;
     id_puerto: number | Port.id_puerto;
     puerto?: Port;
     aprobada: boolean;

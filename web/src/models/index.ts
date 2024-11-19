@@ -4,6 +4,7 @@ export * from './Crane.d';
 export * from './Customer.d';
 export * from './CustomerFile.d';
 export * from './Environment.const';
+export * from './ImportHistory.d';
 export * from './ImportState.d';
 export * from './Menu.d';
 export * from './Permission.d';

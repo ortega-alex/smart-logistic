@@ -317,9 +317,7 @@ export const Quoter = () => {
                                                 icon={<Icon.Workspace />}
                                                 type='text'
                                                 size='small'
-                                                onClick={() =>
-                                                    navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${item.id_cotizacion}`)
-                                                }
+                                                onClick={() => navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${item.lote}`)}
                                                 disabled={loading.services}
                                             />
                                         </Tooltip>
