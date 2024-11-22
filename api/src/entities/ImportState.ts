@@ -10,6 +10,12 @@ export class ImportState extends BaseEntity {
     @Column('varchar', { length: 45 })
     estado_importacion: string;
 
+    @Column('int', { default: 0 })
+    index: number;
+
+    @Column('varchar', { length: 7 })
+    color: string;
+
     @Column({ default: true })
     estado: boolean;
 
@@ -29,6 +35,6 @@ export class ImportState extends BaseEntity {
     @OneToMany(() => Vehicles, vehiculos => vehiculos.estado_importacion)
     estados_importacion: Vehicles[];
 
-    @OneToMany(() => ImportHistory, import_history => import_history.historial_estado)
+    @OneToMany(() => ImportHistory, import_history => import_history.estado_importacion)
     historial_estados: Vehicles[];
 }

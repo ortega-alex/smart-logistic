@@ -8,13 +8,13 @@ export class ImportHistory extends BaseEntity {
 
     @ManyToOne(() => Vehicles, vehicles => vehicles.historial_vechiculo, { nullable: false })
     @JoinColumn({ name: 'id_vehiculo' })
-    vehiculo: ImportState;
+    vehiculo: Vehicles;
 
     @ManyToOne(() => ImportState, inport_state => inport_state.historial_estados, { nullable: false })
     @JoinColumn({ name: 'id_estado_importacion' })
-    historial_estado: ImportState;
+    estado_importacion: ImportState;
 
-    @ManyToOne(() => User, user => user.usuarios_importacion_historial, { nullable: false })
+    @ManyToOne(() => User, user => user.usuarios_importacion_historial)
     @JoinColumn({ name: 'id_usuario' })
     usuario: User;
 

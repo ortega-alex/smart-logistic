@@ -65,3 +65,12 @@ INSERT INTO estado_importacion (estado_importacion) VALUES
 ('En llarda'),
 ('Embarcado'),
 ('En puerto');
+
+
+INSERT INTO estado_importacion ('estado_importacion','index','color') VALUES
+('Cotizacion Aprobada',0,'#ffbb96'),
+('Factura Cargada',1,'#ffc069'),
+('Recolectado',2,'#fffb8f'),
+('En llarda',3,'#d3f261'),
+('Embarcado',4,'#36cfc9'),
+('En puerto',5,'#69b1ff');

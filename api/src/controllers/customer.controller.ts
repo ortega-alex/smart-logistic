@@ -1,6 +1,29 @@
 import { Request, Response } from 'express';
 import { Customer, CustomerFile, TypeOfCustomer } from '../entities';
 import { enviroment } from '../utils';
+import { generateToken } from '../middleware';
+
+export const loginCustomer = async (req: Request, res: Response) => {
+    try {
+        const { correo } = req.body;
+        if (!correo) return res.status(203).json({ message: 'El correo es requerido' });
+
+        const customer = await Customer.findOne({ where: { correo } });
+        if (!customer) return res.status(203).json({ message: 'El cliente no existe' });
+
+        const token = generateToken({
+            correo,
+            usuario: customer?.cliente
+        });
+
+        return res.json({
+            customer,
+            token
+        });
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
 
 export const addCustomer = async (req: Request, res: Response) => {
     try {
@@ -166,8 +189,6 @@ export const getCustomerPaginatedData = async (req: Request, res: Response) => {
             pageSize: Number(pageSize),
             totalPages: Math.ceil(total / pageSize)
         });
-
-        return res.json({});
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }

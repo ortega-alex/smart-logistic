@@ -1,8 +1,8 @@
-import { Icon } from '@/components';
-import { Moneda, Vehicles } from '@/models';
+import { Icon, ViewFiles } from '@/components';
+import { _SERVER, Moneda, Vehicles, EmptyFile } from '@/models';
 import { getDateFormat } from '@/utilities';
-import { Button, Divider, Table } from 'antd';
-import React from 'react';
+import { Button, Divider, Modal, Table, Tag, Tooltip } from 'antd';
+import React, { useState } from 'react';
 import { TableDetail } from './TableDetail';
 
 interface Props {
@@ -10,6 +10,17 @@ interface Props {
 }
 
 export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
+    const [modal, setModal] = useState(false);
+    const [file, setFile] = useState(EmptyFile);
+
+    const handleViewFile = (path: string) => {
+        setFile({
+            ...file,
+            ruta: path
+        });
+        setModal(true);
+    };
+
     return (
         <div className='flex flex-column'>
             <div className='flex flex-row gap-3 mb-3'>
@@ -105,26 +116,45 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                         render: value => <span>{getDateFormat(value, 'DD/MM/YYYY')}</span>
                     },
                     {
-                        title: 'Usuario',
-                        dataIndex: 'usuario',
-                        render: value => <span>{value.nombre}</span>
-                    },
-                    {
                         title: 'Descripcion',
                         dataIndex: 'descripcion',
                         ellipsis: true
+                    },
+                    {
+                        title: 'Visible por el cliente',
+                        dataIndex: 'visible_cliente',
+                        align: 'center',
+                        render: value => <Tag color={value ? 'green' : 'red'}>{value ? 'Si' : 'No'}</Tag>
                     },
                     {
                         title: 'archivo',
                         dataIndex: 'archivo',
                         render: value => (
                             <div className='text-center'>
-                                <Button type='link' icon={<Icon.Download />} onClick={() => console.log(value)} />
+                                <Tooltip title='Ver'>
+                                    <Button type='link' icon={<Icon.Eye />} onClick={() => handleViewFile(value)} />
+                                </Tooltip>
                             </div>
                         )
                     }
                 ]}
             />
+
+            <Modal
+                open={modal}
+                onCancel={() => {
+                    setModal(false);
+                    setFile(EmptyFile);
+                }}
+                centered
+                destroyOnClose
+                closeIcon={<Icon.Close color='white' />}
+                width={1000}
+                footer={false}
+                className='bg-transparent'
+            >
+                <ViewFiles file={file} download={true} />
+            </Modal>
         </div>
     );
 };

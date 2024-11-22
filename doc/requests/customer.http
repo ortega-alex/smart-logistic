@@ -35,3 +35,11 @@ Authorization: Bearer {{token}}
     "id_tipo_cliente": 3,
     "porcentaje_descuento": 0.5
 }
+
+### GET CUSTOMER PAGINATION DATA
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/login
+Content-Type: application/json
+
+{
+    "correo": "test@example.us"
+}

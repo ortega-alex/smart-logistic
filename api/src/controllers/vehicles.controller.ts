@@ -138,3 +138,19 @@ export const getVechiclesPaginatedData = async (req: Request, res: Response) => 
         return res.status(500).json({ message: (error as Error).message });
     }
 };
+
+export const getVehiclesByCustomerId = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const vehicles = await Vehicles.find({
+            where: { cotizacion: { cliente: { id_cliente: Number(id) } } },
+            relations: {
+                cotizacion: true,
+                estado_importacion: true
+            }
+        });
+        return res.status(200).json(vehicles);
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};

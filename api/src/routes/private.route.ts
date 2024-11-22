@@ -17,6 +17,7 @@ import {
     getCustomer,
     getCustomerById,
     getCustomerPaginatedData,
+    getImportState,
     getMenus,
     getPermission,
     getPermissionMenuByProfileId,
@@ -30,6 +31,7 @@ import {
     getUsers,
     getVechiclesPaginatedData,
     getVehicles,
+    getVehiclesByCustomerId,
     getVehiclesById,
     updateAution,
     updateCrane,
@@ -42,6 +44,7 @@ import {
     updateUser
 } from '../controllers';
 import { fileUpload } from '../middleware';
+import { uploadInvoice } from '../controllers/import-history.controller';
 
 const routes = Router();
 
@@ -97,5 +100,10 @@ routes.get('/vehicles', getVehicles);
 routes.get('/vehicles/:id', getVehiclesById);
 routes.post('/vehicles', addVehicles);
 routes.post('/vehicles/pagination', getVechiclesPaginatedData);
+routes.get('/vehicles/customer/:id', getVehiclesByCustomerId);
+
+routes.get('/import-state', getImportState);
+
+routes.post('/import-history/:id', fileUpload.single('file'), uploadInvoice);
 
 export const privateRoutes = routes;

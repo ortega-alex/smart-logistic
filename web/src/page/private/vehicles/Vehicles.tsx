@@ -1,14 +1,13 @@
 import { Icon, Search } from '@/components';
-import { Customer, Vehicles as TypeVehicles, TableParams, privateRoutes, EmptyVehicle, _SERVER, publicRoutes } from '@/models';
+import { Customer, EmptyVehicle, TableParams, Vehicles as TypeVehicles, privateRoutes, publicRoutes } from '@/models';
 import { RootState } from '@/redux';
 import { httpGetCustomer, httpGetVehiclesGetById, httpGetVehiclesPagination } from '@/services';
-import { copyToClipboard, encryptData, getDateFormat } from '@/utilities';
-import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
+import { copyToClipboard, getDateFormat } from '@/utilities';
+import { Button, List, Modal, Select, Table, TableProps, Tag, Tooltip, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ViewVehicles } from './ViewVehicles';
-import { c } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 
 export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);

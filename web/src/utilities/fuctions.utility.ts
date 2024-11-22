@@ -66,3 +66,13 @@ export const copyToClipboard = (text: string): Promise<void> => {
         });
     }
 };
+
+/**
+ * Returns the extension of the file name
+ * @param {String} text
+ * @returns {String}
+ */
+export const getExtension = (fileNamme: string): string => {
+    const ext = /[^.]+$/.exec(fileNamme);
+    return ext == null ? '' : ext[0];
+};

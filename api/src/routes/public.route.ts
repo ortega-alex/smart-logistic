@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { login } from '../controllers';
+import { login, loginCustomer } from '../controllers';
 
 const routes = Router();
 
 routes.post('/login', login);
+routes.post('/customer/login', loginCustomer);
 
 export const publicRoutes = routes;

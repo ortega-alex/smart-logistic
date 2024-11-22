@@ -1,0 +1,47 @@
+import { Request, Response } from 'express';
+import { Customer, ImportHistory, ImportState, Vehicles } from '../entities';
+import { enviroment } from '../utils';
+
+export const uploadInvoice = async (req: Request, res: Response) => {
+    try {
+        const { file } = req;
+        const { id } = req.params;
+        const { id_cliente } = req.body;
+        if (!file) return res.status(203).json({ message: 'El archivo es requerido' });
+
+        const vehicle = await Vehicles.findOneBy({ id_vehiculo: Number(id) });
+        if (!vehicle) return res.status(203).json({ message: 'El vehiculo no existe' });
+
+        const customer = await Customer.findOneBy({ id_cliente });
+        if (!customer) return res.status(203).json({ message: 'El cliente no existe' });
+
+        const import_state = await ImportState.findOneBy({ id_estado_importacion: 1 });
+        if (!import_state) return res.status(203).json({ message: 'El estado de importacion no existe' });
+
+        const history = new ImportHistory();
+        history.vehiculo = vehicle;
+        history.estado_importacion = import_state;
+        history.archivo = `${enviroment.URI_FILE}/${file.filename}`;
+        history.cliente = customer;
+        history.descripcion = 'El cliente ha cargado la factura';
+        history.visible_cliente = true;
+        history.save();
+
+        const import_state_change = await ImportState.findOneBy({ id_estado_importacion: 2 });
+        if (!import_state_change) return res.status(203).json({ message: 'El estado de importacion no existe' });
+
+        const update = await Vehicles.update(
+            { id_vehiculo: Number(id) },
+            {
+                estado_importacion: import_state_change
+            }
+        );
+
+        if ((update?.affected ?? 0) > 0) {
+            return res.status(200).json({ success: true, message: 'Archivo cargado correctamente' });
+        }
+        return res.status(203).json({ message: 'No se pudo actualizar el vehiculo' });
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};

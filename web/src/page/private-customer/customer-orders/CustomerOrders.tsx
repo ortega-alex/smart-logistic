@@ -1,9 +1,9 @@
 import { Icon, Search } from '@/components';
 import { Customer, privateRoutes, Vehicles } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetVehiclesByCustomerId } from '@/services';
+import { httpGetVehiclesByCustomerId, httpImportHistoryUploadInvoice } from '@/services';
 import { getDateFormat } from '@/utilities';
-import { Button, List, message, Table, Tooltip } from 'antd';
+import { Alert, Button, List, message, Table, Tooltip, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,19 @@ export const CustomerOrders = () => {
             .finally(() => setLoading(false));
     };
 
+    const handleIploadInvoice = (file: any, id: number) => {
+        httpImportHistoryUploadInvoice(id, file)
+            .then(res => {
+                if (res.success) {
+                    message.success(res.message);
+                    handleGet();
+                } else message.warning(res.message);
+            })
+            .catch(err => message.error(`Error http upload invoice ${err.message}`));
+    };
+
     useEffect(() => {
+        console.log(filter);
         handleGet();
     }, []);
 
@@ -121,7 +133,13 @@ export const CustomerOrders = () => {
                                     <div className='flex flex-row justify-center gap-2'>
                                         {item.estado_importacion.id_estado_importacion === 1 && (
                                             <Tooltip title='Cargar factura'>
-                                                <Button style={{ width: 40 }} icon={<Icon.Upload />} type='text' size='small' />
+                                                <Upload
+                                                    accept={'.pdf'}
+                                                    customRequest={info => handleIploadInvoice(info.file, item.id_vehiculo)}
+                                                    onChange={info => (info.file.status = 'done')}
+                                                >
+                                                    <Button style={{ width: 40 }} icon={<Icon.Upload />} type='text' size='small' />
+                                                </Upload>
                                             </Tooltip>
                                         )}
                                         <Tooltip title='Ver detalle'>
@@ -139,6 +157,9 @@ export const CustomerOrders = () => {
                         ]}
                     />
                 </div>
+            )}
+            {vehicles.some(item => item.estado_importacion.id_estado_importacion === 1) && (
+                <Alert message='Existen facturas pendientes de cargar' type='warning' />
             )}
         </div>
     );

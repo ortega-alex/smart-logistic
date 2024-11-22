@@ -20,6 +20,9 @@ export class Menu extends BaseEntity {
     })
     es_mantenimiento: boolean;
 
+    @Column({ default: true })
+    menu_principal: boolean;
+
     @Column({
         default: true
     })
