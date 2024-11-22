@@ -15,6 +15,7 @@ export const Search: React.FC<Props> = ({ onSearch, onReset }) => {
             prefix={<Icon.Search />}
             placeholder={'Buscar'}
             value={search}
+            className='search'
             onChange={env => setSearch(env.target.value)}
             onKeyDown={e => {
                 if (e.key === 'Enter') onSearch(search);

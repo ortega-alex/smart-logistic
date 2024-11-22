@@ -10,7 +10,9 @@ import { color, privateRoutes, publicRoutes } from './models';
 import { store } from './redux';
 
 const SingIn = lazy(() => import('@/page/sing-In/SingIn').then(module => ({ default: module.SingIn })));
+const SingInCustomer = lazy(() => import('@/page/sing-in-customer/SingInCustomer').then(module => ({ default: module.SingInCustomer })));
 const Private = lazy(() => import('@/page/private/Private').then(module => ({ default: module.Private })));
+const PrivateCustomer = lazy(() => import('@/page/private-customer/PrivateCustomer').then(module => ({ default: module.PrivateCustomer })));
 
 export const App = () => {
     useEffect(() => {
@@ -34,8 +36,11 @@ export const App = () => {
                             <RoutesWithNotFound>
                                 <Route path='/' element={<Navigate to={privateRoutes.PRIVATE} />} />
                                 <Route path={publicRoutes.SING_IN} element={<SingIn />} />
+                                <Route path={publicRoutes.SING_IN_CUSTOMER} element={<SingInCustomer />} />
+                                <Route path={`/${publicRoutes.SING_IN_CUSTOMER}/:token`} element={<SingInCustomer />} />
                                 <Route element={<AuthGuard />}>
                                     <Route path={`${privateRoutes.PRIVATE}/*`} element={<Private />} />
+                                    <Route path={`${privateRoutes.PRIVATE_CUSTOMER}/*`} element={<PrivateCustomer />} />
                                 </Route>
                             </RoutesWithNotFound>
                         </HashRouter>

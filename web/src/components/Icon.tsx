@@ -1,10 +1,10 @@
 import { Map } from '@/models';
 import { AiFillLock, AiOutlineClose, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
-import { BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi';
+import { BiCopy, BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi';
 import { BsArrowDown, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
 import { CiMenuKebab } from 'react-icons/ci';
-import { FaRegTrashAlt, FaRegFilePdf } from 'react-icons/fa';
+import { FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
@@ -24,6 +24,7 @@ export const Icon = {
     Car: LiaCarAltSolid,
     Car2: TbCar,
     Close: AiOutlineClose,
+    Copy: BiCopy,
     Crane: TbCarCrane,
     Done: IoCheckmarkDone,
     Download: LuDownload,

@@ -1,4 +1,4 @@
-import { Customer } from '@/models';
+import { Customer, LoginCustomer } from '@/models';
 import { httpRequest } from '@/utilities';
 
 const path = '/customer';
@@ -34,6 +34,13 @@ export const httpEditCustomer = async (data: Customer) =>
 export const httpGetCustomerPaginationData = async (data: any) =>
     await httpRequest({
         path: `${path}/pagination`,
+        method: 'POST',
+        data
+    });
+
+export const httpCustomerLogin = async (data: LoginCustomer) =>
+    await httpRequest({
+        path: `${path}/login`,
         method: 'POST',
         data
     });

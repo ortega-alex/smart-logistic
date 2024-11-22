@@ -5,5 +5,6 @@ export interface Menu {
     path: string;
     path: string;
     es_mantenimiento: boolean;
+    menu_principal: boolean;
     estado: boolean;
 }

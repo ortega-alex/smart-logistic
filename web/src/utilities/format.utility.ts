@@ -34,4 +34,5 @@ export const getDateFromString = (text: string, format?: string): Dayjs => dayjs
  * @param {String} format
  * @returns {String}
  */
-export const getDateFormat = (date: Dayjs, format?: string): string => dayjs(date ?? undefined).format(format || 'DD/MM/YYYY HH:MM');
+export const getDateFormat = (date: Dayjs | string, format?: string): string =>
+    dayjs(date ?? undefined).format(format || 'DD/MM/YYYY HH:MM');

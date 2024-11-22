@@ -13,9 +13,14 @@ export const privateRoutes: ObjectCustomer = {
     PROFILES: 'profiles',
     REPORTS: 'reports',
     ACUTION: 'aution',
-    TYPES_OF_CUSTOMERS: 'types-of-customers'
+    TYPES_OF_CUSTOMERS: 'types-of-customers',
+    PRIVATE_CUSTOMER: 'private-customer',
+    CUSTOMER_ORDER: 'customer-order',
+    CUSTOMER_ORDER_DETAIL: 'customer-order-detail'
 } as const;
 
 export const publicRoutes = {
-    SING_IN: 'sing-in'
+    SING_IN: 'sing-in',
+    SING_IN_CUSTOMER: 'sing-in-customer',
+    INVOUCE: 'validation'
 } as const;

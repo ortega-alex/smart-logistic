@@ -31,23 +31,26 @@ export const Home = () => {
                 if (inicio === -1 || final === -1) return null;
                 return (
                     <div className={`flex ${item > 1 ? 'menu-bottom' : ''}`} key={item}>
-                        {menuState.slice(inicio, final).map(menu => (
-                            <Link
-                                to={`/${privateRoutes.PRIVATE}/${menu.path}`}
-                                replace={true}
-                                key={menu.id_menu}
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <div className='hex-container zoom'>
-                                    <div className='hex-border'>
-                                        <div className='hex-button '>
-                                            {!deviceState && <span style={{ fontSize: '1.5dvh' }}>{menu.menu}</span>}
-                                            {IconEnun[menu.icon]}
+                        {menuState
+                            .filter(item => item.menu_principal)
+                            .slice(inicio, final)
+                            .map(menu => (
+                                <Link
+                                    to={`/${privateRoutes.PRIVATE}/${menu.path}`}
+                                    replace={true}
+                                    key={menu.id_menu}
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <div className='hex-container zoom'>
+                                        <div className='hex-border'>
+                                            <div className='hex-button '>
+                                                {!deviceState && <span style={{ fontSize: '1.5dvh' }}>{menu.menu}</span>}
+                                                {IconEnun[menu.icon]}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))}
+                                </Link>
+                            ))}
                     </div>
                 );
             })}

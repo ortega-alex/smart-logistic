@@ -19,6 +19,7 @@ export interface Sesion extends User {
 }
 
 export type Login = Pick<User, 'usuario' | 'cotrasenia'>;
+export type LoginCustomer = Pick<User, 'correo'>;
 
 export const UserEmpty: TypeUser = {
     id_usuario: 0,

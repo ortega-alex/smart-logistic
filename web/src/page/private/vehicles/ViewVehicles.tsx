@@ -1,7 +1,9 @@
+import { Icon } from '@/components';
 import { Moneda, Vehicles } from '@/models';
-import { commaSeparateNumber } from '@/utilities';
-import { Divider } from 'antd';
+import { getDateFormat } from '@/utilities';
+import { Button, Divider, Table } from 'antd';
 import React from 'react';
+import { TableDetail } from './TableDetail';
 
 interface Props {
     vehicle: Vehicles;
@@ -73,75 +75,56 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                 </div>
             </div>
 
-            <Divider orientation='left'>Detalle en USD</Divider>
-            <table className='table table-striped table-sm'>
-                <thead>
-                    <tr>
-                        <th className='text-left w-75'>Concepto</th>
-                        <th className='text-left w-75'>Valor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {vehicle.cotizacion.detalles
-                        ?.filter(item => item.moneda === Moneda.USD)
-                        .map(item => (
-                            <tr key={item.nombre}>
-                                <td>{item.nombre}</td>
-                                <td>
-                                    {item.moneda}. {commaSeparateNumber(item.valor)}
-                                </td>
-                            </tr>
-                        ))}
-                </tbody>
-            </table>
+            {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.USD) && (
+                <>
+                    <Divider orientation='left'>Detalle en USD</Divider>
+                    <TableDetail detail={vehicle.cotizacion.detalles.filter(item => item.moneda === Moneda.USD) ?? []} />
+                </>
+            )}
 
-            <Divider orientation='left'>Detalle en GTQ</Divider>
-            <table className='table table-striped table-sm'>
-                <thead>
-                    <tr>
-                        <th className='text-left w-75'>Concepto</th>
-                        <th className='text-left w-75'>Valor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {vehicle.cotizacion.detalles
-                        ?.filter(item => item.moneda === Moneda.GTQ)
-                        .map(item => (
-                            <tr key={item.nombre}>
-                                <td>{item.nombre}</td>
-                                <td>
-                                    {item.moneda}. {commaSeparateNumber(item.valor)}
-                                </td>
-                            </tr>
-                        ))}
-                </tbody>
-            </table>
+            {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.GTQ) && (
+                <>
+                    <Divider orientation='left'>Detalle en GTQ</Divider>
+                    <TableDetail detail={vehicle.cotizacion.detalles?.filter(item => item.moneda === Moneda.GTQ) ?? []} />
+                </>
+            )}
 
             <Divider orientation='left'>Historico</Divider>
-            <table className='table table-striped table-sm'>
-                <thead>
-                    <tr>
-                        <th className='text-left'>Fecha</th>
-                        <th className='text-left'>Usuario</th>
-                        <th className='text-left'>Cliente</th>
-                        <th className='text-left'>Descripcion</th>
-                        <th className='text-left'>Archivo</th>
-                        <th className='text-left'>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {vehicle.historial_vechiculo.map(item => (
-                        <tr key={item.id_historial_importacion}>
-                            <td>{item.fecha_creacion}</td>
-                            <td>{item.usuario.nombre}</td>
-                            <td>{item.cliente.cliente}</td>
-                            <td>{item.descripcion}</td>
-                            <td>{item.archivo}</td>
-                            <td>{item.estado_importacion.estado_importacion}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <Table
+                size='small'
+                rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
+                pagination={false}
+                className='table mb-3 px-5'
+                showSorterTooltip={false}
+                rowKey='id_subasta'
+                dataSource={vehicle.historial_vechiculo}
+                columns={[
+                    {
+                        title: 'Fecha',
+                        dataIndex: 'fecha_creacion',
+                        render: value => <span>{getDateFormat(value, 'DD/MM/YYYY')}</span>
+                    },
+                    {
+                        title: 'Usuario',
+                        dataIndex: 'usuario',
+                        render: value => <span>{value.nombre}</span>
+                    },
+                    {
+                        title: 'Descripcion',
+                        dataIndex: 'descripcion',
+                        ellipsis: true
+                    },
+                    {
+                        title: 'archivo',
+                        dataIndex: 'archivo',
+                        render: value => (
+                            <div className='text-center'>
+                                <Button type='link' icon={<Icon.Download />} onClick={() => console.log(value)} />
+                            </div>
+                        )
+                    }
+                ]}
+            />
         </div>
     );
 };

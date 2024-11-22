@@ -2,7 +2,7 @@ import { sessionAdapter } from '@/adapter';
 import logoBrand from '@/assets/images/logo-brand.png';
 import logo from '@/assets/images/logo.png';
 import { Icon } from '@/components';
-import { Login, privateRoutes } from '@/models';
+import { Login, privateRoutes, publicRoutes } from '@/models';
 import { setSession } from '@/redux';
 import { httpLogin } from '@/services';
 import { Button, Form, FormProps, Input, message } from 'antd';
@@ -33,7 +33,7 @@ export const SingIn = () => {
 
     return (
         <div className='login-container'>
-            <img src={logoBrand} alt='logo' width={150} />
+            <img src={logoBrand} alt='logo' width={180} />
             <div className='flex-1 flex justify-center items-center'>
                 <div className='card shadow-lg'>
                     <Form layout='vertical' onFinish={handleSubmit}>
@@ -66,6 +66,19 @@ export const SingIn = () => {
                         <Button block type='primary' htmlType='submit' loading={loading} disabled={loading}>
                             Iniciar Sesión
                         </Button>
+
+                        <div className='text-right mt-5'>
+                            <Button
+                                type='primary'
+                                ghost
+                                size='small'
+                                htmlType='button'
+                                loading={loading}
+                                onClick={() => navigate(`/${publicRoutes.SING_IN_CUSTOMER}`, { replace: true })}
+                            >
+                                Soy cliente
+                            </Button>
+                        </div>
                     </Form>
                 </div>
             </div>

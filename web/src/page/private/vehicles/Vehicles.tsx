@@ -1,13 +1,14 @@
 import { Icon, Search } from '@/components';
-import { Customer, Vehicles as TypeVehicles, TableParams, privateRoutes, EmptyVehicle } from '@/models';
+import { Customer, Vehicles as TypeVehicles, TableParams, privateRoutes, EmptyVehicle, _SERVER, publicRoutes } from '@/models';
 import { RootState } from '@/redux';
 import { httpGetCustomer, httpGetVehiclesGetById, httpGetVehiclesPagination } from '@/services';
-import { getDateFormat } from '@/utilities';
+import { copyToClipboard, encryptData, getDateFormat } from '@/utilities';
 import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ViewVehicles } from './ViewVehicles';
+import { c } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 
 export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -41,6 +42,24 @@ export const Vehicles = () => {
         });
 
         if (pagination.pageSize !== tableParams.pagination?.pageSize) setVehicles([]);
+    };
+
+    const handleGenerateUrl = async () => {
+        try {
+            if (!vehicle.cotizacion.cliente?.correo)
+                return message.warning('El cliente no cuenta con correo, por favor edite el cliente antes de generar la url');
+            const data = {
+                id: vehicle.cotizacion.cliente?.id_cliente,
+                correo: vehicle.cotizacion.cliente?.correo
+            };
+            const token = window.btoa(JSON.stringify(data));
+            const baseUrl = window.location.href.split('#')[0];
+            const url = `${baseUrl}#/${publicRoutes.SING_IN_CUSTOMER}/${token}`;
+            await copyToClipboard(url);
+            message.success(`Copiado el url al portapapeles`);
+        } catch (error) {
+            message.error(`Ha ocurrido un error: ${error}`);
+        }
     };
 
     const handleEdit = (id_vehiculo: number) => {
@@ -237,10 +256,16 @@ export const Vehicles = () => {
                 open={modal}
                 title={
                     <h3>
-                        Vehiculo <Tag color='success'>{vehicle.estado_importacion.estado_importacion}</Tag>
+                        Vehiculo <Tag color={vehicle.estado_importacion.color}>{vehicle.estado_importacion.estado_importacion}</Tag>
                     </h3>
                 }
-                footer={null}
+                footer={() => (
+                    <div className='flex  flex-row gap-3 justify-end'>
+                        <Button type='link' icon={<Icon.Copy />} onClick={handleGenerateUrl}>
+                            Url Cliente
+                        </Button>
+                    </div>
+                )}
                 onCancel={() => setModal(false)}
                 centered
                 destroyOnClose

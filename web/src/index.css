@@ -118,6 +118,7 @@
 }
 
 .navbar {
+    width: 100%;
     position: relative;
     display: -ms-flexbox;
     display: flex;
@@ -199,17 +200,33 @@
     background-repeat: no-repeat;
 }
 
+.login-container-customer {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-image: url('@/assets/images/fondo.jpg') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .border-primary {
     border: red 1px solid !important;
 }
 
-.card {
+.card,
+.card-customer {
     background: var(--white) !important;
     padding: 40px 20px;
     background-color: var(--white-light);
     border-radius: 16px;
     width: 350px;
     max-width: 95%;
+}
+
+.card-customer {
+    opacity: 0.8;
 }
 
 .h-100,
@@ -783,4 +800,50 @@
     border-radius: 16px;
     display: flex;
     flex-direction: column;
+}
+
+.search {
+    width: 300px;
+}
+
+@media (max-width: 768px) {
+    .search {
+        width: 100%;
+    }
+}
+
+.card-customer-detail,
+.card-customer-detail-gay {
+    background-color: var(--white-light);
+}
+
+.card-customer-detail {
+    padding: 2rem 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-customer-detail-gay {
+    display: flex;
+    background-color: var(--gray) !important;
+    width: 300px;
+}
+
+.text-label {
+    display: flex;
+    flex-direction: row;
+}
+.text-label > span {
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .card-customer-detail-gay {
+        display: none;
+    }
+
+    .text-label {
+        flex-direction: column;
+    }
 }
