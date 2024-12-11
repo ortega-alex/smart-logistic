@@ -58,15 +58,6 @@ INSERT INTO perfil_memu_permiso (id, id_perfil, id_menu, id_permiso) VALUES
 INSERT INTO usuario (nombre, usuario, contrasenia, telefono, correo, id_perfil) VALUES 
 ('Admin', 'admin', '$2a$08$pfPpnWYXvYzuXBDkqgzmMev13jo7QDnKNzuJzUwzV06.7VzDZwHJS', '--sin telefono--',	'--sin correo--', 1)
 
-INSERT INTO estado_importacion (estado_importacion) VALUES 
-('Cotizacion Aprobada'),
-('Factura pagada'),
-('Recolectado'),
-('En llarda'),
-('Embarcado'),
-('En puerto');
-
-
 INSERT INTO estado_importacion ('estado_importacion','index','color') VALUES
 ('Cotizacion Aprobada',0,'#ffbb96'),
 ('Factura Cargada',1,'#ffc069'),

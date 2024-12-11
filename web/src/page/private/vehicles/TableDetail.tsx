@@ -12,7 +12,7 @@ export const TableDetail: React.FC<Props> = ({ detail }) => {
             size='small'
             rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
             pagination={false}
-            className='table mb-3 px-5'
+            // className='table mb-3 px-5'
             showSorterTooltip={false}
             rowKey='id_subasta'
             dataSource={detail}

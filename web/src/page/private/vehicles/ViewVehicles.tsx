@@ -2,7 +2,7 @@ import { Icon, ViewFiles } from '@/components';
 import { _SERVER, Moneda, Vehicles, EmptyFile } from '@/models';
 import { getDateFormat } from '@/utilities';
 import { Button, Divider, Modal, Table, Tag, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TableDetail } from './TableDetail';
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
     const [modal, setModal] = useState(false);
     const [file, setFile] = useState(EmptyFile);
+    const [loading, setLoading] = useState(false);
 
     const handleViewFile = (path: string) => {
         setFile({
@@ -20,6 +21,11 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
         });
         setModal(true);
     };
+
+    useEffect(() => {
+        setLoading(true);
+        setTimeout(() => setLoading(false), 1000);
+    }, [vehicle]);
 
     return (
         <div className='flex flex-column'>
@@ -86,19 +92,21 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                 </div>
             </div>
 
-            {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.USD) && (
-                <>
-                    <Divider orientation='left'>Detalle en USD</Divider>
-                    <TableDetail detail={vehicle.cotizacion.detalles.filter(item => item.moneda === Moneda.USD) ?? []} />
-                </>
-            )}
+            <div className='flex  mb-3 px-5 gap-3'>
+                {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.USD) && (
+                    <div className='flex-1'>
+                        <Divider orientation='left'>Detalle en USD</Divider>
+                        <TableDetail detail={vehicle.cotizacion.detalles.filter(item => item.moneda === Moneda.USD) ?? []} />
+                    </div>
+                )}
 
-            {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.GTQ) && (
-                <>
-                    <Divider orientation='left'>Detalle en GTQ</Divider>
-                    <TableDetail detail={vehicle.cotizacion.detalles?.filter(item => item.moneda === Moneda.GTQ) ?? []} />
-                </>
-            )}
+                {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.GTQ) && (
+                    <div className='flex-1'>
+                        <Divider orientation='left'>Detalle en GTQ</Divider>
+                        <TableDetail detail={vehicle.cotizacion.detalles?.filter(item => item.moneda === Moneda.GTQ) ?? []} />
+                    </div>
+                )}
+            </div>
 
             <Divider orientation='left'>Historico</Divider>
             <Table
@@ -109,11 +117,13 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                 showSorterTooltip={false}
                 rowKey='id_subasta'
                 dataSource={vehicle.historial_vechiculo}
+                loading={loading}
+                scroll={{ y: 250 }}
                 columns={[
                     {
                         title: 'Fecha',
                         dataIndex: 'fecha_creacion',
-                        render: value => <span>{getDateFormat(value, 'DD/MM/YYYY')}</span>
+                        render: value => <span>{getDateFormat(value, 'DD/MM/YYYY HH:mm')}</span>
                     },
                     {
                         title: 'Descripcion',
@@ -131,7 +141,7 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                         dataIndex: 'archivo',
                         render: value => (
                             <div className='text-center'>
-                                <Tooltip title='Ver'>
+                                <Tooltip title='Ver' placement='right'>
                                     <Button type='link' icon={<Icon.Eye />} onClick={() => handleViewFile(value)} />
                                 </Tooltip>
                             </div>
@@ -148,7 +158,11 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                 }}
                 centered
                 destroyOnClose
-                closeIcon={<Icon.Close color='white' />}
+                closeIcon={
+                    <div className='bg-secondary px-2 border-sm'>
+                        <Icon.Close color='white' />
+                    </div>
+                }
                 width={1000}
                 footer={false}
                 className='bg-transparent'

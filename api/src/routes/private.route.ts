@@ -3,6 +3,7 @@ import {
     addAution,
     addCrane,
     addCustomer,
+    addImportHistory,
     addPort,
     addProfile,
     addQuoter,
@@ -41,10 +42,10 @@ import {
     updateQuoter,
     updateTypeOfCustomerById,
     updateTypeVehicle,
-    updateUser
+    updateUser,
+    uploadInvoice
 } from '../controllers';
-import { fileUpload } from '../middleware';
-import { uploadInvoice } from '../controllers/import-history.controller';
+import { fileUpload, imagesBufferUpload } from '../middleware';
 
 const routes = Router();
 
@@ -105,5 +106,6 @@ routes.get('/vehicles/customer/:id', getVehiclesByCustomerId);
 routes.get('/import-state', getImportState);
 
 routes.post('/import-history/:id', fileUpload.single('file'), uploadInvoice);
+routes.post('/import-history/evidence/:id', imagesBufferUpload.single('image'), addImportHistory);
 
 export const privateRoutes = routes;

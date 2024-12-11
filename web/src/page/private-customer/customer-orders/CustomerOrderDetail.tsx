@@ -1,8 +1,8 @@
-import { Icon } from '@/components';
-import { EmptyVehicle, ImportState, Vehicles } from '@/models';
+import { Icon, ViewFiles } from '@/components';
+import { EmptyFile, EmptyVehicle, ImportState, Vehicles } from '@/models';
 import { httpGetImportState, httpGetVehiclesGetById } from '@/services';
 import { getDateFormat } from '@/utilities';
-import { Button, Divider, message, Steps, Table } from 'antd';
+import { Button, Divider, message, Modal, Steps, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -12,6 +12,16 @@ export const CustomerOrderDetail = () => {
     const [loading, setLoading] = useState(false);
     const [vehicle, setVehicle] = useState<Vehicles>(EmptyVehicle);
     const [importStates, setImportStates] = useState<Array<ImportState>>([]);
+    const [file, setFile] = useState(EmptyFile);
+    const [modal, setModal] = useState(false);
+
+    const handleViewFile = (path: string) => {
+        setFile({
+            ...file,
+            ruta: path
+        });
+        setModal(true);
+    };
 
     const handleGetDetail = (id: number) => {
         setLoading(true);
@@ -96,7 +106,7 @@ export const CustomerOrderDetail = () => {
                             dataIndex: 'archivo',
                             render: value => (
                                 <div className='text-center'>
-                                    <Button type='link' icon={<Icon.Eye />} onClick={() => console.log(value)} />
+                                    <Button type='link' icon={<Icon.Eye />} onClick={() => handleViewFile(value)} />
                                 </div>
                             )
                         }
@@ -104,6 +114,26 @@ export const CustomerOrderDetail = () => {
                 />
             </div>
             <div className='card-customer-detail-gay'></div>
+
+            <Modal
+                open={modal}
+                onCancel={() => {
+                    setModal(false);
+                    setFile(EmptyFile);
+                }}
+                centered
+                destroyOnClose
+                closeIcon={
+                    <div className='bg-secondary px-2 border-sm'>
+                        <Icon.Close color='white' />
+                    </div>
+                }
+                width={1000}
+                footer={false}
+                className='bg-transparent'
+            >
+                <ViewFiles file={file} download={true} />
+            </Modal>
         </div>
     );
 };

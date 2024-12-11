@@ -7,7 +7,7 @@ import { Button, List, Modal, Select, Table, TableProps, Tag, Tooltip, message }
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ViewVehicles } from './ViewVehicles';
+import { FormEvidence, ViewVehicles } from './';
 
 export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -28,8 +28,12 @@ export const Vehicles = () => {
         }
     });
     const [filter, setFilter] = useState('');
-    const [modal, setModal] = useState(false);
+    const [modals, setModals] = useState({
+        view: false,
+        evidence: false
+    });
 
+    const handleOnChangeModals = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
     const handleOnChangeLoading = (name: string, value: boolean) => setLoading({ ...loading, [name]: value });
 
     const handleTableChange: TableProps<TypeVehicles>['onChange'] = (pagination, filters, sorter) => {
@@ -66,7 +70,7 @@ export const Vehicles = () => {
         httpGetVehiclesGetById(id_vehiculo)
             .then(res => {
                 setVehicle(res);
-                setModal(true);
+                setModals({ ...modals, view: true, evidence: false });
             })
             .catch(err => message.error(`Error http get vehicles: ${err.message}`))
             .finally(() => handleOnChangeLoading('services', false));
@@ -252,7 +256,7 @@ export const Vehicles = () => {
             )}
 
             <Modal
-                open={modal}
+                open={modals.view}
                 title={
                     <h3>
                         Vehiculo <Tag color={vehicle.estado_importacion.color}>{vehicle.estado_importacion.estado_importacion}</Tag>
@@ -260,17 +264,31 @@ export const Vehicles = () => {
                 }
                 footer={() => (
                     <div className='flex  flex-row gap-3 justify-end'>
-                        <Button type='link' icon={<Icon.Copy />} onClick={handleGenerateUrl}>
+                        <Button type='primary' htmlType='button' ghost onClick={() => handleOnChangeModals('evidence')}>
+                            Cargar Evidencia
+                        </Button>
+                        <Button type='link' htmlType='button' icon={<Icon.Copy />} onClick={handleGenerateUrl}>
                             Url Cliente
                         </Button>
                     </div>
                 )}
-                onCancel={() => setModal(false)}
+                onCancel={() => handleOnChangeModals('view', false)}
                 centered
                 destroyOnClose
                 width={1200}
             >
                 <ViewVehicles vehicle={vehicle} />
+            </Modal>
+
+            <Modal
+                open={modals.evidence}
+                title={<h3>Cargar Evidencia</h3>}
+                footer={null}
+                centered
+                destroyOnClose
+                onCancel={() => handleOnChangeModals('evidence', false)}
+            >
+                <FormEvidence vehicle={vehicle} onClose={() => handleEdit(vehicle.id_vehiculo)} />
             </Modal>
         </div>
     );

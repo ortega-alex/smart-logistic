@@ -8,21 +8,30 @@ import { enviroment } from '../utils';
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FileNameCallback = (error: Error | null, filename: string) => void;
 
+export const remaneFile = (originalname: string): string => {
+    const uuid = String(crypto.lib.WordArray.random(16));
+    return uuid + path.extname(originalname);
+};
+
+export const validatePath = (_path: string): string => {
+    let ruta = path.join(__dirname, `../public/`);
+    if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
+    ruta = path.join(ruta, `${_path}/`);
+    if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
+    return ruta;
+};
+
 export const ImageStorage = multer.diskStorage({
     destination: (_req: Request, _file: Express.Multer.File, cb: DestinationCallback): void => {
         try {
-            let ruta = path.join(__dirname, `../public/`);
-            if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
-            ruta = path.join(ruta, `${enviroment.URI_IMAGES}/`);
-            if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
+            const ruta = validatePath(enviroment.URI_IMAGES);
             cb(null, ruta);
         } catch (error) {
             return cb(new Error('Ha ocurrido un error interno al momento de cargar la imagen' + error), '');
         }
     },
     filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const uuid = String(crypto.lib.WordArray.random(16));
-        const name = uuid + path.extname(file.originalname);
+        const name = remaneFile(file.originalname);
         cb(null, name);
     }
 });
@@ -30,18 +39,14 @@ export const ImageStorage = multer.diskStorage({
 export const fileStorage = multer.diskStorage({
     destination: (_req: Request, _file: Express.Multer.File, cb: DestinationCallback): void => {
         try {
-            let ruta = path.join(__dirname, `../public/`);
-            if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
-            ruta = path.join(ruta, `${enviroment.URI_FILE}/`);
-            if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
+            const ruta = validatePath(enviroment.URI_FILE);
             cb(null, ruta);
         } catch (error) {
             return cb(new Error('Ha ocurrido un error interno al momento de cargar la imagen' + error), '');
         }
     },
     filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const uuid = String(crypto.lib.WordArray.random(16));
-        const name = uuid + path.extname(file.originalname);
+        const name = remaneFile(file.originalname);
         cb(null, name);
     }
 });
@@ -61,4 +66,17 @@ export const imageUpload = multer({
 
 export const fileUpload = multer({
     storage: fileStorage
+});
+
+export const imagesBufferUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter: (_res: Request, file: Express.Multer.File, cb): void => {
+        if (!file.originalname.match(/\.(png|jpg|jpeg|tif|tiff)$/)) {
+            return cb(new Error('Porfavor seleccione una imagen'));
+        }
+        cb(null, true);
+    }
 });

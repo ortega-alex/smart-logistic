@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ImportState, Quoter, Vehicles } from '../entities';
+import { ImportHistory, ImportState, Quoter, Vehicles } from '../entities';
 
 export const newVehicle = async (cotizacion: Quoter, estado_importacion: ImportState) => {
     try {
@@ -50,23 +50,24 @@ export const getVehicles = async (_req: Request, res: Response) => {
 export const getVehiclesById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const vehicle = await Vehicles.findOne({
-            where: { id_vehiculo: Number(id) },
-            relations: {
-                cotizacion: {
-                    cliente: true,
-                    vendedor: true,
-                    tipo_veniculo: true,
-                    puerto: true,
-                    grua_usd: true,
-                    grua_gt: true,
-                    subasta: true,
-                    detalles: true
-                },
-                estado_importacion: true,
-                historial_vechiculo: true
-            }
-        });
+
+        const vehicle = await Vehicles.getRepository()
+            .createQueryBuilder('vehicle')
+            .leftJoinAndSelect('vehicle.cotizacion', 'cotizacion')
+            .leftJoinAndSelect('cotizacion.cliente', 'cliente')
+            .leftJoinAndSelect('cotizacion.vendedor', 'vendedor')
+            .leftJoinAndSelect('cotizacion.tipo_veniculo', 'tipo_veniculo')
+            .leftJoinAndSelect('cotizacion.puerto', 'puerto')
+            .leftJoinAndSelect('cotizacion.grua_usd', 'grua_usd')
+            .leftJoinAndSelect('cotizacion.grua_gt', 'grua_gt')
+            .leftJoinAndSelect('cotizacion.subasta', 'subasta')
+            .leftJoinAndSelect('cotizacion.detalles', 'detalles')
+            .leftJoinAndSelect('vehicle.estado_importacion', 'estado_importacion')
+            .leftJoinAndSelect('vehicle.historial_vechiculo', 'historial_vechiculo')
+            .where('vehicle.id_vehiculo = :id', { id: Number(id) })
+            .orderBy('historial_vechiculo.fecha_creacion', 'DESC') // Ordenar la relación
+            .getOne();
+
         if (!vehicle) return res.status(203).json({ message: 'Vehiculo no encontrado' });
 
         return res.json(vehicle);

@@ -215,6 +215,10 @@
     border: red 1px solid !important;
 }
 
+.border-sm {
+    border-radius: 8px !important;
+}
+
 .card,
 .card-customer {
     background: var(--white) !important;

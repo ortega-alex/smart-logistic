@@ -10,3 +10,9 @@ export interface ImportHistory {
     visible_cliente: boolean;
     fecha_creacion: string;
 }
+
+export interface ImportHistoryEvidence {
+    descripcion: string;
+    image: Array<any>;
+    visible_cliente: boolean;
+}
