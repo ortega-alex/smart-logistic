@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@jimp/jpeg": "^0.22.12"
+  }
+}

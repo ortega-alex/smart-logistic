@@ -1,0 +1,27 @@
+### LOGIN
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/login
+Content-Type: application/json
+
+{
+    "usuario": "m.ortega",
+    "contrasenia": "abc123**"
+}
+
+### ADD USER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/user
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Marlon Ortega",
+    "usuario": "m.ortega",
+    "contrasenia": "abc123**",
+    "telefono": "--sin telefono--",
+    "correo": "m.ortega@mail.com",
+    "id_perfil": 1
+}
+
+### GET ALL USERS 
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/user
+Content-Type: application/json
+Authorization: Bearer {{token}}

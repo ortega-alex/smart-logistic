@@ -1,0 +1,13 @@
+### ADD TYPE OF CUSTOMER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-of-customer
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "tipo_cliente": "Particular"  
+}
+
+### GET TYPE OF CUSTOMER
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-of-customer
+Content-Type: application/json
+Authorization: Bearer {{token}}

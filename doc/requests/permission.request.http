@@ -1,0 +1,9 @@
+### GET PROFILE
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/permission
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET PROFILE
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/permission/3
+Content-Type: application/json
+Authorization: Bearer {{token}}

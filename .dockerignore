@@ -1,0 +1,6 @@
+*
+!api/package.json
+!api/package-lock.json
+!api/tsconfig.prod.json
+!api/tsconfig.json
+!api/src

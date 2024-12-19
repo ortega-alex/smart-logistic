@@ -1,0 +1,23 @@
+### GET AUTIONS
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-vehicle
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ADD AUTIONS
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-vehicle
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "tipo_vehiculo": "Sedan"
+}
+
+### UPDATE AUTIONS
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-vehicle/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "puerto": "Sedan",
+    "estado": true
+}

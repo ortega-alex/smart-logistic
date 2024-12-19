@@ -1,0 +1,24 @@
+### GET PROFILE
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### ADD PROFILE
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "perfil": "Administrador"
+}
+
+### UPDATE PROFILE
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile/3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "perfil": "Invitado",
+    "estado": true
+}
