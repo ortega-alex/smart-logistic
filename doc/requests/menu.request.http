@@ -1,4 +1,0 @@
-### GET MENUS
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/menu
-Content-Type: application/json
-Authorization: Bearer {{token}}

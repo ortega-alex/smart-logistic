@@ -1,4 +1,0 @@
-### GET IMPORTS STATE
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/import-state
-Content-Type: application/json
-Authorization: Bearer {{token}}

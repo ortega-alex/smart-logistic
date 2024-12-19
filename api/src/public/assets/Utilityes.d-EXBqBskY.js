@@ -1,1 +1,0 @@
-var r=(s=>(s.OnlyNumbers="onlyNumbers",s.Mail="mailIsValied",s.Password="passwordIsValid",s.PhoneNumber="phoneNumberIsValid",s.Nit="nitIsValid",s.Dpi="noDpiIsValid",s))(r||{}),n=(s=>(s.USD="$",s.GTQ="Q",s))(n||{});export{n as M,r as V};
