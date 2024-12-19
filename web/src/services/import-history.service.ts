@@ -1,15 +1,12 @@
-import { CustomerFile } from '@/models';
 import { httpRequest } from '@/utilities';
 
 const path = '/import-history';
 
-export const httpImportHistoryUploadInvoice = async (id: number, file: CustomerFile) =>
+export const httpImportHistoryUploadInvoice = async (id: number, data: any) =>
     await httpRequest({
         path: `${path}/${id}`,
         method: 'POST',
-        data: {
-            file
-        },
+        data,
         type: 'multipart'
     });
 

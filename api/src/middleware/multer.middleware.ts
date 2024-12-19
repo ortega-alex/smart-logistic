@@ -36,21 +36,6 @@ export const ImageStorage = multer.diskStorage({
     }
 });
 
-export const fileStorage = multer.diskStorage({
-    destination: (_req: Request, _file: Express.Multer.File, cb: DestinationCallback): void => {
-        try {
-            const ruta = validatePath(enviroment.URI_FILE);
-            cb(null, ruta);
-        } catch (error) {
-            return cb(new Error('Ha ocurrido un error interno al momento de cargar la imagen' + error), '');
-        }
-    },
-    filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
-        const name = remaneFile(file.originalname);
-        cb(null, name);
-    }
-});
-
 export const imageUpload = multer({
     storage: ImageStorage,
     limits: {
@@ -65,7 +50,21 @@ export const imageUpload = multer({
 });
 
 export const fileUpload = multer({
-    storage: fileStorage
+    storage: multer.diskStorage({
+        destination: (_req: Request, _file: Express.Multer.File, cb: DestinationCallback): void => {
+            try {
+                const ruta = validatePath(enviroment.URI_FILE);
+                console.log('ruta', ruta);
+                cb(null, ruta);
+            } catch (error) {
+                return cb(new Error('Ha ocurrido un error interno al momento de cargar la imagen' + error), '');
+            }
+        },
+        filename: (_res: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
+            const name = remaneFile(file.originalname);
+            cb(null, name);
+        }
+    })
 });
 
 export const imagesBufferUpload = multer({

@@ -20,6 +20,7 @@ export const FormEvidence: React.FC<Props> = ({ vehicle, onClose }) => {
         setLoading(true);
         const data = {
             ...values,
+            visible_cliente: values.visible_cliente ?? false,
             image: values.image?.[0]?.originFileObj,
             id_estado_importacion: vehicle.estado_importacion.id_estado_importacion,
             id_usuario: sessionState.id_sesion

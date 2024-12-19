@@ -1,13 +1,13 @@
 import { Icon, Search } from '@/components';
-import { Customer, EmptyVehicle, TableParams, Vehicles as TypeVehicles, privateRoutes, publicRoutes } from '@/models';
+import { Customer, EmptyVehicle, TableParams, Vehicles as TypeVehicles, privateRoutes } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetCustomer, httpGetVehiclesGetById, httpGetVehiclesPagination } from '@/services';
-import { copyToClipboard, getDateFormat } from '@/utilities';
+import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
+import { getDateFormat } from '@/utilities';
 import { Button, List, Modal, Select, Table, TableProps, Tag, Tooltip, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FormEvidence, ViewVehicles } from './';
+import { ViewVehicles } from './';
 
 export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -17,10 +17,7 @@ export const Vehicles = () => {
     const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [vehicles, setVehicles] = useState<Array<TypeVehicles>>([]);
     const [vehicle, setVehicle] = useState<TypeVehicles>(EmptyVehicle);
-    const [loading, setLoading] = useState({
-        data: false,
-        services: false
-    });
+    const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: 1,
@@ -28,13 +25,7 @@ export const Vehicles = () => {
         }
     });
     const [filter, setFilter] = useState('');
-    const [modals, setModals] = useState({
-        view: false,
-        evidence: false
-    });
-
-    const handleOnChangeModals = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
-    const handleOnChangeLoading = (name: string, value: boolean) => setLoading({ ...loading, [name]: value });
+    const [modal, setModal] = useState(false);
 
     const handleTableChange: TableProps<TypeVehicles>['onChange'] = (pagination, filters, sorter) => {
         setTableParams({
@@ -47,37 +38,13 @@ export const Vehicles = () => {
         if (pagination.pageSize !== tableParams.pagination?.pageSize) setVehicles([]);
     };
 
-    const handleGenerateUrl = async () => {
-        try {
-            if (!vehicle.cotizacion.cliente?.correo)
-                return message.warning('El cliente no cuenta con correo, por favor edite el cliente antes de generar la url');
-            const data = {
-                id: vehicle.cotizacion.cliente?.id_cliente,
-                correo: vehicle.cotizacion.cliente?.correo
-            };
-            const token = window.btoa(JSON.stringify(data));
-            const baseUrl = window.location.href.split('#')[0];
-            const url = `${baseUrl}#/${publicRoutes.SING_IN_CUSTOMER}/${token}`;
-            await copyToClipboard(url);
-            message.success(`Copiado el url al portapapeles`);
-        } catch (error) {
-            message.error(`Ha ocurrido un error: ${error}`);
-        }
-    };
-
-    const handleEdit = (id_vehiculo: number) => {
-        handleOnChangeLoading('services', true);
-        httpGetVehiclesGetById(id_vehiculo)
-            .then(res => {
-                setVehicle(res);
-                setModals({ ...modals, view: true, evidence: false });
-            })
-            .catch(err => message.error(`Error http get vehicles: ${err.message}`))
-            .finally(() => handleOnChangeLoading('services', false));
+    const handleViewDetail = (vehicle: TypeVehicles) => {
+        setVehicle(vehicle);
+        setModal(true);
     };
 
     const handleGet = () => {
-        handleOnChangeLoading('data', true);
+        setLoading(true);
         httpGetVehiclesPagination({
             ...tableParams,
             current: tableParams.pagination?.current,
@@ -97,12 +64,12 @@ export const Vehicles = () => {
 
                 if (lote) {
                     const item = res.data.find((item: TypeVehicles) => item.cotizacion.lote === lote);
-                    if (item) handleEdit(item.id_vehiculo);
+                    if (item) handleViewDetail(item);
                     navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}`, { replace: true });
                 }
             })
             .catch(err => message.error(`Error http get vehicles: ${err.message}`))
-            .finally(() => handleOnChangeLoading('data', false));
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
@@ -143,7 +110,7 @@ export const Vehicles = () => {
             {deviceState ? (
                 <List
                     dataSource={vehicles}
-                    loading={loading.data}
+                    loading={loading}
                     renderItem={item => (
                         <div className='item-list' key={item.id_vehiculo}>
                             <div className='flex-1'>
@@ -156,13 +123,7 @@ export const Vehicles = () => {
                                 <div>
                                     <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
                                 </div>
-                                <Button
-                                    type='link'
-                                    danger
-                                    htmlType='button'
-                                    icon={<Icon.Edit />}
-                                    onClick={() => handleEdit(item.id_vehiculo)}
-                                >
+                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleViewDetail(item)}>
                                     Editar
                                 </Button>
                             </div>
@@ -181,7 +142,7 @@ export const Vehicles = () => {
                     }}
                     onChange={handleTableChange}
                     className='table'
-                    loading={loading.data}
+                    loading={loading}
                     showSorterTooltip={false}
                     rowKey='id_vehiculo'
                     dataSource={vehicles}
@@ -245,7 +206,7 @@ export const Vehicles = () => {
                                     icon={<Icon.Edit />}
                                     type='text'
                                     size='small'
-                                    onClick={() => handleEdit(item.id_vehiculo)}
+                                    onClick={() => handleViewDetail(item)}
                                 >
                                     Ver
                                 </Button>
@@ -256,39 +217,19 @@ export const Vehicles = () => {
             )}
 
             <Modal
-                open={modals.view}
+                open={modal}
                 title={
                     <h3>
                         Vehiculo <Tag color={vehicle.estado_importacion.color}>{vehicle.estado_importacion.estado_importacion}</Tag>
                     </h3>
                 }
-                footer={() => (
-                    <div className='flex  flex-row gap-3 justify-end'>
-                        <Button type='primary' htmlType='button' ghost onClick={() => handleOnChangeModals('evidence')}>
-                            Cargar Evidencia
-                        </Button>
-                        <Button type='link' htmlType='button' icon={<Icon.Copy />} onClick={handleGenerateUrl}>
-                            Url Cliente
-                        </Button>
-                    </div>
-                )}
-                onCancel={() => handleOnChangeModals('view', false)}
+                footer={null}
+                onCancel={() => setModal(false)}
                 centered
                 destroyOnClose
                 width={1200}
             >
                 <ViewVehicles vehicle={vehicle} />
-            </Modal>
-
-            <Modal
-                open={modals.evidence}
-                title={<h3>Cargar Evidencia</h3>}
-                footer={null}
-                centered
-                destroyOnClose
-                onCancel={() => handleOnChangeModals('evidence', false)}
-            >
-                <FormEvidence vehicle={vehicle} onClose={() => handleEdit(vehicle.id_vehiculo)} />
             </Modal>
         </div>
     );

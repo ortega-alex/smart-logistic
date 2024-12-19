@@ -27,6 +27,7 @@ export const AppDataSource = new DataSource({
     username: enviroment.MYSQL_USER,
     password: enviroment.MYSQL_PASSWORD,
     database: enviroment.MYSQL_DATABASE,
+    port: Number(enviroment.MYSQL_PORT),
     entities: [
         Profile,
         User,

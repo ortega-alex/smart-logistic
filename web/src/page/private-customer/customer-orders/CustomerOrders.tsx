@@ -27,8 +27,15 @@ export const CustomerOrders = () => {
             .finally(() => setLoading(false));
     };
 
-    const handleIploadInvoice = (file: any, id: number) => {
-        httpImportHistoryUploadInvoice(id, file)
+    const handleIploadInvoice = (file: any, vehicle: Vehicles) => {
+        const body = {
+            file,
+            id_cliente: sessionCustomerState.id_cliente,
+            id_estado_importacion: vehicle.estado_importacion.id_estado_importacion + 1,
+            descripcion: 'El cliente ha cargado la factura',
+            visible_cliente: true
+        };
+        httpImportHistoryUploadInvoice(vehicle.id_vehiculo, body)
             .then(res => {
                 if (res.success) {
                     message.success(res.message);
@@ -135,8 +142,9 @@ export const CustomerOrders = () => {
                                             <Tooltip title='Cargar factura'>
                                                 <Upload
                                                     accept={'.pdf'}
-                                                    customRequest={info => handleIploadInvoice(info.file, item.id_vehiculo)}
+                                                    customRequest={info => handleIploadInvoice(info.file, item)}
                                                     onChange={info => (info.file.status = 'done')}
+                                                    maxCount={1}
                                                 >
                                                     <Button style={{ width: 40 }} icon={<Icon.Upload />} type='text' size='small' />
                                                 </Upload>

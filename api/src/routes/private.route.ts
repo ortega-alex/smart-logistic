@@ -42,8 +42,7 @@ import {
     updateQuoter,
     updateTypeOfCustomerById,
     updateTypeVehicle,
-    updateUser,
-    uploadInvoice
+    updateUser
 } from '../controllers';
 import { fileUpload, imagesBufferUpload } from '../middleware';
 
@@ -105,7 +104,7 @@ routes.get('/vehicles/customer/:id', getVehiclesByCustomerId);
 
 routes.get('/import-state', getImportState);
 
-routes.post('/import-history/:id', fileUpload.single('file'), uploadInvoice);
+routes.post('/import-history/:id', fileUpload.single('file'), addImportHistory);
 routes.post('/import-history/evidence/:id', imagesBufferUpload.single('image'), addImportHistory);
 
 export const privateRoutes = routes;
