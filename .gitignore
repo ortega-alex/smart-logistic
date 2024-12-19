@@ -27,6 +27,3 @@ dist-ssr
 
 doc/server
 *confidencial
-
-!/api\src\public\files
-!/api\src\public\images
