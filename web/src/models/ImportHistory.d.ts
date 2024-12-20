@@ -6,13 +6,13 @@ export interface ImportHistory {
     cliente: Customer;
     estado_importacion: ImportState;
     descripcion: string;
-    archivo: string;
+    archivo: string | Array<any>;
     visible_cliente: boolean;
     fecha_creacion: string;
 }
 
-export interface ImportHistoryEvidence {
-    descripcion: string;
-    image: Array<any>;
-    visible_cliente: boolean;
-}
+// export interface ImportHistoryEvidence {
+//     descripcion: string;
+//     image: Array<any>;
+//     visible_cliente: boolean;
+// }

@@ -1,7 +1,7 @@
 import { Icon, Search } from '@/components';
 import { Customer, privateRoutes, Vehicles } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetVehiclesByCustomerId, httpImportHistoryUploadInvoice } from '@/services';
+import { httpAddImportHistory, httpGetVehiclesByCustomerId } from '@/services';
 import { getDateFormat } from '@/utilities';
 import { Alert, Button, List, message, Table, Tooltip, Upload } from 'antd';
 import { useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ export const CustomerOrders = () => {
             descripcion: 'El cliente ha cargado la factura',
             visible_cliente: true
         };
-        httpImportHistoryUploadInvoice(vehicle.id_vehiculo, body)
+        httpAddImportHistory(vehicle.id_vehiculo, body)
             .then(res => {
                 if (res.success) {
                     message.success(res.message);

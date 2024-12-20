@@ -1,31 +1,32 @@
 import { Icon } from '@/components';
-import { ImportHistoryEvidence, Sesion, Vehicles } from '@/models';
+import { useVehicle } from '@/hooks';
+import { ImportHistory, ImportState, Sesion } from '@/models';
 import { RootState } from '@/redux';
-import { httpImportHistoryEvidence } from '@/services';
-import { Button, Checkbox, Form, FormProps, Input, message, Upload } from 'antd';
-import React, { useState } from 'react';
+import { httpAddImportHistory, httpGetImportState } from '@/services';
+import { Button, Checkbox, Form, FormProps, Input, message, Select, Upload } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
-    vehicle: Vehicles;
     onClose: () => void;
 }
 
-export const FormEvidence: React.FC<Props> = ({ vehicle, onClose }) => {
+export const FormEvidence: React.FC<Props> = ({ onClose }) => {
     const sessionState: Sesion = useSelector((store: RootState) => store.session);
+    const { vehicle } = useVehicle();
 
     const [loading, setLoading] = useState(false);
+    const [importState, setImportState] = useState<Array<ImportState>>([]);
 
-    const handleSubmit: FormProps<ImportHistoryEvidence>['onFinish'] = async values => {
+    const handleSubmit: FormProps<ImportHistory>['onFinish'] = async values => {
         setLoading(true);
         const data = {
             ...values,
             visible_cliente: values.visible_cliente ?? false,
-            image: values.image?.[0]?.originFileObj,
-            id_estado_importacion: vehicle.estado_importacion.id_estado_importacion,
+            file: values.archivo?.[0]?.originFileObj,
             id_usuario: sessionState.id_sesion
         };
-        httpImportHistoryEvidence(vehicle.id_vehiculo, data)
+        httpAddImportHistory(vehicle.id_vehiculo, data)
             .then(res => {
                 message[res.success ? 'success' : 'warning'](res.message);
                 if (res.success) onClose();
@@ -41,17 +42,39 @@ export const FormEvidence: React.FC<Props> = ({ vehicle, onClose }) => {
         return e?.fileList;
     };
 
+    useEffect(() => {
+        httpGetImportState()
+            .then(res => setImportState(res))
+            .catch(err => message.error(`Error http get import state ${err.message}`));
+    }, []);
+
     return (
-        <Form layout='vertical' name='evidence' onFinish={handleSubmit}>
+        <Form
+            layout='vertical'
+            name='evidence'
+            onFinish={handleSubmit}
+            initialValues={{ id_estado_importacion: vehicle.estado_importacion.id_estado_importacion }}
+        >
             <Form.Item
-                label='Imagen'
-                name='image'
+                tooltip='Permite cambiar el estado de la importación'
+                label='Estado'
+                name='id_estado_importacion'
+                rules={[{ required: true, message: 'El campo es obligatorio' }]}
+            >
+                <Select
+                    placeholder='Seleccione un estado'
+                    options={importState.map(item => ({ label: item.estado_importacion, value: item.id_estado_importacion }))}
+                />
+            </Form.Item>
+            <Form.Item
+                label='Archivo'
+                name='archivo'
                 valuePropName='fileList'
                 getValueFromEvent={normFile}
                 rules={[{ required: true, message: 'El campo es obligatorio' }]}
             >
                 <Upload
-                    accept={'.png, .jpg, .jpeg'}
+                    accept={'.png, .jpg, .jpeg, .tif, .tiff, .pdf'}
                     onChange={info => (info.file.status = 'done')}
                     customRequest={() => {}}
                     listType='picture-card'
@@ -60,7 +83,7 @@ export const FormEvidence: React.FC<Props> = ({ vehicle, onClose }) => {
                 >
                     <button style={{ border: 0, background: 'none' }} type='button'>
                         <Icon.Plus />
-                        <div style={{ marginTop: 8 }}>Upload</div>
+                        <div style={{ marginTop: 8 }}>Cargar</div>
                     </button>
                 </Upload>
             </Form.Item>

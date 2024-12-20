@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import fs from 'fs';
-import { Jimp } from 'jimp';
 import { Customer, ImportHistory, ImportState, User, Vehicles } from '../entities';
-import { remaneFile, validatePath } from '../middleware';
-import { enviroment, stringToBoolean } from '../utils';
+import { saveFile } from '../middleware';
+import { stringToBoolean } from '../utils';
 
 export const addImportHistory = async (req: Request, res: Response) => {
     try {
@@ -39,20 +37,7 @@ export const addImportHistory = async (req: Request, res: Response) => {
         }
 
         let archivo = '';
-        if (file) {
-            if (file && file.buffer) {
-                const image = await Jimp.read(file.buffer);
-                const buffer = await image.resize({ w: 512 }).getBuffer('image/jpeg');
-
-                // Renombrar y guardar la imagen
-                const name = remaneFile(file.originalname);
-                const ruta = validatePath(enviroment.URI_IMAGES);
-                await fs.writeFileSync(`${ruta}/${name}`, buffer);
-
-                // Establecer la ruta del archivo redimensionado
-                archivo = `${enviroment.URI_IMAGES}/${name}`;
-            } else archivo = `${enviroment.URI_FILE}/${file.filename}`;
-        }
+        if (file) archivo = await saveFile(file);
 
         const history = new ImportHistory();
         history.vehiculo = vehicle;

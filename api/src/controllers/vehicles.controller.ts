@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ImportHistory, ImportState, Quoter, Vehicles } from '../entities';
+import { ImportState, Quoter, Vehicles } from '../entities';
 
 export const newVehicle = async (cotizacion: Quoter, estado_importacion: ImportState) => {
     try {
@@ -65,7 +65,7 @@ export const getVehiclesById = async (req: Request, res: Response) => {
             .leftJoinAndSelect('vehicle.estado_importacion', 'estado_importacion')
             .leftJoinAndSelect('vehicle.historial_vechiculo', 'historial_vechiculo')
             .where('vehicle.id_vehiculo = :id', { id: Number(id) })
-            .orderBy('historial_vechiculo.fecha_creacion', 'DESC') // Ordenar la relación
+            .orderBy('historial_vechiculo.fecha_creacion', 'DESC')
             .getOne();
 
         if (!vehicle) return res.status(203).json({ message: 'Vehiculo no encontrado' });
@@ -143,13 +143,13 @@ export const getVechiclesPaginatedData = async (req: Request, res: Response) => 
 export const getVehiclesByCustomerId = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const vehicles = await Vehicles.find({
-            where: { cotizacion: { cliente: { id_cliente: Number(id) } } },
-            relations: {
-                cotizacion: true,
-                estado_importacion: true
-            }
-        });
+        const vehicles = await Vehicles.getRepository()
+            .createQueryBuilder('vehicle')
+            .innerJoinAndSelect('vehicle.cotizacion', 'cotizacion')
+            .innerJoinAndSelect('vehicle.estado_importacion', 'estado_importacion')
+            .where('cotizacion.cliente.id_cliente = :id', { id: Number(id) })
+            .orderBy('vehicle.fecha_creacion', 'DESC')
+            .getMany();
         return res.status(200).json(vehicles);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });

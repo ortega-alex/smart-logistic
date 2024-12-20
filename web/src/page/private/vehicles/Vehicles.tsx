@@ -1,5 +1,6 @@
 import { Icon, Search } from '@/components';
-import { Customer, EmptyVehicle, TableParams, Vehicles as TypeVehicles, privateRoutes } from '@/models';
+import { useVehicle } from '@/hooks';
+import { Customer, TableParams, Vehicles as TypeVehicles, privateRoutes } from '@/models';
 import { RootState } from '@/redux';
 import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -13,10 +14,10 @@ export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
     const { lote } = useParams();
     const navigate = useNavigate();
+    const { vehicle, addVehicle } = useVehicle();
 
     const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [vehicles, setVehicles] = useState<Array<TypeVehicles>>([]);
-    const [vehicle, setVehicle] = useState<TypeVehicles>(EmptyVehicle);
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
@@ -39,7 +40,7 @@ export const Vehicles = () => {
     };
 
     const handleViewDetail = (vehicle: TypeVehicles) => {
-        setVehicle(vehicle);
+        addVehicle(vehicle);
         setModal(true);
     };
 
@@ -194,7 +195,7 @@ export const Vehicles = () => {
                             title: 'Estado',
                             dataIndex: 'estado_importacion',
                             sorter: true,
-                            render: value => <span>{value.estado_importacion}</span>
+                            render: value => <Tag color={value.color}>{value.estado_importacion}</Tag>
                         },
                         {
                             title: 'Opciones',
@@ -229,7 +230,7 @@ export const Vehicles = () => {
                 destroyOnClose
                 width={1200}
             >
-                <ViewVehicles vehicle={vehicle} />
+                <ViewVehicles />
             </Modal>
         </div>
     );

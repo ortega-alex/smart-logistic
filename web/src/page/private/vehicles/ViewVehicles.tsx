@@ -1,24 +1,26 @@
 import { Icon, ViewFiles } from '@/components';
-import { EmptyFile, EmptyVehicle, Moneda, publicRoutes, Vehicles } from '@/models';
+import { useVehicle } from '@/hooks';
+import { EmptyFile, Moneda, publicRoutes } from '@/models';
+import { httpGetVehiclesGetById } from '@/services';
 import { copyToClipboard, getDateFormat } from '@/utilities';
 import { Button, Divider, message, Modal, Table, Tag, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { TableDetail } from './TableDetail';
-import { httpGetVehiclesGetById } from '@/services';
 import { FormEvidence } from './FormEvidence';
+import { TableDetail } from './TableDetail';
 
 interface Props {
-    vehicle: Vehicles;
+    // vehicle: Vehicles;
 }
 
-export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
+export const ViewVehicles: React.FC<Props> = () => {
+    const { vehicle, updateVehicle } = useVehicle();
+
     const [modals, setModals] = useState({
         view: false,
         evidence: false
     });
     const [file, setFile] = useState(EmptyFile);
     const [loading, setLoading] = useState(false);
-    const [vehicleDetail, setVehicleDetail] = useState<Vehicles>(EmptyVehicle);
 
     const handleOnChangeModals = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
 
@@ -32,11 +34,11 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
 
     const handleGenerateUrl = async () => {
         try {
-            if (!vehicleDetail.cotizacion.cliente?.correo)
+            if (!vehicle.cotizacion.cliente?.correo)
                 return message.warning('El cliente no cuenta con correo, por favor edite el cliente antes de generar la url');
             const data = {
-                id: vehicleDetail.cotizacion.cliente?.id_cliente,
-                correo: vehicleDetail.cotizacion.cliente?.correo
+                id: vehicle.cotizacion.cliente?.id_cliente,
+                correo: vehicle.cotizacion.cliente?.correo
             };
             const token = window.btoa(JSON.stringify(data));
             const baseUrl = window.location.href.split('#')[0];
@@ -51,7 +53,7 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
     const handleGet = () => {
         setLoading(true);
         httpGetVehiclesGetById(vehicle.id_vehiculo)
-            .then(res => setVehicleDetail(res))
+            .then(res => updateVehicle(res))
             .catch(err => message.error(`Error http get vehicles: ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -66,77 +68,77 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                 <div className='flex flex-column flex-1 gap-2 px-3'>
                     <Divider orientation='left'>Informacion del cliente</Divider>
                     <div className='flex flex-column'>
-                        <strong>Cliente:</strong> {vehicleDetail.cotizacion.cliente?.cliente}
+                        <strong>Cliente:</strong> {vehicle.cotizacion.cliente?.cliente}
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Telefono Fijo:</strong> {vehicleDetail.cotizacion.cliente?.telefono_fijo}
+                            <strong>Telefono Fijo:</strong> {vehicle.cotizacion.cliente?.telefono_fijo}
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Telefono Celular:</strong> {vehicleDetail.cotizacion.cliente?.telefono_celular}
+                            <strong>Telefono Celular:</strong> {vehicle.cotizacion.cliente?.telefono_celular}
                         </div>
                     </div>
                     <div className='flex flex-column'>
-                        <strong>Direccion:</strong> {vehicleDetail.cotizacion.cliente?.direccion}
+                        <strong>Direccion:</strong> {vehicle.cotizacion.cliente?.direccion}
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. NIT:</strong> {vehicleDetail.cotizacion.cliente?.nit}
+                            <strong>No. NIT:</strong> {vehicle.cotizacion.cliente?.nit}
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. DPI:</strong> {vehicleDetail.cotizacion.cliente?.dpi}
+                            <strong>No. DPI:</strong> {vehicle.cotizacion.cliente?.dpi}
                         </div>
                     </div>
                     <div className='flex flex-column'>
-                        <strong>Correo:</strong> {vehicleDetail.cotizacion.cliente?.correo}
+                        <strong>Correo:</strong> {vehicle.cotizacion.cliente?.correo}
                     </div>
                 </div>
                 <div className='flex flex-column flex-1 gap-2'>
                     <Divider orientation='left'>Informacion del vehiculo</Divider>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. VIN:</strong> {vehicleDetail.cotizacion.vin}
+                            <strong>No. VIN:</strong> {vehicle.cotizacion.vin}
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. Lote:</strong> {vehicleDetail.cotizacion.lote}
+                            <strong>No. Lote:</strong> {vehicle.cotizacion.lote}
                         </div>
                     </div>
                     <div className='flex  flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Tipo de vehiculo:</strong> {vehicleDetail.cotizacion.tipo_veniculo?.tipo_vehiculo}
+                            <strong>Tipo de vehiculo:</strong> {vehicle.cotizacion.tipo_veniculo?.tipo_vehiculo}
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Marca y modelo:</strong> {vehicleDetail.cotizacion.marca} - {vehicleDetail.cotizacion.modelo}
+                            <strong>Marca y modelo:</strong> {vehicle.cotizacion.marca} - {vehicle.cotizacion.modelo}
                         </div>
                     </div>
 
                     <Divider orientation='left'>Informacion del vendedor</Divider>
                     <div className='flex flex-column'>
-                        <strong>Nombre:</strong> {vehicleDetail.cotizacion.vendedor?.nombre}
+                        <strong>Nombre:</strong> {vehicle.cotizacion.vendedor?.nombre}
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Telefono:</strong> {vehicleDetail.cotizacion.vendedor?.telefono}
+                            <strong>Telefono:</strong> {vehicle.cotizacion.vendedor?.telefono}
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Correo:</strong> {vehicleDetail.cotizacion.vendedor?.correo}
+                            <strong>Correo:</strong> {vehicle.cotizacion.vendedor?.correo}
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className='flex  mb-3 px-5 gap-3'>
-                {vehicleDetail.cotizacion.detalles?.some(item => item.moneda === Moneda.USD) && (
+                {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.USD) && (
                     <div className='flex-1'>
                         <Divider orientation='left'>Detalle en USD</Divider>
-                        <TableDetail detail={vehicleDetail.cotizacion.detalles.filter(item => item.moneda === Moneda.USD) ?? []} />
+                        <TableDetail detail={vehicle.cotizacion.detalles.filter(item => item.moneda === Moneda.USD) ?? []} />
                     </div>
                 )}
 
-                {vehicleDetail.cotizacion.detalles?.some(item => item.moneda === Moneda.GTQ) && (
+                {vehicle.cotizacion.detalles?.some(item => item.moneda === Moneda.GTQ) && (
                     <div className='flex-1'>
                         <Divider orientation='left'>Detalle en GTQ</Divider>
-                        <TableDetail detail={vehicleDetail.cotizacion.detalles?.filter(item => item.moneda === Moneda.GTQ) ?? []} />
+                        <TableDetail detail={vehicle.cotizacion.detalles?.filter(item => item.moneda === Moneda.GTQ) ?? []} />
                     </div>
                 )}
             </div>
@@ -149,7 +151,7 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                 className='table mb-3 px-5'
                 showSorterTooltip={false}
                 rowKey='id_subasta'
-                dataSource={vehicleDetail.historial_vechiculo}
+                dataSource={vehicle.historial_vechiculo}
                 loading={loading}
                 scroll={{ y: 250 }}
                 columns={[
@@ -174,9 +176,11 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
                         dataIndex: 'archivo',
                         render: value => (
                             <div className='text-center'>
-                                <Tooltip title='Ver' placement='right'>
-                                    <Button type='link' icon={<Icon.Eye />} onClick={() => handleViewFile(value)} />
-                                </Tooltip>
+                                {value && (
+                                    <Tooltip title='Ver' placement='right'>
+                                        <Button type='link' icon={<Icon.Eye />} onClick={() => handleViewFile(value)} />
+                                    </Tooltip>
+                                )}
                             </div>
                         )
                     }
@@ -184,11 +188,11 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
             />
 
             <div className='flex  flex-row gap-3 justify-end'>
-                <Button type='primary' htmlType='button' ghost onClick={() => handleOnChangeModals('evidence')}>
-                    Cargar Evidencia
-                </Button>
                 <Button type='link' htmlType='button' icon={<Icon.Copy />} onClick={handleGenerateUrl}>
                     Url Cliente
+                </Button>
+                <Button type='primary' htmlType='button' ghost onClick={() => handleOnChangeModals('evidence')}>
+                    Cargar evidencia | Cambiar estado
                 </Button>
             </div>
 
@@ -214,14 +218,13 @@ export const ViewVehicles: React.FC<Props> = ({ vehicle }) => {
 
             <Modal
                 open={modals.evidence}
-                title={<h3>Cargar Evidencia</h3>}
+                title={<h3>Cargar evidencia | Cambiar estado</h3>}
                 footer={null}
                 centered
                 destroyOnClose
                 onCancel={() => handleOnChangeModals('evidence', false)}
             >
                 <FormEvidence
-                    vehicle={vehicleDetail}
                     onClose={() => {
                         handleOnChangeModals('evidence', false);
                         handleGet();

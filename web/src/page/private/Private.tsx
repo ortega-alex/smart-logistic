@@ -1,5 +1,6 @@
 import { permissionMenuAdapter } from '@/adapter';
 import { Navbar, RoutesWithNotFound } from '@/components';
+import { VehicleState } from '@/context';
 import { Menu, privateRoutes, Sesion } from '@/models';
 import { RootState } from '@/redux';
 import { modifyDevice, setMenu } from '@/redux/state';
@@ -64,7 +65,15 @@ export const Private = () => {
 
                         {menuState.some(item => item.path === privateRoutes.VEHICLES) &&
                             [privateRoutes.VEHICLES, `${privateRoutes.VEHICLES}/:lote`].map(item => (
-                                <Route key={item} path={item} element={<Vehicles />} />
+                                <Route
+                                    key={item}
+                                    path={item}
+                                    element={
+                                        <VehicleState>
+                                            <Vehicles />
+                                        </VehicleState>
+                                    }
+                                />
                             ))}
 
                         {menuState.some(item => item.path === privateRoutes.CUSTOMERS) && (
