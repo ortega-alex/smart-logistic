@@ -13,5 +13,10 @@ export const enviroment = {
     URI_FILE: 'files',
     URI_IMAGES: 'images',
     NODE_ENV: process.env.NODE_ENV || 'development',
-    SECRET: process.env.SECRET || 'e1f86c0b-6a5d-11ef-80f9-0242ac130002'
+    SECRET: process.env.SECRET || 'e1f86c0b-6a5d-11ef-80f9-0242ac130002',
+    EMAIL_HOST: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    EMAIL_PORT: process.env.EMAIL_PORT || 465,
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASS: process.env.EMAIL_PASS,
+    EMAIL_FROM: process.env.EMAIL_FROM || 'ays.saavedra@gmail.com'
 };

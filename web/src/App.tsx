@@ -11,6 +11,7 @@ import { store } from './redux';
 
 const SingIn = lazy(() => import('@/page/sing-In/SingIn').then(module => ({ default: module.SingIn })));
 const SingInCustomer = lazy(() => import('@/page/sing-in-customer/SingInCustomer').then(module => ({ default: module.SingInCustomer })));
+const ForgotPass = lazy(() => import('@/page/forgot-pass/ForgotPass').then(module => ({ default: module.ForgotPass })));
 const Private = lazy(() => import('@/page/private/Private').then(module => ({ default: module.Private })));
 const PrivateCustomer = lazy(() => import('@/page/private-customer/PrivateCustomer').then(module => ({ default: module.PrivateCustomer })));
 
@@ -38,6 +39,7 @@ export const App = () => {
                                 <Route path={publicRoutes.SING_IN} element={<SingIn />} />
                                 <Route path={publicRoutes.SING_IN_CUSTOMER} element={<SingInCustomer />} />
                                 <Route path={`/${publicRoutes.SING_IN_CUSTOMER}/:token`} element={<SingInCustomer />} />
+                                <Route path={publicRoutes.FORGOT_PASS} element={<ForgotPass />} />
                                 <Route element={<AuthGuard />}>
                                     <Route path={`${privateRoutes.PRIVATE}/*`} element={<Private />} />
                                     <Route path={`${privateRoutes.PRIVATE_CUSTOMER}/*`} element={<PrivateCustomer />} />

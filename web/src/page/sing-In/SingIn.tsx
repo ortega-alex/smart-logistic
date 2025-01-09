@@ -60,7 +60,13 @@ export const SingIn = () => {
                                 }
                             />
                         </Form.Item>
-                        <Button block type='link' htmlType='button' disabled={loading}>
+                        <Button
+                            block
+                            type='link'
+                            htmlType='button'
+                            disabled={loading}
+                            onClick={() => navigate(`/${publicRoutes.FORGOT_PASS}`, { replace: true })}
+                        >
                             Olvidé la contraseña
                         </Button>
                         <Button block type='primary' htmlType='submit' loading={loading} disabled={loading}>

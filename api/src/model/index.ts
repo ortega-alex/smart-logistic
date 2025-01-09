@@ -1,2 +1,3 @@
-export * from './Quoter.d';
-export * from './User.d';
+export * from './Email';
+export * from './Quoter';
+export * from './User';

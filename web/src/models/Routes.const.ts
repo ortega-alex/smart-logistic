@@ -22,5 +22,6 @@ export const privateRoutes: ObjectCustomer = {
 export const publicRoutes = {
     SING_IN: 'sing-in',
     SING_IN_CUSTOMER: 'sing-in-customer',
-    INVOUCE: 'validation'
+    INVOUCE: 'validation',
+    FORGOT_PASS: 'forgot-password'
 } as const;

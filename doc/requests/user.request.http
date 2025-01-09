@@ -24,4 +24,12 @@ Authorization: Bearer {{token}}
 ### GET ALL USERS 
 GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/user
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token}}\
+
+### POST FORGOT PASSWORD
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/forgot-password
+Content-Type: application/json
+
+{
+    "correo": "mortegalex27@gmail.com"
+}
