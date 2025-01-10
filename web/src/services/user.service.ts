@@ -13,4 +13,5 @@ export const httpEditUser = async (data: User) => await httpRequest({ path: `${p
 
 export const httpForgotPassword = async (data: UserForgotPassword) => await httpRequest({ path: `/forgot-password`, data, method: 'POST' });
 
-export const httpResetPassword = async (id: number) => await httpRequest({ path: `/auth/reset/${id}`, method: 'GET' });
+export const httpResetPassword = async (id: number, body: any) =>
+    await httpRequest({ path: `/auth/reset/${id}`, method: 'PUT', data: body });

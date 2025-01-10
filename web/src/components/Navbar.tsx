@@ -1,11 +1,13 @@
 import icon from '@/assets/images/icon.png';
 import { color, Menu, privateRoutes, publicRoutes, Sesion } from '@/models';
 import { resetSesion, RootState } from '@/redux';
-import { Avatar, Badge, Button, Drawer, Dropdown } from 'antd';
-import { useEffect, useState } from 'react';
+import { Avatar, Badge, Button, Drawer, Dropdown, Form, FormProps, Input, message, Modal } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from './Icon';
+import { passwordIsValid } from '@/utilities';
+import { httpResetPassword } from '@/services';
 
 export const Navbar = () => {
     const sessionState: Sesion = useSelector((store: RootState) => store.session);
@@ -14,14 +16,42 @@ export const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { pathname } = useLocation();
+    const [form] = Form.useForm();
 
     const [drawer, setDrawer] = useState(false);
     const [show, setShow] = useState(false);
     const [sideMenu, setSideMenu] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [showPass, setshowPass] = useState({
+        password: false,
+        confirmPassword: false
+    });
+    const [loading, setloading] = useState(false);
 
     const handleNavigation = (path: string) => {
         navigate(path);
         setSideMenu(false);
+    };
+
+    const handleValidatePassword = async (name: string, value: string) => {
+        let error = null;
+        if (name === 'password') error = await passwordIsValid(value);
+        else {
+            const password = form.getFieldValue('password');
+            error = password !== value ? `La contraseña no coincide` : null;
+        }
+        if (error) throw new Error(error);
+    };
+
+    const handleSubmitResetPassword: FormProps<any>['onFinish'] = async values => {
+        setloading(true);
+        httpResetPassword(sessionState.id_sesion, values)
+            .then(res => {
+                message[res.success ? 'success' : 'error'](res.message);
+                if (res.success) setModal(false);
+            })
+            .catch(err => message.error(`Error http reset password: ${err.message}`))
+            .finally(() => setloading(false));
     };
 
     useEffect(() => {
@@ -184,7 +214,7 @@ export const Navbar = () => {
                 styles={{ footer: { border: 'none' }, body: { border: 'none' } }}
                 footer={
                     <div className='flex flex-column gap-3'>
-                        <Button htmlType='button' type='primary' ghost>
+                        <Button htmlType='button' type='primary' ghost onClick={() => setModal(true)}>
                             Cambiar Contraseña
                         </Button>
                         <Button
@@ -212,6 +242,58 @@ export const Navbar = () => {
                     <span>{sessionState.perfil?.perfil}</span>
                 </div>
             </Drawer>
+
+            <Modal title='Cambiar Contraseña' open={modal} onCancel={() => setModal(false)} footer={null} centered destroyOnClose={true}>
+                <Form layout='vertical' onFinish={handleSubmitResetPassword} form={form}>
+                    <Form.Item
+                        label='Contraseña'
+                        name='password'
+                        rules={[{ required: true, validator: (_, value) => handleValidatePassword('password', value) }]}
+                    >
+                        <Input
+                            placeholder='Ingrese una contraseña'
+                            type={showPass.password ? 'text' : 'password'}
+                            autoCapitalize='off'
+                            autoComplete='off'
+                            prefix={<Icon.Lock />}
+                            suffix={
+                                <Button
+                                    size='small'
+                                    type='text'
+                                    onClick={() => setshowPass({ ...showPass, password: !showPass.password })}
+                                    icon={showPass.password ? <Icon.EyeSlash /> : <Icon.Eye />}
+                                />
+                            }
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label='Confirmar Contraseña'
+                        name='confirmPassword'
+                        rules={[{ required: true, validator: (_, value) => handleValidatePassword('confirmPassword', value) }]}
+                    >
+                        <Input
+                            type={showPass.confirmPassword ? 'text' : 'password'}
+                            placeholder='Ingrese una contraseña'
+                            autoCapitalize='off'
+                            autoComplete='off'
+                            prefix={<Icon.Lock />}
+                            suffix={
+                                <Button
+                                    size='small'
+                                    type='text'
+                                    onClick={() => setshowPass({ ...showPass, confirmPassword: !showPass.confirmPassword })}
+                                    icon={showPass.confirmPassword ? <Icon.EyeSlash /> : <Icon.Eye />}
+                                />
+                            }
+                        />
+                    </Form.Item>
+                    <div className='text-right'>
+                        <Button type='primary' htmlType='submit'>
+                            Cambiar Contraseña
+                        </Button>
+                    </div>
+                </Form>
+            </Modal>
         </>
     );
 };

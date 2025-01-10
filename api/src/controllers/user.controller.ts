@@ -145,12 +145,13 @@ export const forgotPassword = async (req: Request, res: Response) => {
 export const resetPassword = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+        const { password } = req.body;
         if (!id) return res.status(203).json({ message: 'El usuario es requerido' });
 
         const user = await User.findOneBy({ id_usuario: Number(id) });
         if (!user) return res.status(203).json({ message: 'El usuario no existe' });
 
-        const pass = bcrypt.hashSync(defaultPassword, 8);
+        const pass = bcrypt.hashSync(password ?? defaultPassword, 8);
         const update = await User.update({ id_usuario: user.id_usuario }, { contrasenia: pass });
         if ((update?.affected ?? 0) > 0) return res.json({ message: 'Contraseña restablecida!', success: true });
 

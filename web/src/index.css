@@ -85,21 +85,37 @@
 
 @media (min-width: 576px) {
     .hex-container {
+        width: 15vh;
+        height: 15vh;
+        margin: -0.75vh;
+    }
+    .hex-border {
+        width: 13.5vh;
+        height: 13.5vh;
+    }
+    .hex-button {
+        width: 12vh;
+        height: 12vh;
+    }
+    .menu-bottom {
+        margin-top: -2.25vh;
+    }
+}
+
+@media (min-width: 768px) {
+    .hex-container {
         width: 20vh;
         height: 20vh;
         margin: -1vh;
     }
-
     .hex-border {
-        width: 19vh;
-        height: 19vh;
-    }
-
-    .hex-button {
         width: 18vh;
         height: 18vh;
     }
-
+    .hex-button {
+        width: 16vh;
+        height: 16vh;
+    }
     .menu-bottom {
         margin-top: -3vh;
     }
