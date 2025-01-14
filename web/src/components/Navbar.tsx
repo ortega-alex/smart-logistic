@@ -1,13 +1,13 @@
 import icon from '@/assets/images/icon.png';
 import { color, Menu, privateRoutes, publicRoutes, Sesion } from '@/models';
 import { resetSesion, RootState } from '@/redux';
-import { Avatar, Badge, Button, Drawer, Dropdown, Form, FormProps, Input, message, Modal } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { httpResetPassword } from '@/services';
+import { passwordIsValid } from '@/utilities';
+import { Avatar, Badge, Button, Drawer, Dropdown, Form, FormProps, Input, message, Modal, Popover } from 'antd';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Icon } from './Icon';
-import { passwordIsValid } from '@/utilities';
-import { httpResetPassword } from '@/services';
+import { Icon, Notification } from './';
 
 export const Navbar = () => {
     const sessionState: Sesion = useSelector((store: RootState) => store.session);
@@ -122,9 +122,7 @@ export const Navbar = () => {
                 )}
 
                 <div className='navbar-nav'>
-                    <Badge count='1' className='mr-3'>
-                        <Icon.Bell color='white' size={32} />
-                    </Badge>
+                    <Notification />
                     <Avatar gap={3} size={50} className='bg-primary' onClick={() => setDrawer(true)}>
                         {sessionState.iniciales}
                     </Avatar>
@@ -288,7 +286,7 @@ export const Navbar = () => {
                         />
                     </Form.Item>
                     <div className='text-right'>
-                        <Button type='primary' htmlType='submit'>
+                        <Button type='primary' htmlType='submit' loading={loading} disabled={loading}>
                             Cambiar Contraseña
                         </Button>
                     </div>

@@ -1,8 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { CustomerFile } from './CustomerFile';
-import { Quoter } from './Quoter';
-import { TypeOfCustomer } from './TypeOfCustomer';
-import { ImportHistory } from './ImportHistory';
+import { CustomerFile, ImportHistory, Notification, Quoter, TypeOfCustomer } from './';
 
 @Entity('cliente')
 export class Customer extends BaseEntity {
@@ -61,4 +58,7 @@ export class Customer extends BaseEntity {
 
     @OneToMany(() => ImportHistory, clientes => clientes.cliente)
     clientes_importacion_historial: Quoter[];
+
+    @OneToMany(() => Notification, notification => notification.cliente)
+    notificacion_cliente: Notification[];
 }

@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import {
     Aution,
     Crane,
@@ -7,6 +8,7 @@ import {
     ImportHistory,
     ImportState,
     Menu,
+    Notification,
     Permission,
     Port,
     Profile,
@@ -19,7 +21,6 @@ import {
     Vehicles
 } from './entities';
 import { enviroment } from './utils';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 export const AppDataSource = new DataSource({
     type: 'mysql',
@@ -45,7 +46,8 @@ export const AppDataSource = new DataSource({
         QuoterDetail,
         ImportState,
         ImportHistory,
-        Vehicles
+        Vehicles,
+        Notification
     ],
     synchronize: enviroment.NODE_ENV === 'development',
     namingStrategy: new SnakeNamingStrategy()

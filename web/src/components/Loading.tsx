@@ -8,3 +8,5 @@ export const Loading = () => {
         </div>
     );
 };
+
+export const Loader = () => <span className='loader'></span>;

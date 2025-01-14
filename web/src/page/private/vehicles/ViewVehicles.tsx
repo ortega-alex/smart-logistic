@@ -65,50 +65,63 @@ export const ViewVehicles: React.FC<Props> = () => {
     return (
         <div className='flex flex-column'>
             <div className='flex flex-row gap-3 mb-3'>
-                <div className='flex flex-column flex-1 gap-2 px-3'>
+                <div className='flex flex-column flex-1 px-3'>
                     <Divider orientation='left'>Informacion del cliente</Divider>
                     <div className='flex flex-column'>
-                        <strong>Cliente:</strong> {vehicle.cotizacion.cliente?.cliente}
+                        <strong>Cliente:</strong>
+                        <div className='text-decoration'>{vehicle.cotizacion.cliente?.cliente}</div>
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Telefono Fijo:</strong> {vehicle.cotizacion.cliente?.telefono_fijo}
+                            <strong>Telefono Fijo:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.cliente?.telefono_fijo}</div>
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Telefono Celular:</strong> {vehicle.cotizacion.cliente?.telefono_celular}
+                            <strong>Telefono Celular:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.cliente?.telefono_celular}</div>
                         </div>
                     </div>
                     <div className='flex flex-column'>
-                        <strong>Direccion:</strong> {vehicle.cotizacion.cliente?.direccion}
+                        <strong>Direccion:</strong>
+                        <div className='text-decoration'>{vehicle.cotizacion.cliente?.direccion}</div>
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. NIT:</strong> {vehicle.cotizacion.cliente?.nit}
+                            <strong>No. NIT:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.cliente?.nit}</div>
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. DPI:</strong> {vehicle.cotizacion.cliente?.dpi}
+                            <strong>No. DPI:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.cliente?.dpi}</div>
                         </div>
                     </div>
                     <div className='flex flex-column'>
-                        <strong>Correo:</strong> {vehicle.cotizacion.cliente?.correo}
+                        <strong>Correo:</strong>
+                        <div className='text-decoration'>{vehicle.cotizacion.cliente?.correo}</div>
                     </div>
                 </div>
-                <div className='flex flex-column flex-1 gap-2'>
+                <div className='flex flex-column flex-1'>
                     <Divider orientation='left'>Informacion del vehiculo</Divider>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. VIN:</strong> {vehicle.cotizacion.vin}
+                            <strong>No. VIN:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.vin}</div>
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>No. Lote:</strong> {vehicle.cotizacion.lote}
+                            <strong>No. Lote:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.lote}</div>
                         </div>
                     </div>
                     <div className='flex  flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Tipo de vehiculo:</strong> {vehicle.cotizacion.tipo_veniculo?.tipo_vehiculo}
+                            <strong>Tipo de vehiculo:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.tipo_veniculo?.tipo_vehiculo}</div>
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Marca y modelo:</strong> {vehicle.cotizacion.marca} - {vehicle.cotizacion.modelo}
+                            <strong>Marca y modelo:</strong>
+                            <div className='text-decoration'>
+                                {vehicle.cotizacion.marca} - {vehicle.cotizacion.modelo}
+                            </div>
                         </div>
                     </div>
 
@@ -118,10 +131,12 @@ export const ViewVehicles: React.FC<Props> = () => {
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Telefono:</strong> {vehicle.cotizacion.vendedor?.telefono}
+                            <strong>Telefono:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.vendedor?.telefono}</div>
                         </div>
                         <div className='flex flex-1 flex-column'>
-                            <strong>Correo:</strong> {vehicle.cotizacion.vendedor?.correo}
+                            <strong>Correo:</strong>
+                            <div className='text-decoration'>{vehicle.cotizacion.vendedor?.correo}</div>
                         </div>
                     </div>
                 </div>

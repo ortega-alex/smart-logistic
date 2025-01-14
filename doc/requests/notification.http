@@ -1,0 +1,25 @@
+### POST add notificacion
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "id_usuario": 1,
+    "titulo": "Nueva notificacion",
+    "contenido": "contenido"
+}
+
+### GET notificaciones por cliente
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/customer/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET notificaciones por usuario
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/user/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### PUT update notificacion
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/7ed2da46-f873-403a-a965-0073a1390b16
+Content-Type: application/json
+Authorization: Bearer {{token}}

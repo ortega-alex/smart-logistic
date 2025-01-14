@@ -5,6 +5,7 @@ export * from './customer.controller';
 export * from './import-history.controller';
 export * from './import-state.controller';
 export * from './menu.controller';
+export * from './notificacion.controller';
 export * from './permission.controller';
 export * from './port.controller';
 export * from './profile.controller';

@@ -4,6 +4,7 @@ import {
     addCrane,
     addCustomer,
     addImportHistory,
+    addNotification,
     addPort,
     addProfile,
     addQuoter,
@@ -20,6 +21,8 @@ import {
     getCustomerPaginatedData,
     getImportState,
     getMenus,
+    getNotificationByCustomer,
+    getNotificationByUserId,
     getPermission,
     getPermissionMenuByProfileId,
     getPort,
@@ -37,6 +40,7 @@ import {
     updateAution,
     updateCrane,
     updateCustomerById,
+    updateNotification,
     updatePort,
     updateProfile,
     updateQuoter,
@@ -106,5 +110,10 @@ routes.get('/import-state', getImportState);
 
 routes.post('/import-history/:id', fileBufferUpload.single('file'), addImportHistory);
 // routes.post('/import-history/evidence/:id', validateFileType, addImportHistory);
+
+routes.post('/notification', addNotification);
+routes.get('/notification/customer/:id', getNotificationByCustomer);
+routes.get('/notification/user/:id', getNotificationByUserId);
+routes.put('/notification/:id', updateNotification);
 
 export const privateRoutes = routes;

@@ -7,6 +7,7 @@ export * from './Environment.const';
 export * from './ImportHistory.d';
 export * from './ImportState.d';
 export * from './Menu.d';
+export * from './Notification.d';
 export * from './Permission.d';
 export * from './Port.d';
 export * from './Profile.d';

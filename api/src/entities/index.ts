@@ -5,6 +5,7 @@ export * from './CustomerFile';
 export * from './ImportHistory';
 export * from './ImportState';
 export * from './Menu';
+export * from './Notification';
 export * from './Permission';
 export * from './Port';
 export * from './Profile';

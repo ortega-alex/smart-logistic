@@ -8,6 +8,7 @@
     --white: #f8f9fa;
     --black: #242424;
     --gray: #f1f1f1;
+    --dark-gray: #e6e6e6;
 
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -156,6 +157,14 @@
 
 .bg-gray {
     background: var(--gray) !important;
+}
+
+.bg-white {
+    background: var(--white) !important;
+}
+
+.bg-dark-gray {
+    background: var(--dark-gray) !important;
 }
 
 .navbar-dark {
@@ -865,5 +874,43 @@
 
     .text-label {
         flex-direction: column;
+    }
+}
+
+.text-decoration {
+    background-color: var(--dark-gray);
+    padding: 1px 4px;
+}
+
+.notification-item {
+    padding: 10px;
+    border-radius: 5px;
+    width: 250px;
+}
+
+.loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: block;
+    margin: 15px auto;
+    position: relative;
+    background: var(--dark-gray);
+    box-sizing: border-box;
+    animation: shadowExpandX 1s linear infinite alternate;
+}
+
+@keyframes shadowExpandX {
+    0% {
+        box-shadow:
+            0 0,
+            0 0;
+        color: var(--dark-gray);
+    }
+    100% {
+        box-shadow:
+            -24px 0,
+            24px 0;
+        color: var(--white);
     }
 }

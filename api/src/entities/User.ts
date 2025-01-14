@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ImportHistory, Profile, Quoter } from './';
+import { ImportHistory, Notification, Profile, Quoter } from './';
 
 @Entity('usuario')
 export class User extends BaseEntity {
@@ -50,4 +50,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => ImportHistory, import_history => import_history.usuario)
     usuarios_importacion_historial: ImportHistory[];
+
+    @OneToMany(() => Notification, notification => notification.usuario)
+    notificacion_usuario: Notification[];
 }
