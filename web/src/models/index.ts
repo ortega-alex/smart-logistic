@@ -14,6 +14,7 @@ export * from './Profile.d';
 export * from './Quoter.d';
 export * from './Reques.d';
 export * from './Routes.const';
+export * from './Socket.d';
 export * from './TypeOfCustomer.d';
 export * from './TypeVehicle.d';
 export * from './User.d';

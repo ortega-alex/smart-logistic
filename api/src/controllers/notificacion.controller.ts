@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { Customer, Notification, User, Vehicles } from '../entities';
 import { Notification as NotificationType } from '../model';
+import { Socket } from 'socket.io';
 
-export const newNotification = async (_notificacion: NotificationType) => {
+export const newNotification = async (_notificacion: NotificationType, io: Socket) => {
     const { id_vehiculo, id_cliente, id_usuario, titulo, contenido, estado } = _notificacion;
     const notificacion = new Notification();
 
@@ -25,7 +26,13 @@ export const newNotification = async (_notificacion: NotificationType) => {
     notificacion.contenido = contenido;
     notificacion.estado = estado ?? true;
     notificacion.fecha_creacion = new Date();
-    return await notificacion.save();
+    const save = await notificacion.save();
+
+    if (notificacion.cliente) io.emit(`notification-${notificacion.cliente.id_cliente}`, notificacion);
+    if (notificacion.usuario) io.emit(`notification-${notificacion.usuario.id_usuario}`, notificacion);
+    else io.emit('notification', notificacion);
+
+    return save;
 };
 
 export const addNotification = async (req: Request, res: Response) => {
@@ -33,7 +40,7 @@ export const addNotification = async (req: Request, res: Response) => {
         const { titulo, contenido } = req.body;
         if (!titulo) return res.status(203).json({ message: 'El titulo es obligatorio' });
         if (!contenido) return res.status(203).json({ message: 'El contenido es obligatorio' });
-        const notificacion = await newNotification(req.body);
+        const notificacion = await newNotification(req.body, req.app.locals.io);
         return res.json(notificacion);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });

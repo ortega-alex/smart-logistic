@@ -1,6 +1,7 @@
-import { privateRoutes, Notification as TypeNotification, User } from '@/models';
+import { useSocket } from '@/hooks';
+import { Customer, privateRoutes, Notification as TypeNotification, User } from '@/models';
 import { RootState } from '@/redux';
-import { httpGetNotificationByUserId, httpUpdateNotification } from '@/services';
+import { httpGetNotificationByCustomerId, httpGetNotificationByUserId, httpUpdateNotification } from '@/services';
 import { durationInDaysBetweenDateHumanize, getDateFromString } from '@/utilities';
 import { Badge, Button, message, Popover } from 'antd';
 import { useEffect, useState } from 'react';
@@ -11,7 +12,9 @@ import { Loader } from './Loading';
 
 export const Notification = () => {
     const sessionState: User = useSelector((store: RootState) => store.session);
+    const sessionCustomerState: Customer = useSelector((store: RootState) => store.session_customer);
     const navigate = useNavigate();
+    const { socket } = useSocket();
 
     const [notifications, setNotifications] = useState<TypeNotification[]>([]);
     const [loading, setLoading] = useState(false);
@@ -23,7 +26,8 @@ export const Notification = () => {
                 await httpUpdateNotification(notificacion.id_notificacion);
                 handleGetNotifications();
             }
-            if (notificacion.vehicle) navigate(`/${privateRoutes.VEHICLES}/${notificacion.vehicle.lote}`);
+            if (sessionState.id_usuario && notificacion.vehicle) navigate(`/${privateRoutes.VEHICLES}/${notificacion.vehicle.lote}`);
+            if (sessionCustomerState.id_cliente && notificacion.cliente) console.log(notificacion);
         } catch (error) {
             message.error(`Error http update notification: ${(error as Error).message}`);
         } finally {
@@ -59,14 +63,42 @@ export const Notification = () => {
         );
     };
 
-    const handleGetNotifications = () => {
-        httpGetNotificationByUserId(sessionState.id_usuario)
-            .then(res => setNotifications(res))
-            .catch(err => message.error(`Error http get notifications: ${err.message}`));
+    const handleGetNotifications = async () => {
+        try {
+            setLoading(true);
+            let res;
+            if (sessionState.id_usuario) res = await httpGetNotificationByUserId(sessionState.id_usuario);
+            if (sessionCustomerState.id_cliente) res = await httpGetNotificationByCustomerId(sessionCustomerState.id_cliente);
+            setNotifications(res);
+        } catch (error) {
+            message.error(`Error http get notifications: ${(error as Error).message}`);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         handleGetNotifications();
+        if (socket) {
+            if (sessionState.id_usuario) {
+                socket.on('notification', notifications => {
+                    console.log('para todos', notifications.titulo);
+                    handleGetNotifications();
+                });
+
+                socket.on(`notification-${sessionState.id_usuario}`, notifications => {
+                    console.log('por usuario', notifications.titulo);
+                    handleGetNotifications();
+                });
+            }
+
+            if (sessionCustomerState.id_cliente) {
+                socket.on(`notification-${sessionCustomerState.id_cliente}`, notifications => {
+                    console.log('por cliente', notifications.titulo);
+                    handleGetNotifications();
+                });
+            }
+        }
     }, []);
 
     return (

@@ -3,7 +3,7 @@ import { color, Menu, privateRoutes, publicRoutes, Sesion } from '@/models';
 import { resetSesion, RootState } from '@/redux';
 import { httpResetPassword } from '@/services';
 import { passwordIsValid } from '@/utilities';
-import { Avatar, Badge, Button, Drawer, Dropdown, Form, FormProps, Input, message, Modal, Popover } from 'antd';
+import { Avatar, Button, Drawer, Dropdown, Form, FormProps, Input, message, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';

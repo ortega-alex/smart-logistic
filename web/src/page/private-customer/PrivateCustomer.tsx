@@ -1,11 +1,11 @@
 import icon from '@/assets/images/icon.png';
-import { Icon, RoutesWithNotFound } from '@/components';
+import { Icon, Notification, RoutesWithNotFound } from '@/components';
 import { Customer, privateRoutes, publicRoutes } from '@/models';
 import { RootState } from '@/redux';
 import { modifyDevice } from '@/redux/state';
 import { resetSesionCustomer } from '@/redux/state/customer';
 import { calculateScreenSize } from '@/utilities';
-import { Avatar, Badge, Dropdown } from 'antd';
+import { Avatar, Dropdown } from 'antd';
 import { lazy, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate, Route, useNavigate } from 'react-router-dom';
@@ -48,9 +48,7 @@ export const PrivateCustomer = () => {
                     </Link>
                 </div>
                 <div className='navbar-nav'>
-                    <Badge count='1' className='mr-3'>
-                        <Icon.Bell color='white' size={32} />
-                    </Badge>
+                    <Notification />
                     <Dropdown
                         menu={{
                             items: [

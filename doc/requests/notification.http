@@ -4,9 +4,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "id_usuario": 1,
-    "titulo": "Nueva notificacion",
-    "contenido": "contenido"
+    "titulo": "para un usuario en particular",
+    "contenido": "este contenido es muy importante"
 }
 
 ### GET notificaciones por cliente

@@ -1,12 +1,25 @@
-import express from 'express';
-import morgan from 'morgan';
 import cors from 'cors';
+import express from 'express';
+import http from 'http';
+import morgan from 'morgan';
 import path from 'path';
-import { privateRoutes, publicRoutes } from './routes';
+import { Server } from 'socket.io';
 import { authToken, decrypt, encrypt } from './middleware';
+import { privateRoutes, publicRoutes } from './routes';
+import { setupSocket } from './utils';
 
-const app = express();
 const uri = '/api/v1';
+
+// INITIALIZE
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    connectionStateRecovery: {
+        maxDisconnectionDuration: 2 * 60 * 1000,
+        skipMiddlewares: true
+    }
+});
+setupSocket(io);
 
 // MIDDLEWARE
 app.use(morgan('dev'));
@@ -27,4 +40,7 @@ app.use(uri, publicRoutes);
 app.use(authToken);
 app.use(uri, privateRoutes);
 
-export default app;
+// GLOBAL ENVIRONMENT
+app.locals.io = io;
+
+export default server;
