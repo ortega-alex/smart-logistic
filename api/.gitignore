@@ -1,0 +1,2 @@
+# Ignorar cualquier archivo JSON relacionado con Firebase Admin SDK
+*firebase-adminsdk*.json

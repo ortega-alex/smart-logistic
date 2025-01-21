@@ -19,5 +19,6 @@ export const _KEYS = {
     SESSION_CUSTOMER: process.env.SESSION_CUSTOMER || '1c238ba4-a764-11ef-b097-0242ac130002',
     SECRET: process.env.SECRET || 'e1f86c0b-6a5d-11ef-80f9-0242ac130002',
     IV: process.env.IV || 'f1873205-6a5d-11ef-80f9-0242ac130002',
-    TOKEN: process.env.IV || '6f5b5c3a-6a61-11ef-80f9-0242ac130002'
+    TOKEN: process.env.IV || '6f5b5c3a-6a61-11ef-80f9-0242ac130002',
+    FIREBASE_TOKEN: import.meta.env.VITE_FIREBASE_TOKEN || '6f5b5c3a-6a61-11ef-80f9-0242ac130002'
 } as const;
