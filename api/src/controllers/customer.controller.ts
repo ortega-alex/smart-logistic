@@ -102,12 +102,13 @@ export const getCustomerById = async (req: Request, res: Response) => {
 export const updateCustomerById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { cliente, telefono_celular, telefono_fijo, direccion, nit, dpi, correo, id_tipo_cliente, porcentaje_costo } = req.body;
-        const customer = await Customer.findOneBy({ id_cliente: Number(id) });
+        const { cliente, telefono_celular, telefono_fijo, direccion, nit, dpi, correo, id_tipo_cliente, porcentaje_costo, token_fcm } =
+            req.body;
+        const customer = await Customer.findOne({ where: { id_cliente: Number(id) }, relations: { tipo_cliente: true } });
         if (!customer) return res.status(404).json({ message: 'Cliente no exite' });
 
-        const typeOfCustomer = await TypeOfCustomer.findOneBy({ id_tipo_cliente });
-        if (!typeOfCustomer) return res.status(404).json({ message: 'Tipo de cliente no encontrado' });
+        let typeOfCustomer;
+        if (id_tipo_cliente) typeOfCustomer = await TypeOfCustomer.findOneBy({ id_tipo_cliente });
 
         const update = await Customer.update(
             { id_cliente: Number(id) },
@@ -119,8 +120,9 @@ export const updateCustomerById = async (req: Request, res: Response) => {
                 nit: nit ?? customer.nit,
                 dpi: dpi ?? customer.dpi,
                 correo: correo ?? customer.correo,
-                tipo_cliente: typeOfCustomer,
-                porcentaje_costo: porcentaje_costo ?? customer.porcentaje_costo
+                tipo_cliente: typeOfCustomer || customer.tipo_cliente,
+                porcentaje_costo: porcentaje_costo ?? customer.porcentaje_costo,
+                token_fcm: token_fcm ?? customer.token_fcm
             }
         );
 

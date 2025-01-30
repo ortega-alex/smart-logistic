@@ -83,12 +83,12 @@ export const getUsers = async (_req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { nombre, id_perfil, correo, telefono, estado } = req.body;
-        const user = await User.findOneBy({ id_usuario: Number(id) });
+        const { nombre, id_perfil, correo, telefono, estado, token_fcm } = req.body;
+        const user = await User.findOne({ where: { id_usuario: Number(id) }, relations: { perfil: true } });
         if (!user) return res.status(404).json({ message: 'Usuario no exite' });
 
-        const profile = await Profile.findOneBy({ id_perfil });
-        if (!profile) return res.status(404).json({ message: 'Perfil no encontrado' });
+        let profile;
+        if (id_perfil) profile = await Profile.findOneBy({ id_perfil: Number(id_perfil) });
 
         const update = await User.update(
             { id_usuario: Number(id) },
@@ -97,7 +97,8 @@ export const updateUser = async (req: Request, res: Response) => {
                 correo: correo ?? user.correo,
                 telefono: telefono ?? user.telefono,
                 estado: estado ?? user.estado,
-                perfil: profile
+                token_fcm: token_fcm ?? user.token_fcm,
+                perfil: profile ?? user.perfil
             }
         );
 

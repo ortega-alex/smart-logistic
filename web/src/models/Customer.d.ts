@@ -15,6 +15,7 @@ export interface Customer {
     archivos?: Array<CustomerFile>;
     tipo_cliente?: TypeOfCustomer;
     porcentaje_costo?: number | string;
+    token_fcm?: string | null;
 }
 
 export const EmptyCustomer: TypeCustomer = {

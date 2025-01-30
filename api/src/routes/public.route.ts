@@ -17,6 +17,10 @@ routes.get('/test-notification/:token', async (req, res) => {
         notification: {
             title: 'Notificación de prueba',
             body: 'Esta es una notificación de prueba'
+        },
+        data: {
+            id: '4',
+            lote: 'SERIE'
         }
     };
     sendNotification(message);

@@ -127,7 +127,8 @@ export const ViewVehicles: React.FC<Props> = () => {
 
                     <Divider orientation='left'>Informacion del vendedor</Divider>
                     <div className='flex flex-column'>
-                        <strong>Nombre:</strong> {vehicle.cotizacion.vendedor?.nombre}
+                        <strong>Nombre:</strong>
+                        <div className='text-decoration'>{vehicle.cotizacion.vendedor?.nombre}</div>
                     </div>
                     <div className='flex flex-row gap-3 items-center justify-between'>
                         <div className='flex flex-1 flex-column'>

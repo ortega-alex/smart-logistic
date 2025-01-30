@@ -27,6 +27,9 @@ export class User extends BaseEntity {
     @Column()
     correo: string;
 
+    @Column('varchar', { nullable: true })
+    token_fcm: string;
+
     @Column({
         default: true
     })

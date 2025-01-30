@@ -11,6 +11,7 @@ export interface User {
     cotrasenia?: string;
     estado: boolean;
     perfil?: Profile;
+    token_fcm?: string | null;
 }
 
 export interface Sesion extends User {

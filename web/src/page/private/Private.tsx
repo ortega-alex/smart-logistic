@@ -4,7 +4,7 @@ import { VehicleState } from '@/context';
 import { Menu, privateRoutes, Sesion } from '@/models';
 import { RootState } from '@/redux';
 import { modifyDevice, setMenu } from '@/redux/state';
-import { httpGetPermissionsMenusByProfileId, requestForToken } from '@/services';
+import { httpGetPermissionsMenusByProfileId } from '@/services';
 import { calculateScreenSize } from '@/utilities';
 import { message } from 'antd';
 import { lazy, useEffect } from 'react';
@@ -37,15 +37,8 @@ export const Private = () => {
         dispatch(modifyDevice(isMovile));
     };
 
-    const handleGetToken_fcm = async () => {
-        const token = await requestForToken();
-        console.log('token: ', token, 'sesion id: ', sesionState.id_sesion);
-    };
-
     useEffect(() => {
         window.addEventListener('resize', eventListenerResize);
-        eventListenerResize();
-        handleGetToken_fcm();
 
         httpGetPermissionsMenusByProfileId(sesionState.perfil?.id_perfil ?? 0)
             .then(res => {
@@ -60,6 +53,7 @@ export const Private = () => {
     return (
         <div className='flex flex-column vh-100'>
             <Navbar />
+
             <div className='flex-1'>
                 <RoutesWithNotFound>
                     <Route path='/' element={<Navigate to={privateRoutes.HOME} />} />

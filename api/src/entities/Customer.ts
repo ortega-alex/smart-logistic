@@ -31,6 +31,9 @@ export class Customer extends BaseEntity {
     @Column('varchar', { length: 45 })
     correo: string;
 
+    @Column('varchar', { nullable: true })
+    token_fcm: string;
+
     @Column('decimal', { precision: 10, scale: 2, default: 0 })
     porcentaje_costo: number;
 

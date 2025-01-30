@@ -22,3 +22,7 @@ Authorization: Bearer {{token}}
 PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/7ed2da46-f873-403a-a965-0073a1390b16
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### TEST NOTIFICATION PUSH
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/test-notification/cT9KSdxsrYpmgpDZsa27PK:APA91bFBV-stQmZxkOLqM7ll6YoRpOPj0BE-PYKdgmMSUy_CuMSAIAjnfYWLZh7Wp3x9KQQJp6z_QrVHPYNn6sqbXboKq8J5v3Gy36bu9MaUha-pwRPc0t8
+Content-Type: application/json

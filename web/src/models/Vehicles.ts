@@ -18,3 +18,5 @@ export const EmptyVehicle: Vehicles = {
     historial_vechiculo: [],
     estado: true
 };
+
+export type VehiclesNotification = Pick<Vehicles, 'id_vehiculo' | 'lote'>;
