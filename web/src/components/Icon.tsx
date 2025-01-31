@@ -13,12 +13,13 @@ import { IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5'
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { LuDownload } from 'react-icons/lu';
 import { MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
-import { TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
+import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
 export const Icon = {
     AngleDown: FaAngleDown,
     Attachment: GrAttachment,
     ArrowDown: BsArrowDown,
+    ArrowsExchange: TbArrowsExchange2,
     ArrowUp: BsArrowUp,
     Bell: GoBell,
     Calculate: MdOutlineCalculate,

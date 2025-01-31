@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io-client';
 import { Notification } from './Notification';
+import { Vehicles } from './Vehicles';
 
 // Eventos que envía un mensaje al servidor
 export interface ClienteToServerEvents {
@@ -10,4 +11,5 @@ export interface ClienteToServerEvents {
 export interface ServerToClientEvents {
     [event: `notification-${number}`]: (data: Notification) => void;
     notification: (data: Notification) => void;
+    [event: `estado-${string}`]: (data: Vehicles) => void;
 }

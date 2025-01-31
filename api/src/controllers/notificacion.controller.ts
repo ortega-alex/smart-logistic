@@ -52,6 +52,7 @@ export const getNotificationByCustomer = async (req: Request, res: Response) => 
         const { id } = req.params;
         const notificacion = await Notification.createQueryBuilder('notification')
             .innerJoinAndSelect('notification.cliente', 'cliente')
+            .leftJoinAndSelect('notification.vehiculo', 'vehiculo')
             .where('cliente.id_cliente = :id', { id: Number(id) })
             .orderBy('notification.fecha_creacion', 'DESC')
             .limit(50)
@@ -68,6 +69,7 @@ export const getNotificationByUserId = async (req: Request, res: Response) => {
         const notificacion = await Notification.createQueryBuilder('notification')
             .leftJoinAndSelect('notification.usuario', 'usuario')
             .leftJoinAndSelect('notification.cliente', 'cliente')
+            .leftJoinAndSelect('notification.vehiculo', 'vehiculo')
             .where('usuario.id_usuario = :id', { id: Number(id) })
             .orWhere('cliente.id_cliente IS NULL')
             .orderBy('notification.fecha_creacion', 'DESC')

@@ -41,8 +41,8 @@ export const Notification = () => {
                 await httpUpdateNotification(notificacion.id_notificacion);
                 handleGetNotifications();
             }
-            if (sessionState.id_usuario && notificacion.vehicle) handleNavigate(notificacion.vehicle);
-            if (sessionCustomerState.id_cliente && notificacion.cliente && notificacion.vehicle) handleNavigate(notificacion.vehicle);
+            if (sessionState.id_usuario && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
+            if (sessionCustomerState.id_cliente && notificacion.cliente && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
         } catch (error) {
             message.error(`Error http update notification: ${(error as Error).message}`);
         } finally {
@@ -65,10 +65,10 @@ export const Notification = () => {
                             </small>
                         </div>
                         <div> {item.contenido}</div>
-                        {(item.vehicle || !item.visto) && (
+                        {(item.vehiculo || !item.visto) && (
                             <div className='text-right'>
                                 <Button size='small' type='link' color='cyan' onClick={() => handleUpdateNotification(item)}>
-                                    {item.vehicle ? 'Ir' : 'Visto!'}
+                                    {item.vehiculo ? 'Ir' : 'Visto!'}
                                 </Button>
                             </div>
                         )}

@@ -85,9 +85,9 @@ export const fileUpload = multer({
 
 export const fileBufferUpload = multer({
     storage: multer.memoryStorage(),
-    limits: {
-        fileSize: 1000000
-    },
+    // limits: {
+    //     fileSize: 1000000
+    // },
     fileFilter: (_res: Request, file: Express.Multer.File, cb): void => {
         if (!file.originalname.match(/\.(png|jpg|jpeg|tif|tiff|pdf)$/)) {
             return cb(new Error('Archivo no soportado'));

@@ -1,4 +1,5 @@
 import { Icon, ViewFiles } from '@/components';
+import { useSocket } from '@/hooks';
 import { EmptyFile, EmptyVehicle, ImportState, Vehicles } from '@/models';
 import { httpGetImportState, httpGetVehiclesGetById } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -8,6 +9,7 @@ import { useParams } from 'react-router-dom';
 
 export const CustomerOrderDetail = () => {
     const { id } = useParams();
+    const { socket } = useSocket();
 
     const [loading, setLoading] = useState(false);
     const [vehicle, setVehicle] = useState<Vehicles>(EmptyVehicle);
@@ -36,6 +38,8 @@ export const CustomerOrderDetail = () => {
         httpGetImportState()
             .then(res => setImportStates(res))
             .catch(err => message.error(`Error http get import state ${err.message}`));
+
+        if (socket) socket.on(`estado-${id}`, _ => handleGetDetail(Number(id)));
     }, []);
 
     return (

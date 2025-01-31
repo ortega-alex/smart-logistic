@@ -10,5 +10,5 @@ export interface Notification {
     fecha_creacion: string;
     cliente?: Customer;
     usuario?: User;
-    vehicle?: Vehicles;
+    vehiculo?: Vehicles;
 }

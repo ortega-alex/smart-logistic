@@ -24,7 +24,8 @@ export const FormEvidence: React.FC<Props> = ({ onClose }) => {
             ...values,
             visible_cliente: values.visible_cliente ?? false,
             file: values.archivo?.[0]?.originFileObj,
-            id_usuario: sessionState.id_sesion
+            id_usuario: sessionState.id_sesion,
+            id_cliente: vehicle.cotizacion.cliente?.id_cliente
         };
         httpAddImportHistory(vehicle.id_vehiculo, data)
             .then(res => {

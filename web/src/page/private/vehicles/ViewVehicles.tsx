@@ -207,8 +207,8 @@ export const ViewVehicles: React.FC<Props> = () => {
                 <Button type='link' htmlType='button' icon={<Icon.Copy />} onClick={handleGenerateUrl}>
                     Url Cliente
                 </Button>
-                <Button type='primary' htmlType='button' ghost onClick={() => handleOnChangeModals('evidence')}>
-                    Cargar evidencia | Cambiar estado
+                <Button type='primary' icon={<Icon.ArrowsExchange />} htmlType='button' onClick={() => handleOnChangeModals('evidence')}>
+                    Evidencia | Estado
                 </Button>
             </div>
 
