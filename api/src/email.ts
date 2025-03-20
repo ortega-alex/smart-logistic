@@ -18,7 +18,6 @@ export const sendEmail = async (email: Email) => {
         to: email.to,
         subject: email.subject,
         html: email.html,
-        cc: email.cc,
         attachments: email.attachments
     });
     return info;
