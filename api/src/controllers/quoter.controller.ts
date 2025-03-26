@@ -224,7 +224,7 @@ export const updateQuoter = async (req: Request, res: Response) => {
         );
 
         if (!aprobada) {
-            await QuoterDetail.createQueryBuilder().delete().where({ quoter: quoter }).execute();
+            await QuoterDetail.createQueryBuilder().delete().where({ detalle: quoter }).execute();
             await insertDetail(quoter, detalles);
 
             if ((update?.affected ?? 0) > 0) return res.json(quoter);
