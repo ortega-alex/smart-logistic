@@ -1,1 +1,0 @@
-import"./index-CkDBe5ek.js";import{h as a}from"./method-http.utility-CZE0vJiU.js";const e="/crane",n=async()=>await a({path:e,method:"GET"}),o=async t=>await a({path:e,data:t,method:"POST"}),p=async t=>await a({path:`${e}/${t.id_grua}`,data:t,method:"PUT"});export{p as a,o as b,n as h};
