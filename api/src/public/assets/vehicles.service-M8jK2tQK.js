@@ -1,1 +1,0 @@
-import"./index-DeRs25tb.js";import{h as a}from"./method-http.utility-CuofCWHh.js";const e="/vehicles",o=async t=>await a({path:`${e}/pagination`,method:"POST",data:t}),i=async t=>await a({path:`${e}/${t}`,method:"GET"}),c=async t=>await a({path:`${e}/customer/${t}`,method:"GET"});export{o as a,c as b,i as h};

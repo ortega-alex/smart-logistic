@@ -1,1 +1,0 @@
-import"./index-DeRs25tb.js";import{a as o}from"./index-jHC0o-m8.js";const t={id_estado_importacion:0,estado_importacion:"",estado:!0,index:0,color:""},a={id_vehiculo:0,lote:"",cotizacion:o,estado_importacion:t,historial_vechiculo:[],estado:!0};export{a as E};
