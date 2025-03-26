@@ -27,7 +27,7 @@ export const QuoterDetail: React.FC<Props> = ({ aprobado, details, onSubmit }) =
                 <div key={i} className='flex flex-row justify-between gap-3 items-center'>
                     <strong className='flex-1'>{item.nombre}: </strong>
                     <span>{item.moneda}</span>
-                    <span>{commaSeparateNumber(item.valor ?? 0)}</span>
+                    <span>{item.valor}</span>
                     <div>
                         <Button
                             type='link'

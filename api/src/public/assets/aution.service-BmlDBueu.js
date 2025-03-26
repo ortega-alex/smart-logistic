@@ -1,1 +1,0 @@
-import"./index-LOVzF4CI.js";import{h as a}from"./method-http.utility-DUkeS8Cu.js";const s="/aution",n=async()=>await a({path:s,method:"GET"}),i=async t=>await a({path:s,method:"POST",data:t}),p=async t=>await a({path:`${s}/${t.id_subasta}`,method:"PUT",data:t});export{p as a,i as b,n as h};

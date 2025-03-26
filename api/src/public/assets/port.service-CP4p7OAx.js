@@ -1,0 +1,1 @@
+import"./index-fBuO0l8w.js";import{h as o}from"./method-http.utility-CM8CHeIw.js";const a="/port",h=async()=>await o({path:a,method:"GET"}),e=async t=>await o({path:a,method:"POST",data:t}),r=async t=>await o({path:`${a}/${t.id_puerto}`,method:"PUT",data:t});export{r as a,e as b,h};
