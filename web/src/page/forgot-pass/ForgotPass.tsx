@@ -26,7 +26,7 @@ export const ForgotPass = () => {
                 } else message.warning(res.message);
             } else {
                 if (values.codigo !== code) return message.error('El codigo es incorrecto');
-                const res = await httpResetPassword(userId);
+                const res = await httpResetPassword(userId, values);
                 message[res.success ? 'success' : 'warning'](res.message);
                 if (res.success) navigate(-1);
             }
