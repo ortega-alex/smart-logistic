@@ -1,1 +1,0 @@
-import"./index-BKeSh-za.js";import{h as e}from"./method-http.utility-BqWs-HUi.js";const o="/type-of-customer",p=async()=>await e({path:o,method:"GET"}),h=async t=>await e({path:o,method:"POST",data:t}),m=async t=>await e({path:`${o}/${t.id_tipo_cliente}`,method:"PUT",data:t});export{m as a,h as b,p as h};

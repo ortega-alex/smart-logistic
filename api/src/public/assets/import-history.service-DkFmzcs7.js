@@ -1,1 +1,0 @@
-import"./index-BKeSh-za.js";import{h as p}from"./method-http.utility-BqWs-HUi.js";const r="/import-history",s=async(t,o)=>await p({path:`${r}/${t}`,method:"POST",data:o,type:"multipart"});export{s as h};
