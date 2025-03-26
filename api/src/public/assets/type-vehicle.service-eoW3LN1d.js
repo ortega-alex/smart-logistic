@@ -1,0 +1,1 @@
+import"./index-LOVzF4CI.js";import{h as e}from"./method-http.utility-DUkeS8Cu.js";const h="/type-vehicle",o=async()=>await e({path:h,method:"GET"}),s=async t=>await e({path:h,method:"POST",data:t}),c=async t=>await e({path:`${h}/${t.id_tipo_vehiculo}`,method:"PUT",data:t});export{c as a,s as b,o as h};

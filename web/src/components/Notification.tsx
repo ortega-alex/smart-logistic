@@ -2,16 +2,16 @@ import { useSocket } from '@/hooks';
 import { Customer, privateRoutes, Notification as TypeNotification, User, VehiclesNotification } from '@/models';
 import { RootState } from '@/redux';
 import {
-    httpEditCustomer,
-    httpEditUser,
+    // httpEditCustomer,
+    // httpEditUser,
     httpGetNotificationByCustomerId,
     httpGetNotificationByUserId,
-    httpUpdateNotification,
-    onMessageListener,
-    requestForToken
+    httpUpdateNotification
+    // onMessageListener,
+    // requestForToken
 } from '@/services';
 import { durationInDaysBetweenDateHumanize, getDateFromString } from '@/utilities';
-import { Badge, Button, message, notification, Popover } from 'antd';
+import { Badge, Button, message, Popover } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon } from './Icon';
@@ -21,7 +21,7 @@ export const Notification = () => {
     const sessionState: User = useSelector((store: RootState) => store.session);
     const sessionCustomerState: Customer = useSelector((store: RootState) => store.session_customer);
     const { socket } = useSocket();
-    const [api, contextHolder] = notification.useNotification();
+    // const [api, contextHolder] = notification.useNotification();
 
     const [notifications, setNotifications] = useState<TypeNotification[]>([]);
     const [loading, setLoading] = useState(false);
@@ -92,15 +92,15 @@ export const Notification = () => {
         }
     };
 
-    const handleGetToken_fcm = async () => {
-        try {
-            const token = await requestForToken();
-            if (sessionState.id_usuario > 0) await httpEditUser({ ...sessionState, token_fcm: token });
-            if (sessionCustomerState.id_cliente > 0) await httpEditCustomer({ ...sessionCustomerState, token_fcm: token });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // const handleGetToken_fcm = async () => {
+    //     try {
+    //         const token = await requestForToken();
+    //         if (sessionState.id_usuario > 0) await httpEditUser({ ...sessionState, token_fcm: token });
+    //         if (sessionCustomerState.id_cliente > 0) await httpEditCustomer({ ...sessionCustomerState, token_fcm: token });
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     useEffect(() => {
         handleGetNotifications();
@@ -125,26 +125,26 @@ export const Notification = () => {
             }
         }
 
-        handleGetToken_fcm();
-        onMessageListener().then((payload: any) => {
-            console.log(payload?.data.key);
-            api.open({
-                type: 'info',
-                message: payload?.notification?.title ?? 'Nueva Notificacion',
-                description: payload?.notification?.body ?? 'Nueva Notificacion',
-                showProgress: true,
-                pauseOnHover: true,
-                placement: 'bottomRight',
-                btn: payload?.data && (
-                    <Button onClick={() => handleNavigate({ lote: payload?.data?.lote, id_vehiculo: payload?.data?.id })}>Ver</Button>
-                )
-            });
-        });
+        // handleGetToken_fcm();
+        // onMessageListener().then((payload: any) => {
+        //     console.log(payload?.data.key);
+        //     api.open({
+        //         type: 'info',
+        //         message: payload?.notification?.title ?? 'Nueva Notificacion',
+        //         description: payload?.notification?.body ?? 'Nueva Notificacion',
+        //         showProgress: true,
+        //         pauseOnHover: true,
+        //         placement: 'bottomRight',
+        //         btn: payload?.data && (
+        //             <Button onClick={() => handleNavigate({ lote: payload?.data?.lote, id_vehiculo: payload?.data?.id })}>Ver</Button>
+        //         )
+        //     });
+        // });
     }, []);
 
     return (
         <>
-            {contextHolder}
+            {/* contextHolder */}
             <Popover content={renderNotification}>
                 <Badge count={notifications.filter(item => !item.visto).length} className='mr-3'>
                     <Icon.Bell color='white' size={32} />
