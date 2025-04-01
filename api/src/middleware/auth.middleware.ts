@@ -1,6 +1,6 @@
 import jwtoken from 'jsonwebtoken';
 import { enviroment } from '../utils';
-import { TokenUser } from '../model';
+import { TokenUser } from '../interfaces';
 import { NextFunction, Request, Response } from 'express';
 
 export const generateToken = (user: TokenUser) => {

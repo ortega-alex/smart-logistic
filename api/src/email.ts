@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { enviroment } from './utils';
-import { Email } from './model';
+import { Email } from './interfaces';
 
 export const transporter = nodemailer.createTransport({
     host: enviroment.EMAIL_HOST,

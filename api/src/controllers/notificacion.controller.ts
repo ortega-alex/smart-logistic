@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Customer, Notification, User, Vehicles } from '../entities';
-import { Notification as NotificationType } from '../model';
+import { Notification as NotificationType } from '../interfaces';
 import { Socket } from 'socket.io';
 
 export const newNotification = async (_notificacion: NotificationType, io: Socket) => {
