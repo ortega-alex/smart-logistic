@@ -1,0 +1,23 @@
+### GET 
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-type
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ADD 
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-type
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Transport Type"
+}
+
+### UPDATE 
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-type/4
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Transport Type",
+    "is_active": false
+}

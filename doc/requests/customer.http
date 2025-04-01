@@ -4,7 +4,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### GET CUSTOMER BY ID
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/2
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -19,27 +19,42 @@ Authorization: Bearer {{token}}
     "filter": ""
 }
 
+### ADD CUSTOMER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "El Marzo",
+    "phone_number": "6019521325",
+    "landline": "3121286800",
+    "address": "1600 Fake Street",
+    "nit": "CF",
+    "dpi": "2271023980101",
+    "email": "test@example.us",
+    "customer_type_id": 1
+}
+
 ### EDIT CUSTOMER
 PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "cliente": "El Marzo",
-    "telefono_celular": "6019521325",
-    "telefono_fijo": "3121286800",
-    "direccion": "1600 Fake Street",
+    "name": "El Marzo",
+    "phone_number": "6019521325",
+    "landline": "3121286800",
+    "address": "1600 Fake Street",
     "nit": "CF",
     "dpi": "2271023980101",
-    "correo": "test@example.us",
-    "id_tipo_cliente": 3,
-    "porcentaje_descuento": 0.5
+    "email": "test@example.us",
+    "customer_type_id": 1
 }
 
-### GET CUSTOMER PAGINATION DATA
+### LOGIN
 POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer/login
 Content-Type: application/json
 
 {
-    "correo": "test@example.us"
+    "email": "test@example.us"
 }

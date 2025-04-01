@@ -9,17 +9,18 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "subasta": "PA  EAST",
-    "alias": "EAST"
+    "name": "PHILLY EAST CP",
+    "crane_rate": 250,
+    "state_id": 38,
+    "sede_id": 1
 }
 
 ### UPDATE AUTIONS
-PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/aution/1
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/aution/2
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "subasta": "PA  EAST",
-    "alias": "EAST",
-    "estado": true
+    "name": "PHILLY CP",
+    "crane_rate": 250
 }

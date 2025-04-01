@@ -4,6 +4,6 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### GET PROFILE
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/permission/3
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/permission/profile/1
 Content-Type: application/json
 Authorization: Bearer {{token}}

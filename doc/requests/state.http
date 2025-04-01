@@ -1,0 +1,9 @@
+### GET STATES
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/state
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET STATE BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/state/1
+Content-Type: application/json
+Authorization: Bearer {{token}}

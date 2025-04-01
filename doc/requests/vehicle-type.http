@@ -1,10 +1,10 @@
-### GET AUTIONS
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-vehicle
+### GET
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle-type
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-### ADD AUTIONS
-POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-vehicle
+### ADD
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle-type
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -12,8 +12,8 @@ Authorization: Bearer {{token}}
     "tipo_vehiculo": "Sedan"
 }
 
-### UPDATE AUTIONS
-PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-vehicle/1
+### UPDATE
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle-type/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

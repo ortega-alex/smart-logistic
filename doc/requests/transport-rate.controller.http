@@ -1,0 +1,33 @@
+### GET 
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate/a63dc53e-7826-40ef-b7af-d1dc1220899d
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ADD 
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "rate": 1250,
+    "is_active": true,
+    "user_id": 1,
+    "vehicle_type_id": 3,
+    "transport_type_id": 2,
+    "sede_id": 1,
+    "customer_type_id": 1
+}
+
+### UPDATE 
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate/befdd233-b926-4be6-9a2f-c004e3395479
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{   
+    "vehicle_type_id": 1
+}

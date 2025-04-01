@@ -1,5 +1,5 @@
 ### ADD TYPE OF CUSTOMER
-POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-of-customer
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer-type
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -8,6 +8,6 @@ Authorization: Bearer {{token}}
 }
 
 ### GET TYPE OF CUSTOMER
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/type-of-customer
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/customer-type
 Content-Type: application/json
 Authorization: Bearer {{token}}

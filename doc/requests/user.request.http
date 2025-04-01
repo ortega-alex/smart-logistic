@@ -3,8 +3,8 @@ POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/login
 Content-Type: application/json
 
 {
-    "usuario": "m.ortega",
-    "contrasenia": "Abc123**"
+    "username": "admin",
+    "password": "abc123**"
 }
 
 ### ADD USER
@@ -13,23 +13,23 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "nombre": "Marlon Ortega",
-    "usuario": "m.ortega",
-    "contrasenia": "abc123**",
-    "telefono": "--sin telefono--",
-    "correo": "m.ortega@mail.com",
-    "id_perfil": 1
+    "name": "Marlon Ortega",
+    "username": "m.ortega",
+    "password": "abc123**",
+    "phone_number": "--sin telefono--",
+    "email": "m.ortega@mail.com",
+    "profile_id": 1
 }
 
 ### GET ALL USERS 
 GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/user
 Content-Type: application/json
-Authorization: Bearer {{token}}\
+Authorization: Bearer {{token}}
 
 ### POST FORGOT PASSWORD
 POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/forgot-password
 Content-Type: application/json
 
 {
-    "correo": "mortegalex27@gmail.com"
+    "email": "mortegalex27@gmail.com"
 }

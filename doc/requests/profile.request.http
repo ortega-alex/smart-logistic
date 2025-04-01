@@ -10,15 +10,15 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "perfil": "Administrador"
+    "name": "Vendedor"
 }
 
 ### UPDATE PROFILE
-PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile/3
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile/2
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "perfil": "Invitado",
-    "estado": true
+    "name": "Vendedor",
+    "is_active": false
 }
