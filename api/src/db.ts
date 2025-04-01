@@ -22,7 +22,7 @@ import {
 } from './entities';
 import { enviroment } from './utils';
 
-export const AppDataSource = new DataSource({
+export default new DataSource({
     type: 'mysql',
     host: enviroment.MYSQL_HOST,
     username: enviroment.MYSQL_USER,
@@ -49,6 +49,8 @@ export const AppDataSource = new DataSource({
         Vehicles,
         Notification
     ],
+    migrations: ['./migrations/*.ts'],
+    migrationsTableName: 'custom_migrations_table',
     synchronize: enviroment.NODE_ENV === 'development',
     namingStrategy: new SnakeNamingStrategy()
 });
