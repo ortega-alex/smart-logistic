@@ -13,12 +13,5 @@ export const add = async (transportType: TransportTypeInterface) => {
     return newTransportType;
 };
 
-export const update = async (id: number, transportType: TransportTypeInterface, currentTransportType: TransportType) => {
-    return await TransportType.update(
-        { id: Number(id) },
-        {
-            name: transportType.name ?? currentTransportType.name,
-            is_active: transportType.is_active ?? currentTransportType.is_active
-        }
-    );
-};
+export const update = async (id: number, transportType: TransportTypeInterface) =>
+    await TransportType.update({ id: Number(id) }, transportType);

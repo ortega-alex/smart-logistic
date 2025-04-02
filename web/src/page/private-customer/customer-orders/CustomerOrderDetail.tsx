@@ -1,6 +1,7 @@
 import { Icon, ViewFiles } from '@/components';
 import { useSocket } from '@/hooks';
-import { EmptyFile, EmptyVehicle, ImportState, Vehicles } from '@/models';
+import { EmptyVehicle, ImportState, Vehicles } from '@/models';
+import { EmptyCustomerFile } from '@/constants';
 import { httpGetImportState, httpGetVehiclesGetById } from '@/services';
 import { getDateFormat } from '@/utilities';
 import { Button, Divider, message, Modal, Steps, Table } from 'antd';
@@ -14,13 +15,13 @@ export const CustomerOrderDetail = () => {
     const [loading, setLoading] = useState(false);
     const [vehicle, setVehicle] = useState<Vehicles>(EmptyVehicle);
     const [importStates, setImportStates] = useState<Array<ImportState>>([]);
-    const [file, setFile] = useState(EmptyFile);
+    const [file, setFile] = useState(EmptyCustomerFile);
     const [modal, setModal] = useState(false);
 
     const handleViewFile = (path: string) => {
         setFile({
             ...file,
-            ruta: path
+            path
         });
         setModal(true);
     };
@@ -123,7 +124,7 @@ export const CustomerOrderDetail = () => {
                 open={modal}
                 onCancel={() => {
                     setModal(false);
-                    setFile(EmptyFile);
+                    setFile(EmptyCustomerFile);
                 }}
                 centered
                 destroyOnClose

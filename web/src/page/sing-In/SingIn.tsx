@@ -2,7 +2,8 @@ import { sessionAdapter } from '@/adapter';
 import logoBrand from '@/assets/images/logo-brand.png';
 import logo from '@/assets/images/logo.png';
 import { Icon } from '@/components';
-import { Login, privateRoutes, publicRoutes } from '@/models';
+import { privateRoutes, publicRoutes } from '@/constants';
+import { Loogin } from '@/interfaces';
 import { setSession } from '@/redux';
 import { httpLogin } from '@/services';
 import { Button, Form, FormProps, Input, message } from 'antd';
@@ -17,7 +18,7 @@ export const SingIn = () => {
     const [showPass, setshowPass] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit: FormProps<Login>['onFinish'] = values => {
+    const handleSubmit: FormProps<Loogin>['onFinish'] = values => {
         setLoading(true);
         httpLogin(values)
             .then(res => {
@@ -40,10 +41,10 @@ export const SingIn = () => {
                         <div className='text-center'>
                             <img src={logo} alt='logo' width={150} />
                         </div>
-                        <Form.Item label='Usuario' name='usuario' rules={[{ required: true, message: 'El usuario es requerido' }]}>
+                        <Form.Item label='Usuario' name='username' rules={[{ required: true, message: 'El usuario es requerido' }]}>
                             <Input placeholder='Ingrese un usuario' autoFocus prefix={<Icon.User />} autoCapitalize='off' />
                         </Form.Item>
-                        <Form.Item label='Contraseña' name='contrasenia' rules={[{ required: true, message: 'El usuario es requerido' }]}>
+                        <Form.Item label='Contraseña' name='password' rules={[{ required: true, message: 'El usuario es requerido' }]}>
                             <Input
                                 placeholder='Ingrese una contraseña'
                                 type={showPass ? 'text' : 'password'}

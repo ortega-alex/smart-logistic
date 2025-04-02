@@ -1,24 +1,24 @@
-import { TypeOfCustomer } from '@/models';
+import { CustomerType } from '@/interfaces';
 import { httpRequest } from '@/utilities';
 
-const path = '/type-of-customer';
+const path = '/customer-type';
 
-export const httpGetTypeOfCustomer = async () =>
+export const httpGetCustomerType = async () =>
     await httpRequest({
         path,
         method: 'GET'
     });
 
-export const httpAddTypeOfCustomer = async (data: TypeOfCustomer) =>
+export const httpAddCustomerType = async (data: CustomerType) =>
     await httpRequest({
         path,
         method: 'POST',
         data
     });
 
-export const httpEditTypeOfCustomer = async (data: TypeOfCustomer) =>
+export const httpEditCustomerType = async (data: CustomerType) =>
     await httpRequest({
-        path: `${path}/${data.id_tipo_cliente}`,
+        path: `${path}/${data.id}`,
         method: 'PUT',
         data
     });

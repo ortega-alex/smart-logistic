@@ -1,4 +1,4 @@
-import { Menu, Permission, Profile } from '@/models';
+import { Menu, Profile, Permission } from '@/interfaces';
 import { httpAddProfiles, httpGetMenus, httpGetPermissions, httpGetPermissionsMenusByProfileId, httpUpdateProfiles } from '@/services';
 import { Button, Form, FormProps, Input, message, Switch, Tabs, Tree, TreeProps } from 'antd';
 import { useEffect, useState } from 'react';
@@ -16,7 +16,7 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
     const handleSubmit: FormProps<Profile>['onFinish'] = async values => {
         try {
             setLoading(true);
-            const _permisos = checkedKeys
+            const permissions = checkedKeys
                 .map(item => item.toString())
                 .reduce((acumulate: { [keu: string]: [string] }, current: string | number) => {
                     if (String(current).indexOf('-') !== -1) {
@@ -28,11 +28,11 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
                 }, {});
 
             let res;
-            if (profile.id_perfil > 0) res = await httpUpdateProfiles({ ...profile, ...values, _permisos });
-            else res = await httpAddProfiles({ ...values, _permisos });
+            if (profile.id > 0) res = await httpUpdateProfiles({ ...profile, ...values, permissions });
+            else res = await httpAddProfiles({ ...values, permissions });
             if (res.message) message.warning(res.message);
             else {
-                message.success(`Perfil ${profile.id_perfil > 0 ? 'editada' : 'agregada'} correctamente`);
+                message.success(`Perfil ${profile.id > 0 ? 'editada' : 'agregada'} correctamente`);
                 onClose();
             }
         } catch (error) {
@@ -48,11 +48,11 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
             const permissions = await httpGetPermissions();
 
             const res = menus.map((item: Menu) => ({
-                key: item.id_menu,
-                title: item.menu,
+                key: item.id,
+                title: item.name,
                 children: permissions.map((_item: Permission) => ({
-                    key: `${item.id_menu}-${_item.id_permiso}`,
-                    title: _item.permiso
+                    key: `${item.id}-${_item.id}`,
+                    title: _item.name
                 }))
             }));
             setPermissions(res);
@@ -64,9 +64,9 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
     const handleOnCheck: TreeProps['onCheck'] = checkKeyValues => setCheckedKeys(checkKeyValues as React.Key[]);
 
     useEffect(() => {
-        if (profile.id_perfil > 0)
-            httpGetPermissionsMenusByProfileId(profile.id_perfil).then(res => {
-                const permissos: React.Key[] = res?.map((item: any) => `${item?.menu?.id_menu}-${item?.permiso?.id_permiso}`);
+        if (profile.id > 0)
+            httpGetPermissionsMenusByProfileId(profile.id).then(res => {
+                const permissos: React.Key[] = res?.map((item: any) => `${item?.menu?.id}-${item?.permission?.id}`);
                 setCheckedKeys(permissos);
             });
         handleGet();

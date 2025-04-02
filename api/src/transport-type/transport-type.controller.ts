@@ -35,7 +35,10 @@ export const update = async (req: Request, res: Response) => {
         const transportType = await getByIdTransportTypeService(Number(id));
         if (!transportType) return res.status(404).json({ message: 'No se encontro el tipo de transporte' });
 
-        const update = await updateTransportTypeService(Number(id), { name, is_active }, transportType);
+        const update = await updateTransportTypeService(Number(id), {
+            name: name ?? transportType.name,
+            is_active: is_active ?? transportType.is_active
+        });
         if (update.affected === 0) return res.status(404).json({ message: 'No se encontro el tipo de transporte' });
         return res.json({ ...transportType, name, is_active });
     } catch (error) {

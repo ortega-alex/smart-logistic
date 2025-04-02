@@ -8,7 +8,7 @@ export const getByEmail = async (email: string) => await Customer.findOne({ wher
 
 export const getById = async (id: number) => await Customer.findOne({ where: { id }, relations: { type: true, files: true } });
 
-export const save = async (customer: CustomerInterface, customerType: CustomerType) => {
+export const save = async (customer: CustomerInterface) => {
     const newCustomer = new Customer();
     newCustomer.name = customer.name;
     newCustomer.phone_number = customer.phone_number;
@@ -17,28 +17,13 @@ export const save = async (customer: CustomerInterface, customerType: CustomerTy
     newCustomer.nit = customer.nit;
     newCustomer.dpi = customer.dpi;
     newCustomer.email = customer.email;
-    newCustomer.type = customerType;
+    newCustomer.type = customer.type;
 
     await newCustomer.save();
     return newCustomer;
 };
 
-export const update = async (id: number, customer: CustomerInterface, currentCustomer: Customer, customerType: CustomerType | null) => {
-    return await Customer.update(
-        { id: Number(id) },
-        {
-            name: customer.name ?? currentCustomer.name,
-            phone_number: customer.phone_number ?? currentCustomer.phone_number,
-            landline: customer.landline ?? currentCustomer.landline,
-            address: customer.address ?? currentCustomer.address,
-            nit: customer.nit ?? currentCustomer.nit,
-            dpi: customer.dpi ?? currentCustomer.dpi,
-            email: customer.email ?? currentCustomer.email,
-            type: customerType || currentCustomer.type,
-            token_fcm: customer.token_fcm ?? currentCustomer.token_fcm
-        }
-    );
-};
+export const update = async (id: number, customer: CustomerInterface) => await Customer.update({ id: Number(id) }, customer);
 
 export const pagination = async (filter: string, sortField: string, sortOrder: string, current: number, pageSize: number) => {
     // Crear la consulta base
@@ -56,7 +41,7 @@ export const pagination = async (filter: string, sortField: string, sortOrder: s
     }
 
     if (sortField.includes('type')) {
-        query.orderBy(`type.${sortField}`, sortOrder.toUpperCase() as 'ASC' | 'DESC');
+        query.orderBy(`type.name`, sortOrder.toUpperCase() as 'ASC' | 'DESC');
     } else {
         query.orderBy(`customer.${sortField}`, sortOrder.toUpperCase() as 'ASC' | 'DESC');
     }

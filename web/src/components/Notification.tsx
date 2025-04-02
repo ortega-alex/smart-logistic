@@ -1,5 +1,6 @@
 import { useSocket } from '@/hooks';
-import { Customer, privateRoutes, Notification as TypeNotification, User, VehiclesNotification } from '@/models';
+import { Notification as TypeNotification, VehiclesNotification } from '@/models';
+import { Customer, User } from '@/interfaces';
 import { RootState } from '@/redux';
 import {
     // httpEditCustomer,
@@ -16,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon } from './Icon';
 import { Loader } from './Loading';
+import { privateRoutes } from '@/constants';
 
 export const Notification = () => {
     const sessionState: User = useSelector((store: RootState) => store.session);
@@ -28,8 +30,8 @@ export const Notification = () => {
 
     const handleNavigate = (vehicle: VehiclesNotification) => {
         let path;
-        if (sessionState.id_usuario > 0) path = `${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${vehicle.lote}`;
-        if (sessionCustomerState.id_cliente > 0)
+        if (sessionState.id > 0) path = `${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${vehicle.lote}`;
+        if (sessionCustomerState.id > 0)
             path = `${privateRoutes.PRIVATE_CUSTOMER}/${privateRoutes.CUSTOMER_ORDER_DETAIL}/${vehicle.id_vehiculo}`;
         window.open(`${window.location.origin}/#/${path}`, '_blank');
     };
@@ -41,8 +43,8 @@ export const Notification = () => {
                 await httpUpdateNotification(notificacion.id_notificacion);
                 handleGetNotifications();
             }
-            if (sessionState.id_usuario && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
-            if (sessionCustomerState.id_cliente && notificacion.cliente && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
+            if (sessionState.id && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
+            if (sessionCustomerState.id && notificacion.cliente && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
         } catch (error) {
             message.error(`Error http update notification: ${(error as Error).message}`);
         } finally {
@@ -82,8 +84,8 @@ export const Notification = () => {
         try {
             setLoading(true);
             let res;
-            if (sessionState.id_usuario) res = await httpGetNotificationByUserId(sessionState.id_usuario);
-            if (sessionCustomerState.id_cliente) res = await httpGetNotificationByCustomerId(sessionCustomerState.id_cliente);
+            if (sessionState.id) res = await httpGetNotificationByUserId(sessionState.id);
+            if (sessionCustomerState.id) res = await httpGetNotificationByCustomerId(sessionCustomerState.id);
             setNotifications(res);
         } catch (error) {
             message.error(`Error http get notifications: ${(error as Error).message}`);
@@ -103,28 +105,15 @@ export const Notification = () => {
     // };
 
     useEffect(() => {
-        handleGetNotifications();
-        if (socket) {
-            if (sessionState.id_usuario) {
-                socket.on('notification', notifications => {
-                    console.log('para todos', notifications.titulo);
-                    handleGetNotifications();
-                });
-
-                socket.on(`notification-${sessionState.id_usuario}`, notifications => {
-                    console.log('por usuario', notifications.titulo);
-                    handleGetNotifications();
-                });
-            }
-
-            if (sessionCustomerState.id_cliente) {
-                socket.on(`notification-${sessionCustomerState.id_cliente}`, notifications => {
-                    console.log('por cliente', notifications.titulo);
-                    handleGetNotifications();
-                });
-            }
-        }
-
+        // handleGetNotifications();
+        // if (socket) {
+        //     if (sessionState.id) {
+        //         socket.on('notification', _notifications => handleGetNotifications());
+        //         socket.on(`notification-${sessionState.id}`, _notifications => handleGetNotifications());
+        //     }
+        //     if (sessionCustomerState.id_cliente)
+        //         socket.on(`notification-${sessionCustomerState.id_cliente}`, _notifications => handleGetNotifications());
+        // }
         // handleGetToken_fcm();
         // onMessageListener().then((payload: any) => {
         //     console.log(payload?.data.key);

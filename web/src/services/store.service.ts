@@ -9,6 +9,8 @@ export const getStorage = (key: string) => {
     return storage ? decryptData(storage) : null;
 };
 
-export const clearStorage = (key: string) => {
+export const removeStorage = (key: string) => {
     window.sessionStorage.removeItem(key);
 };
+
+export const clearStorage = () => window.sessionStorage.clear();

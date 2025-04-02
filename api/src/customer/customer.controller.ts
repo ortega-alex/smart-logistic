@@ -47,18 +47,16 @@ export const add = async (req: Request, res: Response) => {
         const customerType = await getCustomerTypeByIdService(Number(customer_type_id));
         if (!customerType) return res.status(404).json({ message: 'Tipo de cliente no encontrado' });
 
-        const customer = await saveCustomerService(
-            {
-                name,
-                phone_number,
-                landline,
-                address,
-                nit,
-                dpi,
-                email
-            },
-            customerType
-        );
+        const customer = await saveCustomerService({
+            name,
+            phone_number,
+            landline,
+            address,
+            nit,
+            dpi,
+            email,
+            type: customerType
+        });
 
         const files = req.files as Express.Multer.File[];
         if (files) saveCustomerFileService(customer, files);
@@ -99,22 +97,17 @@ export const updateById = async (req: Request, res: Response) => {
         let customerType = null;
         if (customer_type_id) customerType = await getCustomerTypeByIdService(Number(customer_type_id));
 
-        const update = await updateCustomerService(
-            Number(id),
-            {
-                name,
-                phone_number,
-                landline,
-                address,
-                nit,
-                dpi,
-                email,
-                customer_type_id,
-                token_fcm
-            },
-            customer,
-            customerType
-        );
+        const update = await updateCustomerService(Number(id), {
+            name: name ?? customer.name,
+            phone_number: phone_number ?? customer.phone_number,
+            landline: landline ?? customer.landline,
+            address: address ?? customer.address,
+            nit: nit ?? customer.nit,
+            dpi: dpi ?? customer.dpi,
+            email: email ?? customer.email,
+            token_fcm: token_fcm ?? customer.token_fcm,
+            type: customerType ?? customer.type
+        });
         if ((update?.affected ?? 0) > 0) {
             const files = req.files as Express.Multer.File[];
             if (files) saveCustomerFileService(customer, files);

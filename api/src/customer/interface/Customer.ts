@@ -1,3 +1,5 @@
+import { CustomerType } from '../../customer-type/entity/CustomerType';
+
 export interface Customer {
     name: string;
     phone_number: string;
@@ -8,5 +10,5 @@ export interface Customer {
     email: string;
     token_fcm?: string;
     is_active?: boolean;
-    customer_type_id?: number;
+    type: CustomerType;
 }

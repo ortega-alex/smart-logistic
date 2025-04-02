@@ -1,6 +1,4 @@
-import { ObjectCustomer } from './Utilityes';
-
-export const privateRoutes: ObjectCustomer = {
+export const privateRoutes = {
     PRIVATE: 'private',
     HOME: 'home',
     VEHICLES: 'vehicles',
@@ -13,7 +11,7 @@ export const privateRoutes: ObjectCustomer = {
     PROFILES: 'profiles',
     REPORTS: 'reports',
     ACUTION: 'aution',
-    TYPES_OF_CUSTOMERS: 'types-of-customers',
+    CUSTOMER_TYPE: 'customer-type',
     PRIVATE_CUSTOMER: 'private-customer',
     CUSTOMER_ORDER: 'customer-order',
     CUSTOMER_ORDER_DETAIL: 'customer-order-detail'
@@ -25,3 +23,9 @@ export const publicRoutes = {
     INVOUCE: 'validation',
     FORGOT_PASS: 'forgot-password'
 } as const;
+
+export type PrivateRouteKeys = keyof typeof privateRoutes;
+export type PublicRouteKeys = keyof typeof publicRoutes;
+
+export type PrivateRouteValue = (typeof privateRoutes)[PrivateRouteKeys];
+export type PublicRouteValue = (typeof publicRoutes)[PublicRouteKeys];

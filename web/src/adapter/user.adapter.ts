@@ -1,7 +1,7 @@
-import { Sesion, User } from '@/models';
+import { Sesion, User } from '@/interfaces';
 
 export const sessionAdapter = (values: User): Sesion => ({
     ...values,
-    id_sesion: values.id_usuario,
-    iniciales: values.nombre.substring(0, 2).toUpperCase()
+    session_id: values.id,
+    iniciales: values.name.substring(0, 2).toUpperCase()
 });

@@ -1,7 +1,7 @@
 import logoBrand from '@/assets/images/logo-brand.png';
 import logo from '@/assets/images/logo.png';
 import { Icon } from '@/components';
-import { UserForgotPassword } from '@/models';
+import { UserForgotPassword } from '@/interfaces';
 import { httpForgotPassword, httpResetPassword } from '@/services';
 import { Button, Form, FormProps, Input, InputNumber, message } from 'antd';
 import { useState } from 'react';
@@ -25,7 +25,7 @@ export const ForgotPass = () => {
                     setUserId(res.user_id);
                 } else message.warning(res.message);
             } else {
-                if (values.codigo !== code) return message.error('El codigo es incorrecto');
+                if (values.code !== code) return message.error('El codigo es incorrecto');
                 const res = await httpResetPassword(userId, values);
                 message[res.success ? 'success' : 'warning'](res.message);
                 if (res.success) navigate(-1);

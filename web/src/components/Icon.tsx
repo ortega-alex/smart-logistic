@@ -65,5 +65,14 @@ export const IconEnun: Map = {
     report: <Icon.Report size='32%' />,
     store: <Icon.Store size='32%' />,
     users: <Icon.Users size='32%' />,
-    user: <Icon.User size='32%' />
+    user: <Icon.User size='32%' />,
+    calculate_mobile: <Icon.Calculate />,
+    car_mobile: <Icon.Car />,
+    car2_mobile: <Icon.Car2 />,
+    crane_mobile: <Icon.Crane />,
+    profile_mobile: <Icon.Profile />,
+    report_mobile: <Icon.Report />,
+    store_mobile: <Icon.Store />,
+    users_mobile: <Icon.Users />,
+    user_mobile: <Icon.User />
 };

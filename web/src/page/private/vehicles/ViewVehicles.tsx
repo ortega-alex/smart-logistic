@@ -1,25 +1,22 @@
 import { Icon, ViewFiles } from '@/components';
+import { EmptyCustomerFile, publicRoutes } from '@/constants';
 import { useVehicle } from '@/hooks';
-import { EmptyFile, Moneda, publicRoutes } from '@/models';
+import { Moneda } from '@/models';
 import { httpGetVehiclesGetById } from '@/services';
 import { copyToClipboard, getDateFormat } from '@/utilities';
 import { Button, Divider, message, Modal, Table, Tag, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormEvidence } from './FormEvidence';
 import { TableDetail } from './TableDetail';
 
-interface Props {
-    // vehicle: Vehicles;
-}
-
-export const ViewVehicles: React.FC<Props> = () => {
+export const ViewVehicles = () => {
     const { vehicle, updateVehicle } = useVehicle();
 
     const [modals, setModals] = useState({
         view: false,
         evidence: false
     });
-    const [file, setFile] = useState(EmptyFile);
+    const [file, setFile] = useState(EmptyCustomerFile);
     const [loading, setLoading] = useState(false);
 
     const handleOnChangeModals = (name: string, value: boolean = true) => setModals({ ...modals, [name]: value });
@@ -27,7 +24,7 @@ export const ViewVehicles: React.FC<Props> = () => {
     const handleViewFile = (path: string) => {
         setFile({
             ...file,
-            ruta: path
+            path
         });
         handleOnChangeModals('view');
     };
@@ -216,7 +213,7 @@ export const ViewVehicles: React.FC<Props> = () => {
                 open={modals.view}
                 onCancel={() => {
                     handleOnChangeModals('view', false);
-                    setFile(EmptyFile);
+                    setFile(EmptyCustomerFile);
                 }}
                 centered
                 destroyOnClose

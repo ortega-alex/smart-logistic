@@ -1,7 +1,7 @@
 import { permissionMenuAdapter } from '@/adapter';
 import { Navbar, RoutesWithNotFound } from '@/components';
-import { VehicleState } from '@/context';
-import { Menu, privateRoutes, Sesion } from '@/models';
+import { privateRoutes } from '@/constants';
+import { Menu, Sesion } from '@/interfaces';
 import { RootState } from '@/redux';
 import { modifyDevice, setMenu } from '@/redux/state';
 import { httpGetPermissionsMenusByProfileId } from '@/services';
@@ -12,20 +12,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./home/Home').then(module => ({ default: module.Home })));
-const Quoter = lazy(() => import('./quoter/Quoter').then(module => ({ default: module.Quoter })));
-const Vehicles = lazy(() => import('./vehicles/Vehicles').then(module => ({ default: module.Vehicles })));
+// const Quoter = lazy(() => import('./quoter/Quoter').then(module => ({ default: module.Quoter })));
+// const Vehicles = lazy(() => import('./vehicles/Vehicles').then(module => ({ default: module.Vehicles })));
 
 // MANTENIMIENTOS
 const Customer = lazy(() => import('./maintenance/custome/Customer').then(module => ({ default: module.Customer })));
-const User = lazy(() => import('./maintenance/users/User').then(module => ({ default: module.User })));
-const Aution = lazy(() => import('./maintenance/aution/Aution').then(module => ({ default: module.Aution })));
-const Crane = lazy(() => import('./maintenance/crane/Crane').then(module => ({ default: module.Crane })));
-const Port = lazy(() => import('./maintenance/ports/Port').then(module => ({ default: module.Port })));
-const TypeVehicle = lazy(() => import('./maintenance/type-of-vehicle/TypeVehicle').then(module => ({ default: module.TypeVehicle })));
-const Profile = lazy(() => import('./maintenance/profile/Profile').then(module => ({ default: module.Profile })));
-const TypeOfCustomer = lazy(() =>
-    import('./maintenance/type-of-customer/TypeOfCustomer').then(module => ({ default: module.TypeOfCustomer }))
-);
+// const User = lazy(() => import('./maintenance/users/User').then(module => ({ default: module.User })));
+// const Aution = lazy(() => import('./maintenance/aution/Aution').then(module => ({ default: module.Aution })));
+// const Crane = lazy(() => import('./maintenance/crane/Crane').then(module => ({ default: module.Crane })));
+// const Port = lazy(() => import('./maintenance/ports/Port').then(module => ({ default: module.Port })));
+// const TypeVehicle = lazy(() => import('./maintenance/type-of-vehicle/TypeVehicle').then(module => ({ default: module.TypeVehicle })));
+// const Profile = lazy(() => import('./maintenance/profile/Profile').then(module => ({ default: module.Profile })));
+const CustomerType = lazy(() => import('./maintenance/customer-type/CustomerType').then(module => ({ default: module.CustomerType })));
 
 export const Private = () => {
     const dispatch = useDispatch();
@@ -38,9 +36,10 @@ export const Private = () => {
     };
 
     useEffect(() => {
+        eventListenerResize();
         window.addEventListener('resize', eventListenerResize);
 
-        httpGetPermissionsMenusByProfileId(sesionState.perfil?.id_perfil ?? 0)
+        httpGetPermissionsMenusByProfileId(sesionState.profile?.id ?? 0)
             .then(res => {
                 const { menus } = permissionMenuAdapter(res);
                 dispatch(setMenu({ menus }));
@@ -59,7 +58,7 @@ export const Private = () => {
                     <Route path='/' element={<Navigate to={privateRoutes.HOME} />} />
                     <Route path={privateRoutes.HOME} element={<Home />} />
                     <>
-                        {menuState.some(item => item.path === privateRoutes.QUOTER) && (
+                        {/* {menuState.some(item => item.path === privateRoutes.QUOTER) && (
                             <Route path={privateRoutes.QUOTER} element={<Quoter />} />
                         )}
 
@@ -74,13 +73,13 @@ export const Private = () => {
                                         </VehicleState>
                                     }
                                 />
-                            ))}
+                            ))} */}
 
                         {menuState.some(item => item.path === privateRoutes.CUSTOMERS) && (
                             <Route path={privateRoutes.CUSTOMERS} element={<Customer />} />
                         )}
 
-                        {menuState.some(item => item.path === privateRoutes.USERS) && (
+                        {/* {menuState.some(item => item.path === privateRoutes.USERS) && (
                             <Route path={privateRoutes.USERS} element={<User />} />
                         )}
 
@@ -103,9 +102,10 @@ export const Private = () => {
                         {menuState.some(item => item.path === privateRoutes.PROFILES) && (
                             <Route path={privateRoutes.PROFILES} element={<Profile />} />
                         )}
+                            */}
 
-                        {menuState.some(item => item.path === privateRoutes.TYPES_OF_CUSTOMERS) && (
-                            <Route path={privateRoutes.TYPES_OF_CUSTOMERS} element={<TypeOfCustomer />} />
+                        {menuState.some(item => item.path === privateRoutes.CUSTOMER_TYPE) && (
+                            <Route path={privateRoutes.CUSTOMER_TYPE} element={<CustomerType />} />
                         )}
                     </>
                 </RoutesWithNotFound>

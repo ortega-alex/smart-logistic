@@ -1,5 +1,6 @@
 import { Icon } from '@/components';
-import { User as TypeUser, UserEmpty } from '@/models';
+import { UserEmpty } from '@/constants';
+import { User as TypeUser } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGelUser } from '@/services';
 import { Button, Input, List, Modal, Table } from 'antd';
@@ -25,7 +26,7 @@ export const User = () => {
     };
 
     const handleEdit = (user: TypeUser) => {
-        setUser({ ...user, id_perfil: user.perfil?.id_perfil });
+        setUser(user);
         setModal(true);
     };
 
@@ -56,21 +57,21 @@ export const User = () => {
                 <List
                     dataSource={users}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_usuario}>
+                        <div className='item-list' key={item.id}>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.nombre}
+                                <strong>Nombre: </strong>&nbsp;{item.name}
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div className='flex-1'>
-                                    <strong>Perfil: </strong>&nbsp;{item.perfil?.perfil}
+                                    <strong>Perfil: </strong>&nbsp;{item.profile?.name}
                                 </div>
                                 <div className='flex-1'>
-                                    <strong>Usuario: </strong>&nbsp;{item.usuario}
+                                    <strong>Usuario: </strong>&nbsp;{item.username}
                                 </div>
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
+                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
                                 </div>
                                 <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
                                     Editar
@@ -145,7 +146,7 @@ export const User = () => {
                 open={modal}
                 title={
                     <h3>
-                        {user.id_usuario > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
+                        {user.id > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
                     </h3>
                 }
                 footer={null}

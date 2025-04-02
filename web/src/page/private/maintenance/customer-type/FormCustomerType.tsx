@@ -1,25 +1,26 @@
-import { TypeOfCustomer } from '@/models';
-import { httpAddTypeOfCustomer, httpEditTypeOfCustomer } from '@/services';
+import { CustomerType } from '@/interfaces';
+import { httpAddCustomerType, httpEditCustomerType } from '@/services';
 import { Button, Form, FormProps, Input, message, Switch } from 'antd';
 import { useState } from 'react';
 
 interface Props {
-    typeOfCustomer: TypeOfCustomer;
+    customerType: CustomerType;
     onClose: () => void;
 }
 
-export const FormTypeOfCustomer: React.FC<Props> = ({ typeOfCustomer, onClose }) => {
+export const FormCustomerType: React.FC<Props> = ({ customerType, onClose }) => {
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit: FormProps<TypeOfCustomer>['onFinish'] = async values => {
+    const handleSubmit: FormProps<CustomerType>['onFinish'] = async values => {
         setLoading(true);
         try {
             setLoading(true);
             let res;
-            if (typeOfCustomer.id_tipo_cliente > 0) res = await httpEditTypeOfCustomer({ ...typeOfCustomer, ...values });
-            else res = await httpAddTypeOfCustomer(values);
-            if (res.message) message.warning(res.message);
-            else onClose();
+            if (customerType.id && customerType.id > 0) res = await httpEditCustomerType({ ...customerType, ...values });
+            else res = await httpAddCustomerType(values);
+
+            message[res.error ? 'warning' : 'success'](res.message);
+            if (!res.error) onClose();
         } catch (error) {
             message.error(`Error add or edit ouoter: ${(error as Error).message}`);
         } finally {
@@ -28,11 +29,11 @@ export const FormTypeOfCustomer: React.FC<Props> = ({ typeOfCustomer, onClose })
     };
 
     return (
-        <Form layout='vertical' initialValues={{ ...typeOfCustomer }} onFinish={handleSubmit}>
-            <Form.Item label='Nombre' name='tipo_cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+        <Form layout='vertical' initialValues={{ ...customerType }} onFinish={handleSubmit}>
+            <Form.Item label='Nombre' name='name' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese el nombre del tipo de cliente' />
             </Form.Item>
-            <Form.Item label='Estado' name='estado' valuePropName='checked'>
+            <Form.Item label='Estado' name='is_active' valuePropName='checked'>
                 <Switch checkedChildren='Activo' unCheckedChildren='Inactivo' />
             </Form.Item>
             <div className='text-right'>

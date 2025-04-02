@@ -1,6 +1,7 @@
 import { Icon, Search } from '@/components';
 import { useVehicle } from '@/hooks';
-import { Customer, TableParams, Vehicles as TypeVehicles, privateRoutes } from '@/models';
+import { TableParams, Vehicles as TypeVehicles } from '@/models';
+import { Customer } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -9,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ViewVehicles } from './';
+import { privateRoutes } from '@/constants';
 
 export const Vehicles = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -75,7 +77,7 @@ export const Vehicles = () => {
 
     useEffect(() => {
         httpGetCustomer()
-            .then(res => setCustomers(res?.filter((item: Customer) => item.estado)))
+            .then(res => setCustomers(res?.filter((item: Customer) => item.is_active)))
             .catch(err => message.error(`Error http get customers: ${err.message}}`));
     }, []);
 
@@ -90,7 +92,7 @@ export const Vehicles = () => {
                     <label htmlFor='cliente'>Cliente</label>
                     <Select
                         placeholder='Selecciones una opción'
-                        options={customers.filter(item => item.estado).map(item => ({ label: item.cliente, value: item.id_cliente }))}
+                        options={customers.filter(item => item.is_active).map(item => ({ label: item.name, value: item.id }))}
                         onChange={value => setFilter(value)}
                         allowClear
                         style={{ minWidth: 200 }}

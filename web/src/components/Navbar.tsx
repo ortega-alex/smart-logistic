@@ -1,5 +1,7 @@
 import icon from '@/assets/images/icon.png';
-import { color, Menu, privateRoutes, publicRoutes, Sesion } from '@/models';
+import { privateRoutes, publicRoutes } from '@/constants';
+import { Menu, Sesion } from '@/interfaces';
+import { color } from '@/models';
 import { resetSesion, RootState } from '@/redux';
 import { httpResetPassword } from '@/services';
 import { passwordIsValid } from '@/utilities';
@@ -7,7 +9,7 @@ import { Avatar, Button, Drawer, Dropdown, Form, FormProps, Input, message, Moda
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Icon, Notification } from './';
+import { Icon, IconEnun, Notification } from './';
 
 export const Navbar = () => {
     const sessionState: Sesion = useSelector((store: RootState) => store.session);
@@ -45,7 +47,7 @@ export const Navbar = () => {
 
     const handleSubmitResetPassword: FormProps<any>['onFinish'] = async values => {
         setloading(true);
-        httpResetPassword(sessionState.id_sesion, values)
+        httpResetPassword(sessionState.session_id, values)
             .then(res => {
                 message[res.success ? 'success' : 'error'](res.message);
                 if (res.success) setModal(false);
@@ -80,26 +82,30 @@ export const Navbar = () => {
 
                 {!show && !deviceState && (
                     <div className='flex-1 flex justify-end text-white gap-3 mr-3'>
-                        {menuState.some(item => item.path === privateRoutes.QUOTER) && (
-                            <Link to={privateRoutes.QUOTER} style={{ color: color.white, textDecoration: 'none' }}>
-                                <span className='text-white'>Cotizador</span>
-                            </Link>
-                        )}
-                        {menuState.some(item => item.path === privateRoutes.VEHICLES) && (
-                            <Link to={privateRoutes.VEHICLES} style={{ color: color.white, textDecoration: 'none' }}>
-                                <span className='text-white'>Vehiculos</span>
-                            </Link>
-                        )}
-                        {menuState.some(item => item.es_mantenimiento) && (
+                        {menuState
+                            .filter(item => !item.is_maintenance)
+                            .map(item => (
+                                <Link
+                                    style={{ color: color.white, textDecoration: 'none' }}
+                                    key={item.id}
+                                    className={`text-navbar zoom ${pathname === `/${privateRoutes.PRIVATE}/${item.path}` ? 'text-primary' : ''}`}
+                                    to={item.path}
+                                >
+                                    <span className='flex items-center gap-2'>
+                                        {IconEnun[`${item.icon}_mobile`]} {item.name}
+                                    </span>
+                                </Link>
+                            ))}
+                        {menuState.some(item => item.is_maintenance) && (
                             <Dropdown
                                 menu={{
                                     items: menuState
-                                        .filter(item => item.es_mantenimiento)
+                                        .filter(item => item.is_maintenance)
                                         .map(item => ({
-                                            key: item.id_menu,
+                                            key: item.id,
                                             label: (
                                                 <Link to={item.path} style={{ textDecoration: 'none' }}>
-                                                    <span>{item.menu}</span>
+                                                    <span>{item.name}</span>
                                                 </Link>
                                             )
                                         }))
@@ -141,65 +147,13 @@ export const Navbar = () => {
                         <img src={icon} height='80' className='d-inline-block align-top' alt='' />
                     </Link>
 
-                    {menuState.some(item => item.path === privateRoutes.QUOTER) && (
-                        <Button
-                            type='link'
-                            icon={<Icon.Calculate color='white' />}
-                            htmlType='button'
-                            className='text-left'
-                            block
-                            onClick={() => handleNavigation(privateRoutes.QUOTER)}
-                        >
-                            <span className='text-white'>Cotizador</span>
-                        </Button>
-                    )}
-
-                    {menuState.some(item => item.path === privateRoutes.VEHICLES) && (
-                        <Button
-                            type='link'
-                            icon={<Icon.Car color='white' />}
-                            htmlType='button'
-                            className='text-left'
-                            block
-                            onClick={() => handleNavigation(privateRoutes.VEHICLES)}
-                        >
-                            <span className='text-white'>Vehiculos</span>
-                        </Button>
-                    )}
-
-                    {menuState.some(item => item.es_mantenimiento) && (
-                        <Dropdown
-                            menu={{
-                                items: menuState
-                                    .filter(item => item.es_mantenimiento)
-                                    .map(item => ({
-                                        key: item.path,
-                                        label: <span>{item.menu}</span>
-                                    })),
-                                onClick: value => handleNavigation(value.key)
-                            }}
-                            placement='bottomLeft'
-                            arrow
-                        >
-                            <Button type='text' htmlType='button' className='text-white' size='small'>
-                                <span>Mantenimietos</span>
-                                <Icon.AngleDown />
-                            </Button>
-                        </Dropdown>
-                    )}
-
-                    {menuState.some(item => item.path === 'REPORTS') && (
-                        <Button
-                            type='link'
-                            icon={<Icon.Report color='white' />}
-                            htmlType='button'
-                            className='text-left'
-                            block
-                            onClick={() => handleNavigation(privateRoutes.REPORTS)}
-                        >
-                            <span className='text-white'>Reportes</span>
-                        </Button>
-                    )}
+                    {menuState.map(item => (
+                        <h3 key={item.id} className='text-left ' onClick={() => handleNavigation(item.path)}>
+                            <span className='flex items-center gap-2'>
+                                {IconEnun[`${item.icon}_mobile`]} {item.name}
+                            </span>
+                        </h3>
+                    ))}
                 </div>
             </Drawer>
             <Drawer
@@ -235,9 +189,9 @@ export const Navbar = () => {
                         {sessionState.iniciales}
                     </Avatar>
 
-                    <strong className='mt-3'>{sessionState.nombre}</strong>
-                    <span>{sessionState.usuario}</span>
-                    <span>{sessionState.perfil?.perfil}</span>
+                    <strong className='mt-3'>{sessionState.name}</strong>
+                    <span>{sessionState.username}</span>
+                    <span>{sessionState.profile?.name}</span>
                 </div>
             </Drawer>
 

@@ -1,5 +1,7 @@
 import { Icon, Search } from '@/components';
-import { Customer, privateRoutes, Vehicles } from '@/models';
+import { privateRoutes } from '@/constants';
+import { Vehicles } from '@/models';
+import { Customer } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpAddImportHistory, httpGetVehiclesByCustomerId } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -21,7 +23,7 @@ export const CustomerOrders = () => {
 
     const handleGet = () => {
         setLoading(true);
-        httpGetVehiclesByCustomerId(sessionCustomerState.id_cliente)
+        httpGetVehiclesByCustomerId(sessionCustomerState.id)
             .then(res => setVehicles(res))
             .catch(err => message.error(`Error http get vehicles by customer id ${err.message}`))
             .finally(() => setLoading(false));
@@ -30,7 +32,7 @@ export const CustomerOrders = () => {
     const handleIploadInvoice = (file: any, vehicle: Vehicles) => {
         const body = {
             file,
-            id_cliente: sessionCustomerState.id_cliente,
+            customer_id: sessionCustomerState.id,
             id_estado_importacion: vehicle.estado_importacion.id_estado_importacion + 1,
             descripcion: 'El cliente ha cargado la factura',
             visible_cliente: true

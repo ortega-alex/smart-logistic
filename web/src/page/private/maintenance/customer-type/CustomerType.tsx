@@ -1,42 +1,43 @@
 import { Icon, Search } from '@/components';
-import { EmptyTypeOfCustomer, TypeOfCustomer as TyTypeOfCustomer } from '@/models';
+import { EmptyCustomerType } from '@/constants';
+import { CustomerType as TypeCustomerType } from '@/interfaces';
 import { RootState } from '@/redux';
-import { httpGetTypeOfCustomer } from '@/services';
+import { httpGetCustomerType } from '@/services';
 import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FormTypeOfCustomer } from './FormTypeOfCustomer';
+import { FormCustomerType } from './FormCustomerType';
 
-export const TypeOfCustomer = () => {
+export const CustomerType = () => {
     const deviceState = useSelector((store: RootState) => store.device);
     const title = 'Tipos de Clientes';
 
-    const [typeOfCustomer, setTypeOfCustomer] = useState<TyTypeOfCustomer>(EmptyTypeOfCustomer);
-    const [typeOfCustomers, setTypeOfCustomers] = useState<Array<TyTypeOfCustomer>>([]);
-    const [typeOfCustomersCopy, setTypeOfCustomersCopy] = useState<Array<TyTypeOfCustomer>>([]);
+    const [customerType, setCustomerType] = useState<TypeCustomerType>(EmptyCustomerType);
+    const [customerTypes, setCustomerTypes] = useState<Array<TypeCustomerType>>([]);
+    const [customerTypesCopy, setCustomerTypesCopy] = useState<Array<TypeCustomerType>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleOnSearch = (value: string) => {
-        let _type_vehicles = [...typeOfCustomersCopy];
+        let _type_vehicles = [...customerTypesCopy];
         if (value.trim() !== '')
             _type_vehicles = _type_vehicles.filter(
-                item => item.id_tipo_cliente === Number(value) || item.tipo_cliente.toLowerCase().indexOf(value.toLowerCase()) !== -1
+                item => item.id === Number(value) || item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
             );
-        setTypeOfCustomers(_type_vehicles);
+        setCustomerTypes(_type_vehicles);
     };
 
-    const handleEdit = (item: TyTypeOfCustomer) => {
-        setTypeOfCustomer(item);
+    const handleEdit = (item: TypeCustomerType) => {
+        setCustomerType(item);
         setModal(true);
     };
 
     const handleGet = () => {
         setLoading(true);
-        httpGetTypeOfCustomer()
+        httpGetCustomerType()
             .then(res => {
-                setTypeOfCustomers(res);
-                setTypeOfCustomersCopy(res);
+                setCustomerTypes(res);
+                setCustomerTypesCopy(res);
             })
             .catch(err => message.error(`Error http get type of customers: ${err.message}`))
             .finally(() => setLoading(false));
@@ -57,7 +58,7 @@ export const TypeOfCustomer = () => {
                     type='primary'
                     htmlType='button'
                     onClick={() => {
-                        setTypeOfCustomer(EmptyTypeOfCustomer);
+                        setCustomerType(EmptyCustomerType);
                         setModal(true);
                     }}
                 >
@@ -67,17 +68,17 @@ export const TypeOfCustomer = () => {
 
             {deviceState ? (
                 <List
-                    dataSource={typeOfCustomers}
+                    dataSource={customerTypes}
                     loading={loading}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_tipo_cliente}>
+                        <div className='item-list' key={item.id}>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.id_tipo_cliente}
+                                <strong>Nombre: </strong>&nbsp;{item.name}
                             </div>
 
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
+                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
                                 </div>
                                 <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
                                     Editar
@@ -90,30 +91,26 @@ export const TypeOfCustomer = () => {
                 <Table
                     size='small'
                     rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={{
-                        position: ['none', 'bottomRight'],
-                        showSizeChanger: true,
-                        pageSizeOptions: [50, 100, 250, 500]
-                    }}
+                    pagination={false}
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_tipo_cliente'
-                    dataSource={typeOfCustomers}
+                    rowKey='id'
+                    dataSource={customerTypes}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_tipo_cliente'
+                            dataIndex: 'id'
                         },
                         {
                             title: 'Nombre',
-                            dataIndex: 'tipo_cliente',
+                            dataIndex: 'name',
                             ellipsis: true,
                             sorter: true
                         },
                         {
                             title: 'Estado',
-                            dataIndex: 'estado',
+                            dataIndex: 'is_active',
                             render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
@@ -139,7 +136,7 @@ export const TypeOfCustomer = () => {
                 open={modal}
                 title={
                     <h3>
-                        {typeOfCustomer.id_tipo_cliente > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
+                        {customerType.id && customerType.id > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
                     </h3>
                 }
                 footer={null}
@@ -147,8 +144,8 @@ export const TypeOfCustomer = () => {
                 centered
                 destroyOnClose
             >
-                <FormTypeOfCustomer
-                    typeOfCustomer={typeOfCustomer}
+                <FormCustomerType
+                    customerType={customerType}
                     onClose={() => {
                         handleGet();
                         setModal(false);

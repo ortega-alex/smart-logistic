@@ -1,6 +1,7 @@
 import icon from '@/assets/images/icon.png';
 import { Icon, Notification, RoutesWithNotFound } from '@/components';
-import { Customer, privateRoutes, publicRoutes } from '@/models';
+import { privateRoutes, publicRoutes } from '@/constants';
+import { Customer } from '@/interfaces';
 import { RootState } from '@/redux';
 import { modifyDevice } from '@/redux/state';
 import { resetSesionCustomer } from '@/redux/state/customer';
@@ -67,7 +68,7 @@ export const PrivateCustomer = () => {
                         arrow
                     >
                         <Avatar gap={3} size={50} className='bg-secondary'>
-                            {String(sessionCustomerState.cliente).substring(0, 2).toUpperCase()}
+                            {String(sessionCustomerState.name).substring(0, 2).toUpperCase()}
                         </Avatar>
                     </Dropdown>
                 </div>

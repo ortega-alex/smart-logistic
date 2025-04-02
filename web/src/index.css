@@ -122,6 +122,10 @@
     }
 }
 
+.text-primary {
+    color: var(--primary) !important;
+}
+
 .text-white {
     color: var(--white) !important;
 }
@@ -913,4 +917,8 @@
             24px 0;
         color: var(--white);
     }
+}
+
+.text-navbar:hover {
+    color: var(--primary) !important;
 }

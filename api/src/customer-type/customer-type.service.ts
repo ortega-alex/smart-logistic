@@ -13,12 +13,5 @@ export const save = async (customerType: CustomerTypeInterface) => {
     return newCustomerType;
 };
 
-export const update = async (id: number, customerType: CustomerTypeInterface, currentCustomerType: CustomerType) => {
-    return await CustomerType.update(
-        { id: Number(id) },
-        {
-            name: customerType.name ?? currentCustomerType.name,
-            is_active: customerType.is_active ?? currentCustomerType.is_active
-        }
-    );
-};
+export const update = async (id: number, customerType: CustomerTypeInterface) =>
+    await CustomerType.update({ id: Number(id) }, customerType);

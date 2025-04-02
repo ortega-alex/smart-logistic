@@ -1,7 +1,8 @@
 import logoBrand from '@/assets/images/logo-brand.png';
 import logo from '@/assets/images/logo.png';
 import { Icon } from '@/components';
-import { OnlyEmail, privateRoutes, publicRoutes } from '@/models';
+import { privateRoutes, publicRoutes } from '@/constants';
+import { OnlyEmail } from '@/interfaces';
 import { setSessionCustomer } from '@/redux/state/customer';
 import { httpCustomerLogin } from '@/services';
 import { Button, Form, FormProps, Input, message } from 'antd';

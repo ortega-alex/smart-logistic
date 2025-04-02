@@ -1,4 +1,4 @@
-import { Customer, OnlyEmail } from '@/models';
+import { Customer, OnlyEmail } from '@/interfaces';
 import { httpRequest } from '@/utilities';
 
 const path = '/customer';
@@ -25,7 +25,7 @@ export const httpGetCustomerById = async (id: number) =>
 
 export const httpEditCustomer = async (data: Customer) =>
     await httpRequest({
-        path: `${path}/${data.id_cliente}`,
+        path: `${path}/${data.id}`,
         method: 'PUT',
         data,
         type: 'multipart'

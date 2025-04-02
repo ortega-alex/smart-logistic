@@ -1,4 +1,4 @@
-import { Profile } from '@/models';
+import { Profile } from '@/interfaces';
 import { httpRequest } from '@/utilities';
 
 const path = '/profile';
@@ -18,7 +18,7 @@ export const httpAddProfiles = async (data: Profile) =>
 
 export const httpUpdateProfiles = async (data: Profile) =>
     await httpRequest({
-        path: `${path}/${data.id_perfil}`,
+        path: `${path}/${data.id}`,
         method: 'PUT',
         data
     });

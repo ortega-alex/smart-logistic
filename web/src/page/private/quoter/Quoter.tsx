@@ -1,5 +1,8 @@
+import { QuoterAdapter } from '@/adapter';
 import { Icon, Search } from '@/components';
-import { Customer, EmptyQuoter, privateRoutes, QuoterDetail, Sesion, TableParams, Quoter as TypeQuoter } from '@/models';
+import { privateRoutes } from '@/constants';
+import { Customer, Sesion } from '@/interfaces';
+import { EmptyQuoter, QuoterDetail, TableParams, Quoter as TypeQuoter } from '@/models';
 import { RootState } from '@/redux';
 import {
     httpAddQuoter,
@@ -13,9 +16,8 @@ import { downloadFile, getDateFormat } from '@/utilities';
 import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FormQuoter } from './FormQuoter';
 import { useNavigate } from 'react-router-dom';
-import { QuoterAdapter } from '@/adapter';
+import { FormQuoter } from './FormQuoter';
 
 export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
@@ -58,7 +60,7 @@ export const Quoter = () => {
             handleOnChangeLoading('services', true);
             let res;
             const _quoter = { ...quoter, ...values, detalles: details };
-            if (quoter.id_cotizacion === 0) res = await httpAddQuoter({ ..._quoter, id_vendedor: sessionState.id_sesion });
+            if (quoter.id_cotizacion === 0) res = await httpAddQuoter({ ..._quoter, id_vendedor: sessionState.session_id });
             else res = await httpUpdateQuoter(_quoter);
 
             if (res.message) message.warning(res.message);
@@ -139,7 +141,7 @@ export const Quoter = () => {
 
     useEffect(() => {
         httpGetCustomer()
-            .then(res => setCustomers(res?.filter((item: Customer) => item.estado)))
+            .then(res => setCustomers(res?.filter((item: Customer) => item.is_active)))
             .catch(err => message.error(`Error http get customers: ${err.message}}`));
     }, []);
 
@@ -154,7 +156,7 @@ export const Quoter = () => {
                     <label htmlFor='cliente'>Cliente</label>
                     <Select
                         placeholder='Selecciones una opción'
-                        options={customers.filter(item => item.estado).map(item => ({ label: item.cliente, value: item.id_cliente }))}
+                        options={customers.filter(item => item.is_active).map(item => ({ label: item.name, value: item.id }))}
                         onChange={value => setFilter(value)}
                         style={{ minWidth: 200 }}
                         allowClear

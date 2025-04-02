@@ -6,8 +6,9 @@ import { Provider } from 'react-redux';
 import { HashRouter, Navigate, Route } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { Loading, RoutesWithNotFound } from './components';
+import { privateRoutes, publicRoutes } from './constants';
 import { Interceptor } from './interceptors';
-import { _SERVER, ClienteToServerEvents, color, privateRoutes, publicRoutes, ServerToClientEvents } from './models';
+import { _SERVER, ClienteToServerEvents, color, ServerToClientEvents } from './models';
 import { store } from './redux';
 
 const SingIn = lazy(() => import('@/page/sing-In/SingIn').then(module => ({ default: module.SingIn })));

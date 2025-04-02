@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { privateRoutes, publicRoutes } from '@/models';
+import { privateRoutes, publicRoutes } from '@/constants';
 import { RootState } from '@/redux';
 
 export const AuthGuard = () => {
@@ -11,5 +11,5 @@ export const AuthGuard = () => {
     if (sessionCustomerState.id_cliente > 0 && pathname.includes(privateRoutes.PRIVATE_CUSTOMER)) {
         return <Outlet />;
     }
-    return sessionState.id_sesion > 0 ? <Outlet /> : <Navigate replace to={publicRoutes.SING_IN} />;
+    return sessionState.session_id > 0 ? <Outlet /> : <Navigate replace to={publicRoutes.SING_IN} />;
 };

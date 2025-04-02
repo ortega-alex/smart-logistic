@@ -55,7 +55,7 @@ export const add = async (req: Request, res: Response) => {
         const existing_user = await getUserByUsernameService(username);
         if (existing_user) return res.status(203).json({ message: 'El usuario ya existe' });
 
-        const user = await saveUserService({ name, username, password: encryptedPassword, phone_number, email }, profile);
+        const user = await saveUserService({ name, username, password: encryptedPassword, phone_number, email, profile });
         return res.status(200).json(user);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -75,13 +75,21 @@ export const update = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { name, profile_id, email, phone_number, is_active, token_fcm } = req.body;
+
         const user = await getUserByIdService(Number(id));
         if (!user) return res.status(404).json({ message: 'Usuario no exite' });
 
         let profile = null;
         if (profile_id) profile = await getProfileByIdService(Number(profile_id));
 
-        const update = await updateUserService(Number(id), { name, profile_id, email, phone_number, is_active, token_fcm }, user, profile);
+        const update = await updateUserService(Number(id), {
+            name: name ?? user.name,
+            email: email ?? user.email,
+            phone_number: phone_number ?? user.phone_number,
+            is_active: is_active ?? user.is_active,
+            token_fcm: token_fcm ?? user.token_fcm,
+            profile: profile ?? user.profile
+        });
 
         if ((update?.affected ?? 0) > 0) return res.json(user);
 
@@ -130,8 +138,8 @@ export const resetPassword = async (req: Request, res: Response) => {
         const user = await getUserByIdService(Number(id));
         if (!user) return res.status(203).json({ message: 'El usuario no existe' });
 
-        const pass = bcrypt.hashSync(password ?? defaultPassword, 8);
-        const update = await updateUserService(Number(id), { password: pass }, user, null);
+        const encryptedPassword = bcrypt.hashSync(password ?? defaultPassword, 8);
+        const update = await updateUserService(Number(id), { password: encryptedPassword });
         if ((update?.affected ?? 0) > 0) return res.json({ message: 'Contraseña restablecida!', success: true });
 
         return res.status(203).json({ message: 'No se pudo actualizar el usuario' });

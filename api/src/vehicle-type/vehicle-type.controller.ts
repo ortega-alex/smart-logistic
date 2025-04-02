@@ -33,7 +33,11 @@ export const updateById = async (req: Request, res: Response) => {
 
         const vehicleType = await getTypeVehicleByIdService(Number(id));
         if (!vehicleType) return res.status(203).json({ message: 'Tipo de Vehiculo no encontrado' });
-        const update = await updateVehicleTypeService(Number(id), { name, is_active }, vehicleType);
+
+        const update = await updateVehicleTypeService(Number(id), {
+            name: name ?? vehicleType.name,
+            is_active: is_active ?? vehicleType.is_active
+        });
         if ((update?.affected ?? 0) > 0) return res.json(vehicleType);
         return res.status(203).json({ mesage: 'No se pudo actualizar el tipo de vehiculo' });
     } catch (error) {

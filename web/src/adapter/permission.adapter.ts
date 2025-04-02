@@ -1,14 +1,14 @@
-import { Menu } from '@/models';
+import { Menu, MenuPermissionProfile } from '@/interfaces';
 
 export const permissionMenuAdapter = (values: []) => {
-    const permisos: any = {};
+    const permissions: any = {};
     let menus: Array<Menu> = [];
 
-    values.forEach((item: any) => {
-        if (!permisos[item.menu.id_menu]) permisos[item.menu.id_menu] = [item.permiso.id_permiso];
-        else permisos[item.menu.id_menu].push(item.permiso.id_permiso);
+    values.forEach((item: MenuPermissionProfile) => {
+        if (!permissions[item.menu.id]) permissions[item.menu.id] = [item.permission.id];
+        else permissions[item.menu.id].push(item.permission.id);
 
-        if (!menus.some(_item => _item.id_menu === item.menu.id_menu)) menus.push(item.menu);
+        if (!menus.some(_item => _item.id === item.menu.id)) menus.push(item.menu);
     });
-    return { permisos, menus };
+    return { permissions, menus };
 };

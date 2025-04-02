@@ -1,4 +1,5 @@
-import { _SERVER, CustomerFile } from '@/models';
+import { _SERVER } from '@/models';
+import { CustomerFile } from '@/interfaces';
 
 interface Options {
     file: CustomerFile;
@@ -6,9 +7,9 @@ interface Options {
 }
 
 export const ViewFiles: React.FC<Options> = ({ file, download }) => {
-    const arr = file.ruta.split('.');
+    const arr = file.path.split('.');
     const extension = arr[arr.length - 1];
-    const url = `${_SERVER.baseUrl}${file.ruta}`;
+    const url = `${_SERVER.baseUrl}${file.path}`;
 
     return (
         <object data={`${url}#toolbar=${download ? 1 : 0}`} style={{ width: '100%', height: '90vh', objectFit: 'contain' }}>

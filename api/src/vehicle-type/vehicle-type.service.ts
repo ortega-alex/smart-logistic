@@ -13,12 +13,4 @@ export const save = async (typeVehicle: VehicleTypeInterface) => {
     return newTypeVehicle;
 };
 
-export const update = async (id: number, typeVehicle: VehicleTypeInterface, currentTypeVehicle: VehicleType) => {
-    return await VehicleType.update(
-        { id: Number(id) },
-        {
-            name: typeVehicle.name ?? currentTypeVehicle.name,
-            is_active: typeVehicle.is_active ?? currentTypeVehicle.is_active
-        }
-    );
-};
+export const update = async (id: number, typeVehicle: VehicleTypeInterface) => await VehicleType.update({ id: Number(id) }, typeVehicle);

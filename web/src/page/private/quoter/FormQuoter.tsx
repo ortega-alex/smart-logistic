@@ -1,5 +1,6 @@
 import { Icon } from '@/components';
-import { Aution, Crane, Customer, KeysCosto, Moneda, Port, Quoter, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
+import { Customer } from '@/interfaces';
+import { Aution, Crane, KeysCosto, Moneda, Port, Quoter, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
 import { httpGetAutions, httpGetCrane, httpGetPorts, httpGetTypeVehicles } from '@/services';
 import { commaSeparateNumber } from '@/utilities';
 import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
@@ -41,82 +42,77 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
     };
 
     const handleCalculate = () => {
-        const value = formRef.current?.getFieldsValue();
-        if (value && value.id_cliente) {
-            let detalles = [...details];
-            const customer = customers.find(item => item.id_cliente === value.id_cliente);
-
-            const port = ports.find(item => item.id_puerto === value.id_puerto);
-            if (port) {
-                const indexPort = details.findIndex(item => item.nombre === KeysCosto.PORT_DOCUMENT_OR_EXP);
-                if (indexPort > -1) {
-                    const detalle = details[indexPort];
-                    detalle.valor = commaSeparateNumber(port.costo_aduanal);
-                } else {
-                    detalles.push({
-                        nombre: KeysCosto.PORT_DOCUMENT_OR_EXP,
-                        moneda: Moneda.USD,
-                        valor: commaSeparateNumber(port.costo_aduanal)
-                    });
-                }
-
-                const typeVehicle = typeVehicles.find(item => item.id_tipo_vehiculo === value.id_tipo_vehiculo);
-                if (typeVehicle) {
-                    const indexTypeVehicle = details.findIndex(item => item.nombre === KeysCosto.PORT_SHIPPING);
-                    const value = Number(port.costo_embarque) + Number(port.costo_embarque) * (Number(typeVehicle.porcentaje_costo) / 100);
-
-                    if (indexTypeVehicle > -1) {
-                        const detalle = details[indexTypeVehicle];
-                        detalle.valor = commaSeparateNumber(value);
-                    } else {
-                        detalles.push({
-                            nombre: KeysCosto.PORT_SHIPPING,
-                            moneda: Moneda.USD,
-                            valor: commaSeparateNumber(value)
-                        });
-                    }
-                }
-            }
-
-            if (customer) {
-                if (value.id_grua_usd) {
-                    const crane_usd: Crane = cranes.USD.find((item: Crane) => item.id_grua === value.id_grua_usd)!;
-                    if (crane_usd && crane_usd.costo > 0) {
-                        const value = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_costo) / 100);
-                        const index = details.findIndex(item => item.nombre === KeysCosto.USD);
-                        if (index > -1) {
-                            const detalle = details[index];
-                            detalle.valor = commaSeparateNumber(value);
-                        } else {
-                            detalles.push({
-                                nombre: KeysCosto.USD,
-                                moneda: crane_usd.moneda,
-                                valor: commaSeparateNumber(value)
-                            });
-                        }
-                    }
-                } else detalles = detalles.filter(item => item.nombre !== KeysCosto.USD);
-
-                if (value.id_grua_gt) {
-                    const crane_gt: Crane = cranes.GTQ.find((item: Crane) => item.id_grua === value.id_grua_gt)!;
-                    if (crane_gt && crane_gt.costo > 0) {
-                        const value = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_costo) / 100);
-                        const index = details.findIndex(item => item.nombre === KeysCosto.GTQ);
-                        if (index > -1) {
-                            const detalle = details[index];
-                            detalle.valor = commaSeparateNumber(value);
-                        } else {
-                            detalles.push({
-                                nombre: KeysCosto.GTQ,
-                                moneda: crane_gt.moneda,
-                                valor: commaSeparateNumber(value)
-                            });
-                        }
-                    }
-                } else detalles = detalles.filter(item => item.nombre !== KeysCosto.GTQ);
-            }
-            setDetails(detalles);
-        }
+        // const value = formRef.current?.getFieldsValue();
+        // if (value && value.id_cliente) {
+        //     let detalles = [...details];
+        //     const customer = customers.find(item => item.id === value.id_cliente);
+        //     const port = ports.find(item => item.id_puerto === value.id_puerto);
+        //     if (port) {
+        //         const indexPort = details.findIndex(item => item.nombre === KeysCosto.PORT_DOCUMENT_OR_EXP);
+        //         if (indexPort > -1) {
+        //             const detalle = details[indexPort];
+        //             detalle.valor = commaSeparateNumber(port.costo_aduanal);
+        //         } else {
+        //             detalles.push({
+        //                 nombre: KeysCosto.PORT_DOCUMENT_OR_EXP,
+        //                 moneda: Moneda.USD,
+        //                 valor: commaSeparateNumber(port.costo_aduanal)
+        //             });
+        //         }
+        //         const typeVehicle = typeVehicles.find(item => item.id_tipo_vehiculo === value.id_tipo_vehiculo);
+        //         if (typeVehicle) {
+        //             const indexTypeVehicle = details.findIndex(item => item.nombre === KeysCosto.PORT_SHIPPING);
+        //             const value = Number(port.costo_embarque) + Number(port.costo_embarque) * (Number(typeVehicle.porcentaje_costo) / 100);
+        //             if (indexTypeVehicle > -1) {
+        //                 const detalle = details[indexTypeVehicle];
+        //                 detalle.valor = commaSeparateNumber(value);
+        //             } else {
+        //                 detalles.push({
+        //                     nombre: KeysCosto.PORT_SHIPPING,
+        //                     moneda: Moneda.USD,
+        //                     valor: commaSeparateNumber(value)
+        //                 });
+        //             }
+        //         }
+        //     }
+        //     if (customer) {
+        //         if (value.id_grua_usd) {
+        //             const crane_usd: Crane = cranes.USD.find((item: Crane) => item.id_grua === value.id_grua_usd)!;
+        //             if (crane_usd && crane_usd.costo > 0) {
+        //                 const value = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_costo) / 100);
+        //                 const index = details.findIndex(item => item.nombre === KeysCosto.USD);
+        //                 if (index > -1) {
+        //                     const detalle = details[index];
+        //                     detalle.valor = commaSeparateNumber(value);
+        //                 } else {
+        //                     detalles.push({
+        //                         nombre: KeysCosto.USD,
+        //                         moneda: crane_usd.moneda,
+        //                         valor: commaSeparateNumber(value)
+        //                     });
+        //                 }
+        //             }
+        //         } else detalles = detalles.filter(item => item.nombre !== KeysCosto.USD);
+        //         if (value.id_grua_gt) {
+        //             const crane_gt: Crane = cranes.GTQ.find((item: Crane) => item.id_grua === value.id_grua_gt)!;
+        //             if (crane_gt && crane_gt.costo > 0) {
+        //                 const value = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_costo) / 100);
+        //                 const index = details.findIndex(item => item.nombre === KeysCosto.GTQ);
+        //                 if (index > -1) {
+        //                     const detalle = details[index];
+        //                     detalle.valor = commaSeparateNumber(value);
+        //                 } else {
+        //                     detalles.push({
+        //                         nombre: KeysCosto.GTQ,
+        //                         moneda: crane_gt.moneda,
+        //                         valor: commaSeparateNumber(value)
+        //                     });
+        //                 }
+        //             }
+        //         } else detalles = detalles.filter(item => item.nombre !== KeysCosto.GTQ);
+        //     }
+        //     setDetails(detalles);
+        // }
     };
 
     useEffect(() => {
@@ -161,7 +157,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                                 <Select
                                     className='w-100'
                                     placeholder='Selecciones una opción'
-                                    options={customers.map(item => ({ label: item.cliente, value: item.id_cliente }))}
+                                    options={customers.map(item => ({ label: item.name, value: item.id }))}
                                 />
                             </Form.Item>
                             <Form.Item label='Puerto' name='id_puerto' rules={[{ required: true, message: 'El campo es obligatorio' }]}>

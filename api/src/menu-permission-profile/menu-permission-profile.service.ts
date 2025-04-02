@@ -11,6 +11,9 @@ export const getByProfileId = async (id: number) =>
         where: {
             profile: {
                 id: Number(id)
+            },
+            menu: {
+                is_active: true
             }
         },
         order: {
@@ -36,6 +39,4 @@ export const addPermissions = async (profile: any, permissions: { [key: string]:
     });
 };
 
-export const deleteByProfileId = async (id: number) => {
-    await MenuPermissionProfile.delete({ profile: { id } });
-};
+export const deleteByProfileId = async (id: number) => await MenuPermissionProfile.delete({ profile: { id } });

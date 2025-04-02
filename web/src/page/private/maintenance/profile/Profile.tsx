@@ -1,5 +1,6 @@
 import { Icon, Search } from '@/components';
-import { EmptyProfile, Profile as TypeProfile } from '@/models';
+import { EmptyProfile } from '@/constants';
+import { Profile as TypeProfile } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetProfiles } from '@/services';
 import { Button, List, message, Modal, Table } from 'antd';
@@ -20,9 +21,7 @@ export const Profile = () => {
     const handleOnSearch = (value: string) => {
         let _profiles = [...profilesCopy];
         if (value.trim() !== '')
-            _profiles = _profiles.filter(
-                item => item.id_perfil === Number(value) || item.perfil.toLowerCase().indexOf(value.toLowerCase()) !== -1
-            );
+            _profiles = _profiles.filter(item => item.id === Number(value) || item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1);
         setProfiles(_profiles);
     };
 
@@ -70,14 +69,14 @@ export const Profile = () => {
                     dataSource={profiles}
                     loading={loading}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_perfil}>
+                        <div className='item-list' key={item.id}>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.perfil}
+                                <strong>Nombre: </strong>&nbsp;{item.name}
                             </div>
 
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
+                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
                                 </div>
                                 <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
                                     Editar
@@ -136,7 +135,7 @@ export const Profile = () => {
                 open={modal}
                 title={
                     <h3>
-                        {profile.id_perfil > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
+                        {profile.id > 0 ? 'Editar' : 'Agregar'} {title.substring(0, title.length - 1)}
                     </h3>
                 }
                 footer={null}

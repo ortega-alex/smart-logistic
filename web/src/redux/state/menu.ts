@@ -1,4 +1,4 @@
-import { Menu } from '@/models';
+import { Menu } from '@/interfaces';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const emptyMenu: Array<Menu> = [];

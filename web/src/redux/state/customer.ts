@@ -1,6 +1,8 @@
+import { EmptyCustomer } from '@/constants';
+import { Customer } from '@/interfaces';
+import { _KEYS } from '@/models';
+import { getStorage, removeStorage, saveStorage } from '@/services';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { _KEYS, Customer, EmptyCustomer } from '@/models';
-import { clearStorage, getStorage, saveStorage } from '@/services';
 
 const emptySessionCustomer: Customer = EmptyCustomer;
 const session_customer = getStorage(_KEYS.SESSION_CUSTOMER);
@@ -17,8 +19,8 @@ export const sessionCustomerSlice = createSlice({
         },
         modifySessionCustomer: (state, action: PayloadAction<Partial<Customer>>) => ({ ...state, ...action.payload }),
         resetSesionCustomer: () => {
-            clearStorage(_KEYS.SESSION_CUSTOMER);
-            clearStorage(_KEYS.TOKEN);
+            removeStorage(_KEYS.SESSION_CUSTOMER);
+            removeStorage(_KEYS.TOKEN);
             return emptySessionCustomer;
         }
     }

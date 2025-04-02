@@ -10,6 +10,6 @@ export const httpGetPermissions = async () =>
 
 export const httpGetPermissionsMenusByProfileId = async (id: number) =>
     await httpRequest({
-        path: `${path}/${id}`,
+        path: `${path}/profile/${id}`,
         method: 'GET'
     });

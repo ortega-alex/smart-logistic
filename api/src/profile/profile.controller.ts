@@ -6,7 +6,7 @@ import {
 import {
     getAll as getAllProfileService,
     getById as getProfileByIdService,
-    save as saveProfileService,
+    add as addProfileService,
     update as updateProfileService
 } from './profile.service';
 
@@ -24,7 +24,7 @@ export const add = async (req: Request, res: Response) => {
         const { name, permissions } = req.body;
         if (!name) return res.status(203).json({ message: 'El nombre del perfil es requerido' });
 
-        const profile = await saveProfileService({ name });
+        const profile = await addProfileService({ name });
         if (permissions) await addPermissionMenuPermissionProfileService(profile, permissions);
 
         return res.status(200).json(profile);
@@ -39,7 +39,10 @@ export const update = async (req: Request, res: Response) => {
         const { name, is_active, permissions } = req.body;
         const profile = await getProfileByIdService(Number(id));
         if (!profile) return res.status(203).json({ message: 'Perfil no encontrado' });
-        const update = await updateProfileService(Number(id), { name, is_active }, profile);
+        const update = await updateProfileService(Number(id), {
+            name: name ?? profile.name,
+            is_active: is_active ?? profile.is_active
+        });
 
         if (permissions) {
             await deleteMenuPermissionProfileByIdProfileService(Number(id));

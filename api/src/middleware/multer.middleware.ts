@@ -70,7 +70,6 @@ export const fileUpload = multer({
         destination: (_req: Request, _file: Express.Multer.File, cb: DestinationCallback): void => {
             try {
                 const ruta = validatePath(enviroment.URI_FILE);
-                console.log('ruta', ruta);
                 cb(null, ruta);
             } catch (error) {
                 return cb(new Error('Ha ocurrido un error interno al momento de cargar la imagen' + error), '');

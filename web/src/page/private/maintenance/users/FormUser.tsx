@@ -1,4 +1,5 @@
-import { Profile, User, ValidatorName } from '@/models';
+import { Profile, User } from '@/interfaces';
+import { ValidatorName } from '@/models';
 import { httpAddUser, httpEditUser, httpGetProfiles } from '@/services';
 import { mailIsValied, phoneNumberIsValid } from '@/utilities';
 import { Button, Form, FormProps, Input, message, Select, Switch } from 'antd';
@@ -17,7 +18,7 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
         try {
             setLoading(true);
             let res;
-            if (user.id_usuario > 0) res = await httpEditUser({ ...user, ...values });
+            if (user.id > 0) res = await httpEditUser({ ...user, ...values });
             else res = await httpAddUser(values);
             if (!res.message) onClose();
             else message.warning(res.message);
@@ -52,7 +53,7 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
                 <Select
                     className='w-100'
                     placeholder='Seleccione una opción'
-                    options={profiles.filter(item => item.estado).map(item => ({ value: item.id_perfil, label: item.perfil }))}
+                    options={profiles.filter(item => item.is_active).map(item => ({ value: item.id, label: item.name }))}
                 />
             </Form.Item>
             <Form.Item
@@ -74,7 +75,7 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
             </Form.Item>
 
             <Form.Item label='Usuario' name='usuario' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
-                <Input placeholder='Ingrese un usuario' disabled={user.id_usuario > 0} />
+                <Input placeholder='Ingrese un usuario' disabled={user.id > 0} />
             </Form.Item>
             <Form.Item name='estado' label='Estado' valuePropName='checked'>
                 <Switch checkedChildren='Activo' unCheckedChildren='Inactivo' />

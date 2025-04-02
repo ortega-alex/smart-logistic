@@ -1,3 +1,5 @@
+import { Profile } from '../../profile/entity/Profile';
+
 export interface User {
     id?: number;
     name: string;
@@ -6,8 +8,8 @@ export interface User {
     phone_number: string;
     email: string;
     is_active?: boolean;
-    profile_id?: number;
     token_fcm?: string;
+    profile: Profile;
 }
 
 export type OptionalUser = Partial<User>;

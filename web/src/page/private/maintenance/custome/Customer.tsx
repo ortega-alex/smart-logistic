@@ -1,5 +1,7 @@
 import { Icon, Search, ViewFiles } from '@/components';
-import { CustomerFile, EmptyCustomer, EmptyFile, TableParams, Customer as TypeCustomer } from '@/models';
+import { TableParams } from '@/models';
+import { CustomerFile, Customer as TypeCustomer } from '@/interfaces';
+import { EmptyCustomer, EmptyCustomerFile } from '@/constants';
 import { RootState } from '@/redux';
 import { httpDeleteCustomerFile, httpGetCustomerById, httpGetCustomerPaginationData } from '@/services';
 import { Button, List, message, Modal, Popover, Table, TableProps } from 'antd';
@@ -18,7 +20,7 @@ export const Customer = () => {
         customer: false,
         preview: false
     });
-    const [file, setFile] = useState<CustomerFile>(EmptyFile);
+    const [file, setFile] = useState<CustomerFile>(EmptyCustomerFile);
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: 1,
@@ -53,11 +55,11 @@ export const Customer = () => {
     };
 
     const handleEdit = (customer: TypeCustomer) => {
-        httpGetCustomerById(customer.id_cliente)
+        httpGetCustomerById(customer.id)
             .then(res => {
                 if (res.message) message.warning(res.message);
                 else {
-                    setCustomer({ ...res, id_tipo_cliente: customer.tipo_cliente?.id_tipo_cliente });
+                    setCustomer({ ...res, id_tipo_cliente: customer.type?.id });
                     hamdleChangeModal('customer');
                 }
             })
@@ -118,24 +120,24 @@ export const Customer = () => {
                 <List
                     dataSource={customers}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_cliente}>
+                        <div className='item-list' key={item.id}>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.cliente}
+                                <strong>Nombre: </strong>&nbsp;{item.name}
                             </div>
                             <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.tipo_cliente?.tipo_cliente}
+                                <strong>Nombre: </strong>&nbsp;{item.type?.name}
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div className='flex-1'>
-                                    <strong>Telefono: </strong>&nbsp;{item.telefono_celular}
+                                    <strong>Telefono: </strong>&nbsp;{item.phone_number}
                                 </div>
                                 <div className='flex-1'>
-                                    <strong>Correo: </strong>&nbsp;{item.correo}
+                                    <strong>Correo: </strong>&nbsp;{item.email}
                                 </div>
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
+                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
                                 </div>
                                 <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
                                     Editar
@@ -158,41 +160,41 @@ export const Customer = () => {
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_cliente'
+                    rowKey='id'
                     dataSource={customers}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_cliente',
+                            dataIndex: 'id',
                             sorter: true
                         },
                         {
                             title: 'Nombre',
-                            dataIndex: 'cliente',
+                            dataIndex: 'name',
                             ellipsis: true,
                             sorter: true
                         },
                         {
                             title: 'Tipo de Cliente',
-                            dataIndex: 'tipo_cliente',
+                            dataIndex: 'type',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{value?.tipo_cliente}</span>
+                            render: value => <span>{value?.name}</span>
                         },
                         {
                             title: 'Telefono',
-                            dataIndex: 'telefono_celular',
+                            dataIndex: 'phone_number',
                             sorter: true
                         },
                         {
                             title: 'Correo',
-                            dataIndex: 'correo',
+                            dataIndex: 'email',
                             sorter: true
                         },
                         {
                             title: 'Estado',
-                            dataIndex: 'estado',
-                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Actuvi' : 'Inactivo'}</span>
+                            dataIndex: 'is_active',
+                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
                             title: 'Opciones',
@@ -219,13 +221,13 @@ export const Customer = () => {
                 footer={null}
                 title={
                     <div className='flex flex-row gap-1'>
-                        {customer?.archivos && customer.archivos?.length > 0 && (
+                        {customer?.files && customer.files?.length > 0 && (
                             <Popover
                                 placement='bottomLeft'
                                 content={
                                     <>
-                                        {customer.archivos?.map(item => (
-                                            <div key={item.id_archivo} className='flex flex-row justify-between'>
+                                        {customer.files?.map(item => (
+                                            <div key={item.id} className='flex flex-row justify-between'>
                                                 <Button
                                                     type='link'
                                                     size='small'
@@ -235,7 +237,7 @@ export const Customer = () => {
                                                         hamdleChangeModal('preview');
                                                     }}
                                                 >
-                                                    {item.nombre}
+                                                    {item.name}
                                                 </Button>
                                                 <Button
                                                     size='small'
@@ -244,7 +246,7 @@ export const Customer = () => {
                                                     danger
                                                     ghost
                                                     icon={<Icon.Trash />}
-                                                    onClick={() => handleDeleteFile(item.id_archivo)}
+                                                    onClick={() => handleDeleteFile(item.id)}
                                                 />
                                             </div>
                                         ))}
@@ -257,7 +259,7 @@ export const Customer = () => {
                             </Popover>
                         )}
                         <h3 className='text-primary'>
-                            {customer.id_cliente > 0 ? 'Editar' : 'Nuevo'} {title.substring(0, title.length - 1)}
+                            {customer.id > 0 ? 'Editar' : 'Nuevo'} {title.substring(0, title.length - 1)}
                         </h3>
                     </div>
                 }

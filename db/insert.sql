@@ -9,7 +9,7 @@ INSERT INTO menu (name, icon, path, is_main_menu) VALUES
 ('Perfiles', 'profile', 'profiles', 1),
 ('Reportes', 'report', 'reports', 0),
 ('Subasta', 'store', 'aution', 1),
-('Tipos de clientes', 'users', 'types-of-customers', 1);
+('Tipos de clientes', 'users', 'customer-type', 1);
 
 INSERT INTO customer_type (name) VALUES
 ('Particular'),

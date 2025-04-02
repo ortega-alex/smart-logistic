@@ -1,6 +1,7 @@
 import { Icon } from '@/components';
 import { useVehicle } from '@/hooks';
-import { ImportHistory, ImportState, Sesion } from '@/models';
+import { Sesion } from '@/interfaces';
+import { ImportHistory, ImportState } from '@/models';
 import { RootState } from '@/redux';
 import { httpAddImportHistory, httpGetImportState } from '@/services';
 import { Button, Checkbox, Form, FormProps, Input, message, Select, Upload } from 'antd';
@@ -24,7 +25,7 @@ export const FormEvidence: React.FC<Props> = ({ onClose }) => {
             ...values,
             visible_cliente: values.visible_cliente ?? false,
             file: values.archivo?.[0]?.originFileObj,
-            id_usuario: sessionState.id_sesion,
+            id_usuario: sessionState.session_id,
             id_cliente: vehicle.cotizacion.cliente?.id_cliente
         };
         httpAddImportHistory(vehicle.id_vehiculo, data)
