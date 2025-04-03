@@ -1,4 +1,4 @@
-import { _KEYS } from '@/models';
+import { _KEYS } from '@/constants';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 

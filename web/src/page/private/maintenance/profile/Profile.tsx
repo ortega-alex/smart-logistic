@@ -1,6 +1,6 @@
 import { Icon, Search } from '@/components';
 import { EmptyProfile } from '@/constants';
-import { Profile as TypeProfile } from '@/interfaces';
+import { Profile as ProfileInterface } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetProfiles } from '@/services';
 import { Button, List, message, Modal, Table } from 'antd';
@@ -12,9 +12,9 @@ export const Profile = () => {
     const deviceState = useSelector((store: RootState) => store.device);
     const title = 'Perfiles';
 
-    const [profile, setProfile] = useState<TypeProfile>(EmptyProfile);
-    const [profiles, setProfiles] = useState<Array<TypeProfile>>([]);
-    const [profilesCopy, setProfilesCopy] = useState<Array<TypeProfile>>([]);
+    const [profile, setProfile] = useState<ProfileInterface>(EmptyProfile);
+    const [profiles, setProfiles] = useState<Array<ProfileInterface>>([]);
+    const [profilesCopy, setProfilesCopy] = useState<Array<ProfileInterface>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -25,7 +25,7 @@ export const Profile = () => {
         setProfiles(_profiles);
     };
 
-    const handleEdit = (item: TypeProfile) => {
+    const handleEdit = (item: ProfileInterface) => {
         setProfile(item);
         setModal(true);
     };
@@ -46,7 +46,7 @@ export const Profile = () => {
     }, []);
 
     return (
-        <div className='h-100 flex flex-column p-3'>
+        <div className='h-100 flex flex-column py-3 px-5'>
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
@@ -93,22 +93,22 @@ export const Profile = () => {
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_perfil'
+                    rowKey='id'
                     dataSource={profiles}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_perfil'
+                            dataIndex: 'id'
                         },
                         {
                             title: 'Nombre',
-                            dataIndex: 'perfil',
+                            dataIndex: 'name',
                             ellipsis: true,
                             sorter: true
                         },
                         {
                             title: 'Estado',
-                            dataIndex: 'estado',
+                            dataIndex: 'is_active',
                             render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {

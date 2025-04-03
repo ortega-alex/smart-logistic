@@ -1,4 +1,4 @@
-import { _KEYS } from '@/models';
+import { _KEYS } from '@/constants';
 import { getStorage } from '@/services';
 import axios from 'axios';
 

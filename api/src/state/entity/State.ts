@@ -1,6 +1,6 @@
-import { Auction } from '../../auction/entity/Auction';
-import { Sede } from '../../sede/entity/Sede';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Auction } from '../../auction/entity/Auction';
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 
 // Estados de EEUU
 @Entity()
@@ -27,8 +27,8 @@ export class State extends BaseEntity {
     })
     edited_at: Date;
 
-    @OneToMany(() => Sede, sede => sede.state, { cascade: true })
-    sedes: Sede[];
+    @OneToMany(() => Headquarter, headquarter => headquarter.state, { cascade: true })
+    headquarters: Headquarter[];
 
     @OneToMany(() => Auction, auction => auction.state, { cascade: true })
     auctions: Auction[];

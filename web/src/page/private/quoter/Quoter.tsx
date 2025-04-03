@@ -1,18 +1,10 @@
-import { QuoterAdapter } from '@/adapter';
 import { Icon, Search } from '@/components';
 import { privateRoutes } from '@/constants';
-import { Customer, Sesion } from '@/interfaces';
-import { EmptyQuoter, QuoterDetail, TableParams, Quoter as TypeQuoter } from '@/models';
+import { useQuoter } from '@/hooks';
+import { Quoter as QuoterInterface, TableParams } from '@/interfaces';
 import { RootState } from '@/redux';
-import {
-    httpAddQuoter,
-    httpDowloadInvoice,
-    httpGetCustomer,
-    httpGetQuoterPaginationData,
-    httpGetQuotersById,
-    httpUpdateQuoter
-} from '@/services';
-import { downloadFile, getDateFormat } from '@/utilities';
+import { httpGetQuoterPaginationData, httpGetQuotersById } from '@/services';
+import { getDateFormat } from '@/utilities';
 import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -21,19 +13,12 @@ import { FormQuoter } from './FormQuoter';
 
 export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
-    const sessionState: Sesion = useSelector((store: RootState) => store.session);
     const navigate = useNavigate();
+    const { quoter, customers, loading, updateQuoter, rebootQuoter, onAproveQuoter, onDownloadInvoice } = useQuoter();
 
-    const [quoters, setQuoters] = useState<Array<TypeQuoter>>([]);
-    const [quoter, setQuoter] = useState<TypeQuoter>(EmptyQuoter);
-    const [loading, setLoading] = useState({
-        data: false,
-        services: false
-    });
-    const [modals, setModals] = useState<{ [key: string]: boolean }>({
-        form: false,
-        preview: false
-    });
+    const [quoters, setQuoters] = useState<Array<QuoterInterface>>([]);
+    const [loadingData, setLoadingData] = useState(false);
+    const [modal, setModal] = useState(false);
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: 1,
@@ -41,72 +26,18 @@ export const Quoter = () => {
         }
     });
     const [filter, setFilter] = useState('');
-    const [customers, setCustomers] = useState<Array<Customer>>([]);
 
-    const handleOnChangeModal = (name: string, open: boolean = true) => setModals({ [name]: open });
-    const handleOnChangeLoading = (name: string, value: boolean) => setLoading({ ...loading, [name]: value });
-
-    const handleEdit = (id_cotizacion: number) => {
-        httpGetQuotersById(id_cotizacion)
+    const handleEdit = (id: number) => {
+        httpGetQuotersById(id)
             .then(res => {
-                setQuoter(QuoterAdapter(res));
-                handleOnChangeModal('form');
+                updateQuoter(res);
+                setModal(true);
             })
             .catch(err => message.error(`Error http get quoters: ${err.message}`));
     };
 
-    const handleSubmit = async (values: any, details: Array<QuoterDetail>) => {
-        try {
-            handleOnChangeLoading('services', true);
-            let res;
-            const _quoter = { ...quoter, ...values, detalles: details };
-            if (quoter.id_cotizacion === 0) res = await httpAddQuoter({ ..._quoter, id_vendedor: sessionState.session_id });
-            else res = await httpUpdateQuoter(_quoter);
-
-            if (res.message) message.warning(res.message);
-            else {
-                handleGet();
-                handleOnChangeModal('form', false);
-            }
-        } catch (error) {
-            message.error(`Error add or edit ouoter: ${(error as Error).message}`);
-        } finally {
-            handleOnChangeLoading('services', false);
-        }
-    };
-
-    const handleDownloadInvoice = async (item: TypeQuoter) => {
-        handleOnChangeLoading('services', true);
-        httpDowloadInvoice(item.id_cotizacion)
-            .then(res => downloadFile(res, `${item.cliente?.cliente ?? 'cotizacion'}-invoice.zip`))
-            .catch(err => message.error(`Error http download invoice: ${err.message}`))
-            .finally(() => handleOnChangeLoading('services', false));
-    };
-
-    const handleAproveQuoter = async (item: TypeQuoter) => {
-        Modal.confirm({
-            title: '¿Estás seguro de aprobar esta cotización?',
-            content: 'Esta acción no se puede deshacer',
-            okText: 'Si',
-            cancelText: 'No',
-            onOk: () => {
-                handleOnChangeLoading('services', true);
-                httpUpdateQuoter(QuoterAdapter({ ...item, aprobada: true }))
-                    .then(res => {
-                        message[res.error ? 'warning' : 'success'](res.message);
-                        if (!res.error) {
-                            handleGet();
-                            handleOnChangeModal('form', false);
-                        }
-                    })
-                    .catch(err => message.error(`Error http approve quoter: ${err.message}`))
-                    .finally(() => handleOnChangeLoading('services', false));
-            }
-        });
-    };
-
     const handleGet = () => {
-        handleOnChangeLoading('data', true);
+        setLoadingData(true);
         httpGetQuoterPaginationData({
             ...tableParams,
             current: tableParams.pagination?.current,
@@ -125,32 +56,25 @@ export const Quoter = () => {
                 });
             })
             .catch(err => message.error(`Error http get quoters: ${err.message}`))
-            .finally(() => handleOnChangeLoading('data', false));
+            .finally(() => setLoadingData(false));
     };
 
-    const handleTableChange: TableProps<TypeQuoter>['onChange'] = (pagination, filters, sorter) => {
+    const handleTableChange: TableProps<QuoterInterface>['onChange'] = (pagination, filters, sorter) => {
         setTableParams({
             pagination,
             filters,
             sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
             sortField: Array.isArray(sorter) ? undefined : sorter.field
         });
-
         if (pagination.pageSize !== tableParams.pagination?.pageSize) setQuoters([]);
     };
-
-    useEffect(() => {
-        httpGetCustomer()
-            .then(res => setCustomers(res?.filter((item: Customer) => item.is_active)))
-            .catch(err => message.error(`Error http get customers: ${err.message}}`));
-    }, []);
 
     useEffect(() => {
         handleGet();
     }, [JSON.stringify(tableParams), filter]);
 
     return (
-        <div className='h-100 flex flex-column p-3'>
+        <div className='h-100 flex flex-column p-auto'>
             <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
                 <div className='flex flex-column w-md-100'>
                     <label htmlFor='cliente'>Cliente</label>
@@ -173,8 +97,8 @@ export const Quoter = () => {
                     htmlType='button'
                     className='w-md-100'
                     onClick={() => {
-                        setQuoter(EmptyQuoter);
-                        handleOnChangeModal('form');
+                        rebootQuoter();
+                        setModal(true);
                     }}
                 >
                     Agregar
@@ -184,26 +108,20 @@ export const Quoter = () => {
             {deviceState ? (
                 <List
                     dataSource={quoters}
-                    loading={loading.data}
+                    loading={loadingData}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_cotizacion}>
+                        <div className='item-list' key={item.id}>
                             <div className='flex-1'>
-                                <strong>Cliente: </strong>&nbsp;{item.cliente?.cliente}
+                                <strong>Cliente: </strong>&nbsp;{item.customer?.name}
                             </div>
                             <div className='flex-1'>
-                                <strong>Vendedor: </strong>&nbsp;{item.vendedor?.nombre}
+                                <strong>Vendedor: </strong>&nbsp;{item.seller?.name}
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <strong>Estado: </strong>&nbsp;{item.estado ? 'Activo' : 'Inactivo'}
+                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
                                 </div>
-                                <Button
-                                    type='link'
-                                    danger
-                                    htmlType='button'
-                                    icon={<Icon.Edit />}
-                                    onClick={() => handleEdit(item.id_cotizacion)}
-                                >
+                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item.id)}>
                                     Editar
                                 </Button>
                             </div>
@@ -222,50 +140,50 @@ export const Quoter = () => {
                     }}
                     onChange={handleTableChange}
                     className='table'
-                    loading={loading.data}
+                    loading={loadingData}
                     showSorterTooltip={false}
-                    rowKey='id_cotizacion'
+                    rowKey='id'
                     dataSource={quoters}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_cotizacion',
+                            dataIndex: 'id',
                             sorter: true
                         },
                         {
                             title: 'Fecha',
-                            dataIndex: 'fecha_creacion',
+                            dataIndex: 'created_at',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{getDateFormat(value, 'DD/MM/YYYY')}</span>
+                            render: value => <span>{getDateFormat(value, 'YYYY/MM/DD')}</span>
                         },
                         {
                             title: 'Vendedor',
-                            dataIndex: 'vendedor',
+                            dataIndex: 'seller',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{value.nombre}</span>
+                            render: seller => <span>{seller?.name}</span>
                         },
                         {
                             title: 'Cliente',
-                            dataIndex: 'cliente',
+                            dataIndex: 'customer',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{value.cliente}</span>
+                            render: customer => <span>{customer?.name}</span>
                         },
                         {
                             title: 'Marca',
-                            dataIndex: 'marca',
+                            dataIndex: 'mark',
                             ellipsis: true
                         },
                         {
                             title: 'Modelo',
-                            dataIndex: 'modelo',
+                            dataIndex: 'model',
                             ellipsis: true
                         },
                         {
                             title: 'Aprobada',
-                            dataIndex: 'aprobada',
+                            dataIndex: 'is_aproverd',
                             sorter: true,
                             align: 'center',
                             render: value => (
@@ -286,7 +204,7 @@ export const Quoter = () => {
                                             icon={<Icon.Edit />}
                                             type='text'
                                             size='small'
-                                            onClick={() => handleEdit(item.id_cotizacion)}
+                                            onClick={() => handleEdit(item.id)}
                                         />
                                     </Tooltip>
                                     <Tooltip title='Descargar'>
@@ -295,32 +213,36 @@ export const Quoter = () => {
                                             icon={<Icon.Download />}
                                             type='text'
                                             size='small'
-                                            onClick={() => handleDownloadInvoice(item)}
-                                            disabled={loading.services}
+                                            onClick={() => onDownloadInvoice(item)}
+                                            disabled={loading}
                                         />
                                     </Tooltip>
 
-                                    {!item.aprobada && (
+                                    {!item.is_aproverd && (
                                         <Tooltip title='Aprobar'>
                                             <Button
                                                 style={{ width: 40 }}
                                                 icon={<Icon.Done />}
                                                 type='text'
                                                 size='small'
-                                                onClick={() => handleAproveQuoter(item)}
-                                                disabled={loading.services}
+                                                onClick={() =>
+                                                    onAproveQuoter(item).then(res => {
+                                                        if (!res?.error) handleGet();
+                                                    })
+                                                }
+                                                disabled={loading}
                                             />
                                         </Tooltip>
                                     )}
-                                    {item.aprobada && (
+                                    {item.is_aproverd && (
                                         <Tooltip title='Ir a Vehiculos'>
                                             <Button
                                                 style={{ width: 40 }}
                                                 icon={<Icon.Workspace />}
                                                 type='text'
                                                 size='small'
-                                                onClick={() => navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${item.lote}`)}
-                                                disabled={loading.services}
+                                                onClick={() => navigate(`/${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${item.lot}`)}
+                                                disabled={loading}
                                             />
                                         </Tooltip>
                                     )}
@@ -332,21 +254,19 @@ export const Quoter = () => {
             )}
 
             <Modal
-                open={modals.form}
-                title={<h3>{quoter.id_cotizacion > 0 ? 'Editar' : 'Agregar'} Cotización</h3>}
+                open={modal}
+                title={<h3>{quoter.id > 0 ? 'Editar' : 'Agregar'} Cotización</h3>}
                 footer={null}
-                onCancel={() => handleOnChangeModal('form', false)}
+                onCancel={() => setModal(false)}
                 centered
                 destroyOnClose
                 width={1200}
             >
                 <FormQuoter
-                    quoter={quoter}
-                    loading={loading.services}
-                    customers={customers}
-                    onSubmit={handleSubmit}
-                    onDownloadInvoice={handleDownloadInvoice}
-                    onAproveQuoter={handleAproveQuoter}
+                    onClose={() => {
+                        setModal(false);
+                        handleGet();
+                    }}
                 />
             </Modal>
         </div>

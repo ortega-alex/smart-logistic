@@ -1,15 +1,14 @@
-import { _SERVER } from '@/models';
-import { CustomerFile } from '@/interfaces';
+import { _SERVER } from '@/constants';
 
 interface Options {
-    file: CustomerFile;
+    path: string;
     download?: Boolean;
 }
 
-export const ViewFiles: React.FC<Options> = ({ file, download }) => {
-    const arr = file.path.split('.');
+export const ViewFiles: React.FC<Options> = ({ path, download }) => {
+    const arr = path.split('.');
     const extension = arr[arr.length - 1];
-    const url = `${_SERVER.baseUrl}${file.path}`;
+    const url = `${_SERVER.baseUrl}${path}`;
 
     return (
         <object data={`${url}#toolbar=${download ? 1 : 0}`} style={{ width: '100%', height: '90vh', objectFit: 'contain' }}>

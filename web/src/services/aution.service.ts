@@ -1,24 +1,24 @@
-import { Aution } from '@/models';
+import { Auction } from '@/interfaces';
 import { httpRequest } from '@/utilities';
 
 const path = '/aution';
 
-export const httpGetAutions = async () =>
+export const httpGetAllAuctions = async () =>
     await httpRequest({
         path,
         method: 'GET'
     });
 
-export const httpAddAutions = async (data: Aution) =>
+export const httpAddAuctions = async (data: Auction) =>
     await httpRequest({
         path,
         method: 'POST',
         data
     });
 
-export const httpUpdateAutions = async (data: Aution) =>
+export const httpUpdateAuctions = async (data: Auction) =>
     await httpRequest({
-        path: `${path}/${data.id_subasta}`,
+        path: `${path}/${data.id}`,
         method: 'PUT',
         data
     });

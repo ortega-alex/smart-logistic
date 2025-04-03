@@ -7,7 +7,7 @@ export const privateRoutes = {
     USERS: 'users',
     CRANES: 'cranes',
     PORTS: 'ports',
-    TYPES_OF_VEHICLES: 'type-of-vehicles',
+    VEHICLE_TYPE: 'vehicle-type',
     PROFILES: 'profiles',
     REPORTS: 'reports',
     ACUTION: 'aution',

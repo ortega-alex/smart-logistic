@@ -18,11 +18,11 @@ export const getAll = async (_req: Request, res: Response) => {
 export const add = async (req: Request, res: Response) => {
     try {
         const { name } = req.body;
-        if (!name) return res.status(203).json({ message: 'El nombre es obligatorio' });
-        const vehicleType = await saveVehicleTypeService({ name });
-        return res.json(vehicleType);
+        if (!name) return res.status(203).json({ error: true, message: 'El nombre es obligatorio' });
+        await saveVehicleTypeService({ name });
+        return res.json({ message: 'Tipo de Vehiculo agregado correctamente' });
     } catch (error) {
-        return res.status(500).json({ message: (error as Error).message });
+        return res.status(500).json({ error: true, message: (error as Error).message });
     }
 };
 
@@ -32,15 +32,15 @@ export const updateById = async (req: Request, res: Response) => {
         const { name, is_active } = req.body;
 
         const vehicleType = await getTypeVehicleByIdService(Number(id));
-        if (!vehicleType) return res.status(203).json({ message: 'Tipo de Vehiculo no encontrado' });
+        if (!vehicleType) return res.status(203).json({ error: true, message: 'Tipo de Vehiculo no encontrado' });
 
         const update = await updateVehicleTypeService(Number(id), {
             name: name ?? vehicleType.name,
             is_active: is_active ?? vehicleType.is_active
         });
-        if ((update?.affected ?? 0) > 0) return res.json(vehicleType);
+        if ((update?.affected ?? 0) > 0) return res.json({ message: 'Tipo de Vehiculo actualizado correctamente' });
         return res.status(203).json({ mesage: 'No se pudo actualizar el tipo de vehiculo' });
     } catch (error) {
-        return res.status(500).json({ message: (error as Error).message });
+        return res.status(500).json({ error: true, message: (error as Error).message });
     }
 };

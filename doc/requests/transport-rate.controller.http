@@ -4,7 +4,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### GET BY ID
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate/a63dc53e-7826-40ef-b7af-d1dc1220899d
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate/1d507b8c-1229-4557-b9f6-21bfc038ed57
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -14,12 +14,12 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "rate": 1250,
+    "rate": 950,
     "is_active": true,
     "user_id": 1,
-    "vehicle_type_id": 3,
+    "vehicle_type_id": 2,
     "transport_type_id": 2,
-    "sede_id": 1,
+    "headquarter_id": 1,
     "customer_type_id": 1
 }
 
@@ -30,4 +30,16 @@ Authorization: Bearer {{token}}
 
 {   
     "vehicle_type_id": 1
+}
+
+### GET RATE FILER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/transport-rate/get-rate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "customer_type_id": 1,
+    "transport_type_id": 2,
+    "vehicle_type_id": 3,
+    "headquarter_id": 1
 }

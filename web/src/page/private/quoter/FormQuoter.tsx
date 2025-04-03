@@ -1,192 +1,220 @@
 import { Icon } from '@/components';
-import { Customer } from '@/interfaces';
-import { Aution, Crane, KeysCosto, Moneda, Port, Quoter, QuoterDetail as TypeQuoterDetail, TypeVehicle } from '@/models';
-import { httpGetAutions, httpGetCrane, httpGetPorts, httpGetTypeVehicles } from '@/services';
-import { commaSeparateNumber } from '@/utilities';
+import { useQuoter } from '@/hooks';
+import {
+    Auction,
+    Coin,
+    Headquarter,
+    HeadquarterFilter,
+    HeadquarterSeparation,
+    Quoter,
+    TransportType,
+    User,
+    VehicleType
+} from '@/interfaces';
+import {
+    httpGelUser,
+    httpGetAllAuctions,
+    httpGetAllHeadquarter,
+    httpGetAllTransportTypes,
+    httpGetAllVehicleType,
+    httpGetTransportRateFiler
+} from '@/services';
 import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { QuoterDetail } from './QuoterDetail';
 
 interface Props {
-    quoter: Quoter;
-    loading: boolean;
-    customers: Array<Customer>;
-    onSubmit: (values: any, details: Array<TypeQuoterDetail>) => void;
-    onDownloadInvoice: (item: Quoter) => void;
-    onAproveQuoter: (item: Quoter) => void;
+    onClose: () => void;
 }
 
-export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubmit, onDownloadInvoice, onAproveQuoter }) => {
+export const FormQuoter: React.FC<Props> = ({ onClose }) => {
     const formRef = useRef<FormInstance<Quoter>>(null);
+    const { quoter, customers, session, details, loading, addOrUpdate, updateDetails, deleteDetails, onAproveQuoter, onDownloadInvoice } =
+        useQuoter();
 
-    const [ports, setPorts] = useState<Array<Port>>([]);
-    const [typeVehicles, setTypeVehicles] = useState<Array<TypeVehicle>>([]);
-    const [autions, setAutions] = useState<Array<Aution>>([]);
-    const [cranes, setCranes] = useState({
-        USD: [],
-        GTQ: [],
-        all: []
+    const [transportType, setTransportType] = useState<Array<TransportType>>([]);
+    const [vehicleType, setVehicleType] = useState<Array<VehicleType>>([]);
+    const [autions, setAutions] = useState<Array<Auction>>([]);
+    const [sellers, setSellers] = useState<Array<User>>([]);
+    const [headquarters, setHeadquarters] = useState<HeadquarterSeparation>({
+        [HeadquarterFilter.EEUU]: [],
+        [HeadquarterFilter.GT]: []
     });
-    const [details, setDetails] = useState<Array<TypeQuoterDetail>>([]);
+
+    const handleEditDetail = (name: string, value: number, deleter: boolean = false) => {
+        const newDetails = [...details[Coin.USD]];
+        const index = newDetails.findIndex(item => item.name === name);
+
+        if (deleter) {
+            if (index > -1) deleteDetails(newDetails[index]);
+        } else {
+            let detail;
+            if (index > -1) {
+                detail = newDetails[index];
+                detail.value = value;
+            } else {
+                const id = Math.random().toString();
+                detail = { id, name, coin: Coin.USD, value };
+            }
+            updateDetails(detail);
+        }
+    };
 
     const handleValuesChange: FormProps<Quoter>['onValuesChange'] = env => {
         const [key, value] = Object.entries(env)[0];
-
-        if (key === 'id_subasta') {
-            const crane = cranes.all.filter((item: Crane) => item.subasta?.id_subasta === value && item.estado);
-            if (crane) setCranes({ ...cranes, USD: crane });
-            formRef.current?.setFieldValue('id_grua_usd', undefined);
+        if (key === 'customer_id' || key === 'transport_type_id' || key === 'vehicle_type_id' || key === 'headquarter_id') {
+            const values = formRef.current?.getFieldsValue();
+            const newValues = { ...values, [key]: value };
+            if (newValues.customer_id && newValues.transport_type_id && newValues.vehicle_type_id && newValues.headquarter_id) {
+                const customer_type_id = customers.find(item => item.id === newValues.customer_id)?.type?.id;
+                if (customer_type_id)
+                    httpGetTransportRateFiler({
+                        customer_type_id,
+                        transport_type_id: newValues.transport_type_id,
+                        vehicle_type_id: newValues.vehicle_type_id,
+                        headquarter_id: newValues.headquarter_id
+                    })
+                        .then(res => {
+                            if (res.error) message.warning(res.message);
+                            handleEditDetail('Costro de transporte', Number(res.rate), res.error);
+                        })
+                        .catch(err => message.error(`Error http get transport rate filer: ${err.message}`));
+            }
         }
 
-        handleCalculate();
+        if (key === 'auction_id') {
+            const aution = autions.find(item => item.id === value);
+            const name = 'Costro de Grua desde subasta';
+            if (aution) handleEditDetail(name, Number(aution.crane_rate));
+            else handleEditDetail(name, 0, true);
+        }
     };
 
-    const handleCalculate = () => {
-        // const value = formRef.current?.getFieldsValue();
-        // if (value && value.id_cliente) {
-        //     let detalles = [...details];
-        //     const customer = customers.find(item => item.id === value.id_cliente);
-        //     const port = ports.find(item => item.id_puerto === value.id_puerto);
-        //     if (port) {
-        //         const indexPort = details.findIndex(item => item.nombre === KeysCosto.PORT_DOCUMENT_OR_EXP);
-        //         if (indexPort > -1) {
-        //             const detalle = details[indexPort];
-        //             detalle.valor = commaSeparateNumber(port.costo_aduanal);
-        //         } else {
-        //             detalles.push({
-        //                 nombre: KeysCosto.PORT_DOCUMENT_OR_EXP,
-        //                 moneda: Moneda.USD,
-        //                 valor: commaSeparateNumber(port.costo_aduanal)
-        //             });
-        //         }
-        //         const typeVehicle = typeVehicles.find(item => item.id_tipo_vehiculo === value.id_tipo_vehiculo);
-        //         if (typeVehicle) {
-        //             const indexTypeVehicle = details.findIndex(item => item.nombre === KeysCosto.PORT_SHIPPING);
-        //             const value = Number(port.costo_embarque) + Number(port.costo_embarque) * (Number(typeVehicle.porcentaje_costo) / 100);
-        //             if (indexTypeVehicle > -1) {
-        //                 const detalle = details[indexTypeVehicle];
-        //                 detalle.valor = commaSeparateNumber(value);
-        //             } else {
-        //                 detalles.push({
-        //                     nombre: KeysCosto.PORT_SHIPPING,
-        //                     moneda: Moneda.USD,
-        //                     valor: commaSeparateNumber(value)
-        //                 });
-        //             }
-        //         }
-        //     }
-        //     if (customer) {
-        //         if (value.id_grua_usd) {
-        //             const crane_usd: Crane = cranes.USD.find((item: Crane) => item.id_grua === value.id_grua_usd)!;
-        //             if (crane_usd && crane_usd.costo > 0) {
-        //                 const value = Number(crane_usd.costo) + Number(crane_usd.costo) * (Number(customer.porcentaje_costo) / 100);
-        //                 const index = details.findIndex(item => item.nombre === KeysCosto.USD);
-        //                 if (index > -1) {
-        //                     const detalle = details[index];
-        //                     detalle.valor = commaSeparateNumber(value);
-        //                 } else {
-        //                     detalles.push({
-        //                         nombre: KeysCosto.USD,
-        //                         moneda: crane_usd.moneda,
-        //                         valor: commaSeparateNumber(value)
-        //                     });
-        //                 }
-        //             }
-        //         } else detalles = detalles.filter(item => item.nombre !== KeysCosto.USD);
-        //         if (value.id_grua_gt) {
-        //             const crane_gt: Crane = cranes.GTQ.find((item: Crane) => item.id_grua === value.id_grua_gt)!;
-        //             if (crane_gt && crane_gt.costo > 0) {
-        //                 const value = Number(crane_gt.costo) + Number(crane_gt.costo) * (Number(customer.porcentaje_costo) / 100);
-        //                 const index = details.findIndex(item => item.nombre === KeysCosto.GTQ);
-        //                 if (index > -1) {
-        //                     const detalle = details[index];
-        //                     detalle.valor = commaSeparateNumber(value);
-        //                 } else {
-        //                     detalles.push({
-        //                         nombre: KeysCosto.GTQ,
-        //                         moneda: crane_gt.moneda,
-        //                         valor: commaSeparateNumber(value)
-        //                     });
-        //                 }
-        //             }
-        //         } else detalles = detalles.filter(item => item.nombre !== KeysCosto.GTQ);
-        //     }
-        //     setDetails(detalles);
-        // }
+    const handleSubmit: FormProps<Quoter>['onFinish'] = async values => {
+        try {
+            const res = await addOrUpdate(values);
+            if (!res.error) onClose();
+        } catch (error) {
+            message.error(`Error http quoter: ${(error as Error).message}`);
+        }
     };
 
     useEffect(() => {
-        if (quoter.detalles) setDetails(quoter.detalles.map(item => ({ ...item, id: Math.random().toString() })));
+        httpGetAllTransportTypes()
+            .then(res => setTransportType(res))
+            .catch(err => message.error(`Error http get transport types: ${err.message}}`));
+        httpGetAllVehicleType()
+            .then(res => setVehicleType(res))
+            .catch(err => message.error(`Error http get vehicle types: ${err.message}}`));
+        httpGetAllAuctions()
+            .then(res => setAutions(res))
+            .catch(err => message.error(`Error http get auctions: ${err.message}}`));
+        httpGelUser()
+            .then(res => setSellers(res))
+            .catch(err => message.error(`Error http get users: ${err.message}}`));
 
-        httpGetPorts()
-            .then(res => setPorts(res?.filter((item: Port) => item.estado)))
-            .catch(err => message.error(`Error http get ports: ${err.message}}`));
-
-        httpGetTypeVehicles()
-            .then(res => setTypeVehicles(res?.filter((item: TypeVehicle) => item.estado)))
-            .catch(err => message.error(`Error http get type of vehicles: ${err.message}}`));
-
-        httpGetAutions()
-            .then(res => setAutions(res?.filter((item: Aution) => item.estado)))
-            .catch(err => message.error(`Error http get autions: ${err.message}}`));
-
-        httpGetCrane()
+        httpGetAllHeadquarter()
             .then(res => {
-                const all = res?.filter((item: Crane) => item.estado);
-                const GTQ = all?.filter((item: Crane) => item.moneda === Moneda.GTQ);
-                const USD = all?.filter((item: Crane) => item.moneda === Moneda.USD && item.subasta?.id_subasta === quoter.id_subasta);
-                setCranes({ ...cranes, GTQ, all, USD });
+                const eeuu = res.filter((item: Headquarter) => item.state && !item.municipality);
+                const gt = res.filter((item: Headquarter) => item.municipality && !item.state);
+                setHeadquarters({
+                    [HeadquarterFilter.EEUU]: eeuu,
+                    [HeadquarterFilter.GT]: gt
+                });
             })
-            .catch(err => message.error(`Error http get cranes: ${err.message}}`));
+            .catch(err => message.error(`Error http get headquarters: ${err.message}}`));
     }, []);
 
     return (
         <>
             <Form
                 ref={formRef}
-                initialValues={quoter.id_cotizacion === 0 ? {} : quoter}
+                initialValues={{
+                    ...quoter,
+                    customer_id: quoter.customer?.id,
+                    seller_id: quoter.seller?.id ?? session.session_id,
+                    transport_type_id: quoter.transportType?.id,
+                    vehicle_type_id: quoter.vehicleType?.id,
+                    auction_id: quoter.auction?.id,
+                    issuing_headquarter_id: quoter.issuingHeadquarter?.id,
+                    headquarter_id: quoter.headquarter?.id
+                }}
                 layout='vertical'
-                onFinish={values => onSubmit(values, details)}
+                onFinish={handleSubmit}
                 onValuesChange={handleValuesChange}
             >
                 <div className='vhm-75 overflow-y'>
                     <div className='flex flex-md-column justify-between'>
                         <div className='flex-1 p-3'>
                             <Divider orientation='left'>Información del Cliente/Puerto</Divider>
-                            <Form.Item label='Cliente' name='id_cliente' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                            <Form.Item label='Cliente' name='customer_id' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                                 <Select
                                     className='w-100'
                                     placeholder='Selecciones una opción'
                                     options={customers.map(item => ({ label: item.name, value: item.id }))}
                                 />
                             </Form.Item>
-                            <Form.Item label='Puerto' name='id_puerto' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                            <Form.Item
+                                label='Tipo de Trasporte'
+                                name='transport_type_id'
+                                rules={[{ required: true, message: 'El campo es obligatorio' }]}
+                            >
                                 <Select
                                     className='w-100'
                                     placeholder='Selecciones una opción'
-                                    options={ports.map(item => ({ label: item.puerto, value: item.id_puerto }))}
+                                    options={transportType.map(item => ({ label: item.name, value: item.id }))}
                                 />
                             </Form.Item>
+
+                            <Divider orientation='left'>Información del las Sedes</Divider>
+                            <div className='flex flex-md-column gap-3 justify-between item-end'>
+                                <Form.Item
+                                    label='Sede GTO'
+                                    name='issuing_headquarter_id'
+                                    rules={[{ required: true, message: 'El campo es requerido' }]}
+                                    className='w-100'
+                                >
+                                    <Select
+                                        allowClear
+                                        className='w-100'
+                                        placeholder='Selecciones una opción'
+                                        options={headquarters[HeadquarterFilter.GT].map(item => ({ label: item.name, value: item.id }))}
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    label='Sede EEUU'
+                                    name='headquarter_id'
+                                    rules={[{ required: true, message: 'El campo es requerido' }]}
+                                    className='w-100'
+                                >
+                                    <Select
+                                        allowClear
+                                        className='w-100'
+                                        placeholder='Selecciones una opción'
+                                        options={headquarters[HeadquarterFilter.EEUU].map(item => ({ label: item.name, value: item.id }))}
+                                    />
+                                </Form.Item>
+                            </div>
                             <Divider orientation='left'>Información del vehículo</Divider>
                             <div className='flex flex-md-column gap-3 justify-between item-end'>
                                 <Form.Item
                                     label='Tipo de Vehículo'
-                                    name='id_tipo_vehiculo'
+                                    name='vehicle_type_id'
                                     rules={[{ required: true, message: 'El campo es requerido' }]}
                                     className='w-100'
                                 >
                                     <Select
                                         className='w-100'
                                         placeholder='Selecciones una opción'
-                                        options={typeVehicles.map(item => ({
-                                            label: item.tipo_vehiculo,
-                                            value: item.id_tipo_vehiculo
+                                        options={vehicleType.map(item => ({
+                                            label: item.name,
+                                            value: item.id
                                         }))}
                                     />
                                 </Form.Item>
                                 <Form.Item
                                     label='Año'
-                                    name='anio'
+                                    name='year'
                                     rules={[{ required: true, message: 'El campo es requerido' }]}
                                     className='w-100'
                                 >
@@ -196,7 +224,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                             <div className='flex flex-md-column gap-3 justify-between item-end'>
                                 <Form.Item
                                     label='Marca'
-                                    name='marca'
+                                    name='mark'
                                     rules={[{ required: true, message: 'El campo es requerido' }]}
                                     className='w-100'
                                 >
@@ -204,7 +232,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                                 </Form.Item>
                                 <Form.Item
                                     label='Modelo'
-                                    name='modelo'
+                                    name='model'
                                     rules={[{ required: true, message: 'El campo es requerido' }]}
                                     className='w-100'
                                 >
@@ -214,7 +242,7 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                             <div className='flex flex-md-column gap-3 justify-between item-end'>
                                 <Form.Item
                                     label='No. Lote'
-                                    name='lote'
+                                    name='lot'
                                     rules={[{ required: true, message: 'El campo es requerido' }]}
                                     className='w-100'
                                 >
@@ -232,34 +260,27 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                         </div>
                         <div className='flex-1 p-3'>
                             <Divider orientation='left'>Tramites EE. UU</Divider>
-                            <Form.Item label='Subasta (optional)' name='id_subasta'>
+                            <Form.Item label='Subasta (optional)' name='auction_id'>
                                 <Select
                                     allowClear
                                     className='w-100'
                                     placeholder='Selecciones una opción'
-                                    options={autions.map(item => ({ label: item.subasta, value: item.id_subasta }))}
+                                    options={autions.map(item => ({ label: item.name, value: item.id }))}
                                 />
                             </Form.Item>
-                            <Form.Item label='Grua (optional)' name='id_grua_usd'>
+                            <Divider orientation='left'>Información del Vendedor</Divider>
+                            <Form.Item label='Vendedor' name='seller_id' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                                 <Select
                                     allowClear
                                     className='w-100'
                                     placeholder='Selecciones una opción'
-                                    options={cranes.USD?.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
+                                    options={sellers.map(item => ({ label: item.name, value: item.id }))}
                                 />
                             </Form.Item>
-
-                            <Divider orientation='left'>Tramites GT</Divider>
-                            <Form.Item label='Grua (optional)' name='id_grua_gt'>
-                                <Select
-                                    allowClear
-                                    className='w-100'
-                                    placeholder='Selecciones una opción'
-                                    options={cranes.GTQ.map((item: Crane) => ({ label: item.grua, value: item.id_grua }))}
-                                />
+                            <Form.Item label='Descripcion' name='description'>
+                                <Input.TextArea placeholder='Ingrese un texto' autoSize={{ minRows: 3, maxRows: 6 }} />
                             </Form.Item>
-
-                            <QuoterDetail details={details} onSubmit={details => setDetails(details)} aprobado={quoter.aprobada} />
+                            <QuoterDetail />
                         </div>
                     </div>
                 </div>
@@ -269,35 +290,39 @@ export const FormQuoter: React.FC<Props> = ({ quoter, loading, customers, onSubm
                         type='link'
                         htmlType='button'
                         loading={loading}
-                        disabled={loading || quoter.id_cotizacion === 0}
+                        disabled={loading || quoter.id === 0}
                         icon={<Icon.Download />}
                         onClick={() => onDownloadInvoice(quoter)}
                     >
                         Descargar
                     </Button>
-                    <Button
-                        type='dashed'
-                        htmlType='button'
-                        loading={loading}
-                        disabled={loading || quoter.id_cotizacion === 0}
-                        icon={<Icon.EMail />}
-                    >
+                    <Button type='dashed' htmlType='button' loading={loading} disabled={loading || quoter.id === 0} icon={<Icon.EMail />}>
                         Enviar Correo
                     </Button>
-                    {!quoter.aprobada && (
+                    {!quoter.is_aproverd && (
                         <Button
                             type='primary'
                             ghost
                             htmlType='button'
                             loading={loading}
-                            disabled={loading || quoter.id_cotizacion === 0}
+                            disabled={loading || quoter.id === 0}
                             icon={<Icon.Done />}
-                            onClick={() => onAproveQuoter(quoter)}
+                            onClick={() =>
+                                onAproveQuoter(quoter).then(res => {
+                                    if (!res?.error) onClose();
+                                })
+                            }
                         >
                             Aprobar
                         </Button>
                     )}
-                    <Button type='primary' htmlType='submit' icon={<Icon.Save />} loading={loading} disabled={loading || quoter.aprobada}>
+                    <Button
+                        type='primary'
+                        htmlType='submit'
+                        icon={<Icon.Save />}
+                        loading={loading}
+                        disabled={loading || quoter.is_aproverd}
+                    >
                         Guardar
                     </Button>
                 </div>

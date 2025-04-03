@@ -11,7 +11,7 @@ import { lazy, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate, Route, useNavigate } from 'react-router-dom';
 
-const CustomerOrders = lazy(() => import('./customer-orders').then(module => ({ default: module.CustomerOrders })));
+const CustomerOrders = lazy(() => import('./customer-orders/CustomerOrders').then(module => ({ default: module.CustomerOrders })));
 const CustomerOrderDetail = lazy(() =>
     import('./customer-orders/CustomerOrderDetail').then(module => ({ default: module.CustomerOrderDetail }))
 );

@@ -1,7 +1,6 @@
 import icon from '@/assets/images/icon.png';
-import { privateRoutes, publicRoutes } from '@/constants';
+import { privateRoutes, publicRoutes, color } from '@/constants';
 import { Menu, Sesion } from '@/interfaces';
-import { color } from '@/models';
 import { resetSesion, RootState } from '@/redux';
 import { httpResetPassword } from '@/services';
 import { passwordIsValid } from '@/utilities';
@@ -110,10 +109,11 @@ export const Navbar = () => {
                                             )
                                         }))
                                 }}
-                                placement='bottomLeft'
+                                placement='bottomRight'
                                 arrow
                             >
                                 <Button type='text' htmlType='button' className='text-white' size='small'>
+                                    <Icon.Cog />
                                     <span>Mantenimietos</span>
                                     <Icon.AngleDown />
                                 </Button>

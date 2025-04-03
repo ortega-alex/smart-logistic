@@ -1,7 +1,6 @@
 import { Icon, Search } from '@/components';
 import { privateRoutes } from '@/constants';
-import { Vehicles } from '@/models';
-import { Customer } from '@/interfaces';
+import { Customer, Vehicle } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpAddImportHistory, httpGetVehiclesByCustomerId } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -16,7 +15,7 @@ export const CustomerOrders = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [vehicles, setVehicles] = useState<Array<Vehicles>>([]);
+    const [vehicles, setVehicles] = useState<Array<Vehicle>>([]);
     const [filter, setFilter] = useState('');
 
     const handleViewDetail = (id: number) => navigate(`/${privateRoutes.PRIVATE_CUSTOMER}/${privateRoutes.CUSTOMER_ORDER_DETAIL}/${id}`);
@@ -29,15 +28,14 @@ export const CustomerOrders = () => {
             .finally(() => setLoading(false));
     };
 
-    const handleIploadInvoice = (file: any, vehicle: Vehicles) => {
-        const body = {
-            file,
+    const handleIploadInvoice = (path: any, vehicle: Vehicle) => {
+        httpAddImportHistory(vehicle.id, {
+            path,
             customer_id: sessionCustomerState.id,
-            id_estado_importacion: vehicle.estado_importacion.id_estado_importacion + 1,
-            descripcion: 'El cliente ha cargado la factura',
-            visible_cliente: true
-        };
-        httpAddImportHistory(vehicle.id_vehiculo, body)
+            import_state_id: vehicle.importState.id + 1,
+            description: 'El cliente ha cargado la factura',
+            is_visible_customer: true
+        })
             .then(res => {
                 if (res.success) {
                     message.success(res.message);
@@ -65,27 +63,21 @@ export const CustomerOrders = () => {
                     dataSource={vehicles}
                     loading={loading}
                     renderItem={item => (
-                        <div className='item-list' key={item.id_vehiculo}>
+                        <div className='item-list' key={item.id}>
                             <div className='flex-1'>
-                                <strong>fecha_creacion: </strong>&nbsp;{getDateFormat(item.fecha_creacion ?? '', 'DD/MM/YYYY')}
+                                <strong>fecha_creacion: </strong>&nbsp;{getDateFormat(item.created_at ?? '', 'DD/MM/YYYY')}
                             </div>
                             <div className='flex-1'>
-                                <strong>Lote: </strong>&nbsp;{item.cotizacion.lote}
+                                <strong>Lote: </strong>&nbsp;{item.quoter.lot}
                             </div>
                             <div className='flex-1'>
-                                <strong>Marca y Modelo: </strong>&nbsp;{item.cotizacion.marca} - {item.cotizacion.modelo}
+                                <strong>Marca y Modelo: </strong>&nbsp;{item.quoter.mark} - {item.quoter.model}
                             </div>
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <strong>Estado: </strong>&nbsp;{item.estado_importacion.estado_importacion}
+                                    <strong>Estado: </strong>&nbsp;{item.importState.name}
                                 </div>
-                                <Button
-                                    type='link'
-                                    danger
-                                    htmlType='button'
-                                    icon={<Icon.Eye />}
-                                    onClick={() => handleViewDetail(item.id_vehiculo)}
-                                >
+                                <Button type='link' danger htmlType='button' icon={<Icon.Eye />} onClick={() => handleViewDetail(item.id)}>
                                     Ver
                                 </Button>
                             </div>
@@ -101,7 +93,7 @@ export const CustomerOrders = () => {
                         className='table'
                         loading={loading}
                         showSorterTooltip={false}
-                        rowKey='id_subasta'
+                        rowKey='id'
                         dataSource={vehicles}
                         columns={[
                             {
@@ -113,26 +105,26 @@ export const CustomerOrders = () => {
                             },
                             {
                                 title: 'Loter',
-                                dataIndex: 'lote',
+                                dataIndex: 'lot',
                                 ellipsis: true,
                                 sorter: true,
-                                render: (_, { cotizacion }) => <span>{cotizacion?.lote}</span>
+                                render: (_, { quoter }) => <span>{quoter?.lot}</span>
                             },
                             {
                                 title: 'Marca y Modelo',
-                                dataIndex: 'cotizacion',
+                                dataIndex: 'quoter',
                                 ellipsis: true,
-                                render: value => (
+                                render: quoter => (
                                     <span>
-                                        {value.marca} - {value.modelo}
+                                        {quoter.mark} - {quoter.model}
                                     </span>
                                 )
                             },
                             {
                                 title: 'Estado',
-                                dataIndex: 'estado_importacion',
+                                dataIndex: 'importState',
                                 sorter: true,
-                                render: value => <span>{value.estado_importacion}</span>
+                                render: importState => <span>{importState.name}</span>
                             },
                             {
                                 title: 'Opciones',
@@ -140,7 +132,7 @@ export const CustomerOrders = () => {
                                 width: 80,
                                 render: (_, item) => (
                                     <div className='flex flex-row justify-center gap-2'>
-                                        {item.estado_importacion.id_estado_importacion === 1 && (
+                                        {item.importState.id === 1 && (
                                             <Tooltip title='Cargar factura'>
                                                 <Upload
                                                     accept={'.pdf'}
@@ -158,7 +150,7 @@ export const CustomerOrders = () => {
                                                 icon={<Icon.Eye />}
                                                 type='text'
                                                 size='small'
-                                                onClick={() => handleViewDetail(item.id_vehiculo)}
+                                                onClick={() => handleViewDetail(item.id)}
                                             />
                                         </Tooltip>
                                     </div>
@@ -168,9 +160,7 @@ export const CustomerOrders = () => {
                     />
                 </div>
             )}
-            {vehicles.some(item => item.estado_importacion.id_estado_importacion === 1) && (
-                <Alert message='Existen facturas pendientes de cargar' type='warning' />
-            )}
+            {vehicles.some(item => item.importState.id === 1) && <Alert message='Existen facturas pendientes de cargar' type='warning' />}
         </div>
     );
 };

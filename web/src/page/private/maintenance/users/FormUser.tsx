@@ -20,8 +20,9 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
             let res;
             if (user.id > 0) res = await httpEditUser({ ...user, ...values });
             else res = await httpAddUser(values);
-            if (!res.message) onClose();
-            else message.warning(res.message);
+
+            message[res.error ? 'warning' : 'success'](res.message);
+            if (!res.error) onClose();
         } catch (error) {
             message.error(`Error http add user: ${(error as Error).message}`);
         } finally {
@@ -44,12 +45,19 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
     }, []);
 
     return (
-        <Form layout='vertical' initialValues={user} onFinish={handleSubmit}>
-            <Form.Item label='Nombre completo' name='nombre' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+        <Form
+            layout='vertical'
+            initialValues={{
+                ...user,
+                profile_id: user.profile?.id
+            }}
+            onFinish={handleSubmit}
+        >
+            <Form.Item label='Nombre completo' name='name' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese el nombre' />
             </Form.Item>
 
-            <Form.Item label='Tipo de perfil' name='id_perfil' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+            <Form.Item label='Tipo de perfil' name='profile_id' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Select
                     className='w-100'
                     placeholder='Seleccione una opción'
@@ -58,7 +66,7 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
             </Form.Item>
             <Form.Item
                 label='Teléfono'
-                name='telefono'
+                name='phone_number'
                 className='flex-1'
                 rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.PhoneNumber, value) }]}
             >
@@ -67,17 +75,17 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
 
             <Form.Item
                 label='Correo'
-                name='correo'
+                name='email'
                 className='flex-1'
                 rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.Mail, value) }]}
             >
                 <Input placeholder='Ingrese un email' />
             </Form.Item>
 
-            <Form.Item label='Usuario' name='usuario' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+            <Form.Item label='Usuario' name='username' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese un usuario' disabled={user.id > 0} />
             </Form.Item>
-            <Form.Item name='estado' label='Estado' valuePropName='checked'>
+            <Form.Item name='is_active' label='Estado' valuePropName='checked'>
                 <Switch checkedChildren='Activo' unCheckedChildren='Inactivo' />
             </Form.Item>
 

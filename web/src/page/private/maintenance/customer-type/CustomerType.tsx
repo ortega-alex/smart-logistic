@@ -48,7 +48,7 @@ export const CustomerType = () => {
     }, []);
 
     return (
-        <div className='h-100 flex flex-column p-3'>
+        <div className='h-100 flex flex-column p-auto'>
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>

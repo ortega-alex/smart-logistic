@@ -41,24 +41,24 @@ export const add = async (req: Request, res: Response) => {
     try {
         const { name, username, password, phone_number, email, profile_id } = req.body;
 
-        if (!name) return res.status(203).json({ message: 'El nombre es requerido' });
-        if (!username) return res.status(203).json({ message: 'El usuario es requerido' });
-        if (!phone_number) return res.status(203).json({ message: 'El telefono es requerido' });
-        if (!email) return res.status(203).json({ message: 'El correo es requerido' });
-        if (!profile_id) return res.status(203).json({ message: 'El perfil es requerido' });
+        if (!name) return res.status(203).json({ erro: true, message: 'El nombre es requerido' });
+        if (!username) return res.status(203).json({ erro: true, message: 'El usuario es requerido' });
+        if (!phone_number) return res.status(203).json({ erro: true, message: 'El telefono es requerido' });
+        if (!email) return res.status(203).json({ erro: true, message: 'El correo es requerido' });
+        if (!profile_id) return res.status(203).json({ erro: true, message: 'El perfil es requerido' });
 
         const encryptedPassword = bcrypt.hashSync(password ?? defaultPassword, 8);
 
         const profile = await getProfileByIdService(Number(profile_id));
-        if (!profile) return res.status(404).json({ message: 'Perfil no encontrado' });
+        if (!profile) return res.status(404).json({ erro: true, message: 'Perfil no encontrado' });
 
         const existing_user = await getUserByUsernameService(username);
-        if (existing_user) return res.status(203).json({ message: 'El usuario ya existe' });
+        if (existing_user) return res.status(203).json({ erro: true, message: 'El usuario ya existe' });
 
         const user = await saveUserService({ name, username, password: encryptedPassword, phone_number, email, profile });
-        return res.status(200).json(user);
+        return res.status(200).json({ message: 'Usuario agregado correctamente', user });
     } catch (error) {
-        return res.status(500).json({ message: (error as Error).message });
+        return res.status(500).json({ erro: true, message: (error as Error).message });
     }
 };
 
@@ -77,7 +77,7 @@ export const update = async (req: Request, res: Response) => {
         const { name, profile_id, email, phone_number, is_active, token_fcm } = req.body;
 
         const user = await getUserByIdService(Number(id));
-        if (!user) return res.status(404).json({ message: 'Usuario no exite' });
+        if (!user) return res.status(404).json({ erro: true, message: 'Usuario no exite' });
 
         let profile = null;
         if (profile_id) profile = await getProfileByIdService(Number(profile_id));
@@ -91,11 +91,11 @@ export const update = async (req: Request, res: Response) => {
             profile: profile ?? user.profile
         });
 
-        if ((update?.affected ?? 0) > 0) return res.json(user);
+        if ((update?.affected ?? 0) > 0) return res.json({ message: 'Usuario actualizado correctamente', user });
 
-        return res.status(203).json({ message: 'No se pudo actualizar el usuario' });
+        return res.status(203).json({ erro: true, message: 'No se pudo actualizar el usuario' });
     } catch (error) {
-        return res.status(500).json({ message: (error as Error).message });
+        return res.status(500).json({ erro: true, message: (error as Error).message });
     }
 };
 

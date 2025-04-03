@@ -49,7 +49,7 @@ export const SingInCustomer = () => {
                         <div className='text-center'>
                             <img src={logo} alt='logo' width={180} />
                         </div>
-                        <Form.Item label='Correo' name='correo' rules={[{ required: true, message: 'El correo es requerido' }]}>
+                        <Form.Item label='Correo' name='email' rules={[{ required: true, message: 'El correo es requerido' }]}>
                             <Input placeholder='Ingrese un correo' type='EMail' autoFocus prefix={<Icon.EMail />} autoCapitalize='off' />
                         </Form.Item>
                         <Button

@@ -1,5 +1,5 @@
 import { CustomerType } from '../../customer-type/entity/CustomerType';
-import { Sede } from '../../sede/entity/Sede';
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 import { TransportType } from '../../transport-type/entity/TransportType';
 import { User } from '../../user/entity/User';
 import { VehicleType } from '../../vehicle-type/entity/VehicleType';
@@ -11,8 +11,15 @@ export interface TransportRate {
     user: User;
     vehicleType: VehicleType;
     transportType: TransportType;
-    sede: Sede;
+    headquarter: Headquarter;
     customerType: CustomerType;
 }
 
 export type OptionalTransportRate = Partial<TransportRate>;
+
+export interface TransportRateFilter {
+    customer_type_id: number;
+    transport_type_id: number;
+    vehicle_type_id: number;
+    headquarter_id: number;
+}

@@ -5,10 +5,10 @@ export interface CustomerType {
 }
 
 export interface CustomerFile {
-    id: number;
+    id: string;
     name: string;
     path: string;
-    is_active: boolean;
+    is_active?: boolean;
 }
 
 export interface Customer {

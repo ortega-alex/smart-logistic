@@ -1,4 +1,4 @@
-import { _KEYS } from '@/models';
+import { _KEYS } from '@/constants';
 import * as CryptoJS from 'crypto-js';
 
 const _KEY = CryptoJS.enc.Hex.parse(_KEYS.SECRET.replace(/-/g, ''));

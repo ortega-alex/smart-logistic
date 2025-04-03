@@ -1,0 +1,4 @@
+### GET SEDES, se puede agregar filtro en el path (eeuu, gt)
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/headquarter
+Content-Type: application/json
+Authorization: Bearer {{token}}

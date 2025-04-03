@@ -4,11 +4,12 @@ import { BiCopy, BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi
 import { BsArrowDown, BsArrowUp, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
 import { CiMenuKebab } from 'react-icons/ci';
-import { FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
+import { FaCogs, FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 import { IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { LuDownload } from 'react-icons/lu';
@@ -18,6 +19,7 @@ import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/t
 export const Icon = {
     AngleDown: FaAngleDown,
     Attachment: GrAttachment,
+    ArrowBack: IoMdArrowRoundBack,
     ArrowDown: BsArrowDown,
     ArrowsExchange: TbArrowsExchange2,
     ArrowUp: BsArrowUp,
@@ -27,6 +29,7 @@ export const Icon = {
     Car2: TbCar,
     ChangeAlt: FaExchangeAlt,
     Close: AiOutlineClose,
+    Cog: FaCogs,
     Copy: BiCopy,
     Crane: TbCarCrane,
     Done: IoCheckmarkDone,

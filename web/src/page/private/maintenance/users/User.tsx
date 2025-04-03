@@ -1,6 +1,6 @@
 import { Icon } from '@/components';
 import { UserEmpty } from '@/constants';
-import { User as TypeUser } from '@/interfaces';
+import { User as UserInterface } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGelUser } from '@/services';
 import { Button, Input, List, Modal, Table } from 'antd';
@@ -12,8 +12,8 @@ export const User = () => {
     const deviceState = useSelector((store: RootState) => store.device);
     const title = 'Usuarios';
 
-    const [users, setusers] = useState<Array<TypeUser>>([]);
-    const [user, setUser] = useState<TypeUser>(UserEmpty);
+    const [users, setusers] = useState<Array<UserInterface>>([]);
+    const [user, setUser] = useState<UserInterface>(UserEmpty);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -25,7 +25,7 @@ export const User = () => {
             .finally(() => setLoading(false));
     };
 
-    const handleEdit = (user: TypeUser) => {
+    const handleEdit = (user: UserInterface) => {
         setUser(user);
         setModal(true);
     };
@@ -35,7 +35,7 @@ export const User = () => {
     }, []);
 
     return (
-        <div className='h-100 flex flex-column p-3'>
+        <div className='h-100 flex flex-column p-auto'>
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
@@ -92,35 +92,35 @@ export const User = () => {
                     className='table'
                     loading={loading}
                     showSorterTooltip={false}
-                    rowKey='id_usuario'
+                    rowKey='id'
                     dataSource={users}
                     columns={[
                         {
                             title: 'No',
-                            dataIndex: 'id_usuario'
+                            dataIndex: 'id'
                         },
                         {
                             title: 'Nombre',
-                            dataIndex: 'nombre',
+                            dataIndex: 'name',
                             ellipsis: true,
                             sorter: true
                         },
                         {
                             title: 'Perfil',
-                            dataIndex: 'perfil',
+                            dataIndex: 'profile',
                             ellipsis: true,
                             sorter: true,
-                            render: value => <span>{value?.perfil}</span>
+                            render: profile => <span>{profile?.name}</span>
                         },
                         {
                             title: 'Usuario',
-                            dataIndex: 'usuario',
+                            dataIndex: 'username',
                             sorter: true
                         },
                         {
                             title: 'Estado',
-                            dataIndex: 'estado',
-                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Actuvi' : 'Inactivo'}</span>
+                            dataIndex: 'is_active',
+                            render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
                         },
                         {
                             title: 'Opciones',

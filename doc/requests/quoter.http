@@ -1,0 +1,96 @@
+### GET QUOTERS
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET QUOTERS BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET PDF
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/invoice/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET CUSTOMER PAGINATION DATA
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/pagination
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "orderField": "id_cotizacion",
+    "orderDirection": "ASC",
+    "filter": ""
+}
+
+### ADD QUOTER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "mark": "subaru",
+    "model": "xray",
+    "year": "2022",
+    "lot": "SERIE",
+    "vin": "VIN",
+    "customer_id": 1,
+    "user_id": 1,
+    "seller_id": 1,
+    "vehicle_type_id": 2,
+    "transport_type_id": 1,
+    "issuing_headquarter_id": 2,
+    "headquarter_id": 1,
+    "auction_id": 1,
+    "detalles": [
+        {
+            "name": "Precio de GRUA",
+            "value": "210",
+            "coin": "$"
+        },
+        {
+            "name": "Trasporte maritimo",
+            "value": "950",
+            "coin": "$"
+        }
+    ]
+}
+
+### UPDATE QUOTER
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "mark": "subaru",
+    "model": "xray",
+    "year": "2022",
+    "lot": "SERIE",
+    "vin": "VIN",
+    "customer_id": 1,
+    "user_id": 1,
+    "seller_id": 1,
+    "vehicle_type_id": 2,
+    "transport_type_id": 1,
+    "issuing_headquarter_id": 2,
+    "headquarter_id": 1,
+    "auction_id": 1,
+    "detalles": [
+        {
+            "name": "Precio de GRUA",
+            "value": "210",
+            "coin": "$"
+        },
+        {
+            "name": "Trasporte maritimo",
+            "value": "950",
+            "coin": "$"
+        },
+        {
+            "name": "Tramites aduanales GTQ",
+            "value": "1200",
+            "coin": "Q"
+        }
+    ]
+}

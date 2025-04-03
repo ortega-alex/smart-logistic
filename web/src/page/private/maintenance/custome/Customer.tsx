@@ -66,7 +66,7 @@ export const Customer = () => {
             .catch(err => message.error(`Error http get customer by id: ${err.message}`));
     };
 
-    const handleDeleteFile = (id: number) => {
+    const handleDeleteFile = (id: string) => {
         Modal.confirm({
             title: 'Eliminar archivo',
             content: 'Estas seguro de querer eliminar este archivo?',
@@ -98,7 +98,7 @@ export const Customer = () => {
     }, [JSON.stringify(tableParams), filter]);
 
     return (
-        <div className='h-100 flex flex-column p-3'>
+        <div className='h-100 flex flex-column p-auto'>
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
@@ -277,7 +277,7 @@ export const Customer = () => {
             </Modal>
 
             <Modal open={modals.preview} footer={null} onCancel={() => hamdleChangeModal('preview', false)} centered destroyOnClose>
-                <ViewFiles file={file} />
+                <ViewFiles path={file.path} />
             </Modal>
         </div>
     );

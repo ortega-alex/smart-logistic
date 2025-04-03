@@ -1,6 +1,6 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 import { State } from '../../state/entity/State';
-import { Sede } from '../../sede/entity/Sede';
 
 @Entity()
 export class Auction extends BaseEntity {
@@ -33,7 +33,7 @@ export class Auction extends BaseEntity {
     @JoinColumn({ name: 'state_id' })
     state: State;
 
-    @ManyToOne(() => Sede)
-    @JoinColumn({ name: 'sede_id' })
-    sede: Sede;
+    @ManyToOne(() => Headquarter)
+    @JoinColumn({ name: 'headquarter_id' })
+    headquarter: Headquarter;
 }

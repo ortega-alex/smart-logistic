@@ -1,0 +1,20 @@
+### GET IMPORTS STATE
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/import/get-state
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ADD IMPORT HISTORY
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/import/history/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "id": 1,
+    "description": "Descripcion",
+    "path": "path",
+    "is_visible_customer": true,
+    "vehicle_id": 1,
+    "import_state_id": 1,
+    "user_id": 1,
+    "customer_id": 1
+}

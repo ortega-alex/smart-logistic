@@ -1,0 +1,38 @@
+### GET VEHICLES
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET VEHICLES BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### GET VEHICLES PAGINATION DATA
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle/pagination
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "orderField": "id_vehiculo",
+    "orderDirection": "ASC",
+    "filter": "SERIE",    
+    "id_cliente": 1
+}
+
+### ADD VEHICLES
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "quoter_id": 2,
+    "import_state_id": 1
+}
+
+
+### GET VEHICLES BY CUSTOMER ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/vehicle/customer/1
+Content-Type: application/json
+Authorization: Bearer {{token}}

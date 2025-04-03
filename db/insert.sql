@@ -1,15 +1,13 @@
-INSERT INTO menu (name, icon, path, is_main_menu) VALUES
-('Cotizador', 'calculate', 'quoter', 0),
-('Vehiculos', 'car', 'vehicles', 0),
-('Clientes', 'users', 'customers', 1),
-('Usuario', 'user', 'users', 1),
-('Gruas', 'crane', 'cranes', 1),
-('Puertos', 'store', 'ports', 1),
-('Tipos de vehiculos', 'car2', 'type-of-vehicles', 1),
-('Perfiles', 'profile', 'profiles', 1),
-('Reportes', 'report', 'reports', 0),
-('Subasta', 'store', 'aution', 1),
-('Tipos de clientes', 'users', 'customer-type', 1);
+INSERT INTO menu (name, icon, path, is_main_menu, is_maintenance, is_maintenance) VALUES
+('Cotizador', 'calculate', 'quoter', 1, 0, 0),
+('Vehiculos', 'car', 'vehicles', 1, 0, 0),
+('Clientes', 'users', 'customers', 1, 0, 1),
+('Usuario', 'user', 'users', 1, 0, 1),
+('Tipos de vehiculos', 'car2', 'vehicle-type', 1, 0, 1),
+('Perfiles', 'profile', 'profiles', 1, 0, 1),
+('Reportes', 'report', 'reports', 1, 0, 0),
+('Subasta', 'store', 'aution', 1, 0, 1),
+('Tipos de clientes', 'users', 'customer-type', 1, 0, 1);
 
 INSERT INTO customer_type (name) VALUES
 ('Particular'),
@@ -24,7 +22,6 @@ INSERT INTO permission (name) VALUES
 ('Ver'); 
 
 INSERT INTO menu_permission_profile (id, profile_id, menu_id, permission_id) VALUES
-(uuid(), 1, 10,	3),
 (uuid(), 1,	8,	1),
 (uuid(), 1,	2,	3),
 (uuid(), 1,	9,	1),
@@ -38,12 +35,10 @@ INSERT INTO menu_permission_profile (id, profile_id, menu_id, permission_id) VAL
 (uuid(), 1,	7,	3),
 (uuid(), 1,	9,	3),
 (uuid(), 1,	3,	1),
-(uuid(), 1, 10,	1),
 (uuid(), 1,	1,	3),
 (uuid(), 1,	5,	1),
 (uuid(), 1,	5,	2),
 (uuid(), 1,	6,	2),
-(uuid(), 1 ,10,	2),
 (uuid(), 1,	8,	2),
 (uuid(), 1,	1,	1),
 (uuid(), 1,	4,	1),
@@ -53,10 +48,7 @@ INSERT INTO menu_permission_profile (id, profile_id, menu_id, permission_id) VAL
 (uuid(), 1,	4,	3),
 (uuid(), 1,	2,	1),
 (uuid(), 1,	9,	2),
-(uuid(), 1,	6,	1),
-(uuid(), 1,	11,	1),
-(uuid(), 1,	11,	2),
-(uuid(), 1,	11,	3);
+(uuid(), 1,	6,	1);
 
 INSERT INTO user (name, username, password, phone_number, email, profile_id) VALUES
 ('Admin', 'admin', '$2a$08$pfPpnWYXvYzuXBDkqgzmMev13jo7QDnKNzuJzUwzV06.7VzDZwHJS', '--sin telefono--',	'--sin correo--', 1);
@@ -161,13 +153,17 @@ INSERT INTO municipality (name, department_id) VALUES
 ('Todos Santos Cuchumatán', 5),
 ('San Pedro Soloma', 5);
 
-INSERT INTO sede (name, municipality_id, state_id) VALUES
+INSERT INTO headquarter (name, municipality_id, state_id) VALUES
 -- 📌 Estado unidos (ID = 1)
 ('Delawer', null, 8),
 -- 📌 Guatemala (ID = 1)
 ('Guatemala Zona 15', 1, null);
 
-INSERT INTO estado_importacion ('estado_importacion','index','color') VALUES
+INSERT INTO auction (name, crane_rate, state_id, headquarter_id) VALUES
+('BRIDGEPORT', 210, 38, 1),
+('PHILLY AA', 215, 31, 1);
+
+INSERT INTO `smart_logistic`.`import_state` (`name`, `index`, `color`) VALUES
 ('Cotizacion Aprobada',0,'#ffbb96'),
 ('Factura Cargada',1,'#ffc069'),
 ('Recolectado',2,'#fffb8f'),

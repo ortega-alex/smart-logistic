@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from '../../profile/entity/Profile';
 import { TransportRate } from '../../transport-rate/entity/TransportRate';
+// import { TransportRate } from '../../transport-rate/entity/TransportRate';
 
 @Entity()
 export class User extends BaseEntity {

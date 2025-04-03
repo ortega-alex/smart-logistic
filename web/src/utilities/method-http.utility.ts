@@ -1,18 +1,30 @@
-import { _SERVER, RequesParam } from '@/models';
+import { _SERVER } from '@/constants';
 import axios from 'axios';
 import { decryptResponse, encryptRequest } from './encrypt.utility';
 
-export const httpRequest = async (payload: RequesParam) => {
+export interface RequesParam {
+    path: string;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+    data?: Record<string, any>; // Permite cualquier objeto o FormData
+    type?: 'multipart' | 'json';
+    responseType?: 'json' | 'blob' | 'text';
+}
+
+export const httpRequest = async (payload: RequesParam): Promise<any> => {
     try {
-        let data: any;
-        if (payload?.type === 'multipart') {
+        let data: FormData | Record<string, any> | undefined = payload?.data || {};
+        if (payload?.type === 'multipart' && payload.data) {
             data = new FormData();
-            Object.keys(payload?.data).forEach(key => {
-                if (key === 'files' && Array.isArray(payload?.data[key]?.fileList))
-                    payload?.data[key].fileList.forEach((file: any) => data.append('files', file.originFileObj));
-                else data.append(key, payload?.data[key]);
+            Object.keys(payload.data).forEach(key => {
+                if (key === 'files' && Array.isArray(payload.data?.[key]?.fileList)) {
+                    payload?.data[key].fileList.forEach(
+                        (file: any) => data instanceof FormData && data.append('files', file.originFileObj)
+                    );
+                } else if (data instanceof FormData) {
+                    data.append(key, payload.data?.[key]);
+                }
             });
-        } else data = payload?.data;
+        }
 
         // CIFRA LA INFORMACION POST | PUT, PRODUCCION
         if (process.env.NODE_ENV !== 'development' && data && payload?.type !== 'multipart') data = encryptRequest(data);

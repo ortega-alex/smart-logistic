@@ -1,24 +1,24 @@
-import { TypeVehicle } from '@/models';
+import { VehicleType } from '@/interfaces';
 import { httpRequest } from '@/utilities';
 
-const path = '/type-vehicle';
+const path = '/vehicle-type';
 
-export const httpGetTypeVehicles = async () =>
+export const httpGetAllVehicleType = async () =>
     await httpRequest({
         path,
         method: 'GET'
     });
 
-export const httpAddTypeVehicle = async (data: TypeVehicle) =>
+export const httpAddVehicleType = async (data: VehicleType) =>
     await httpRequest({
         path,
         method: 'POST',
         data
     });
 
-export const httpUpdateTypeVehicle = async (data: TypeVehicle) =>
+export const httpUpdateVehicleType = async (data: VehicleType) =>
     await httpRequest({
-        path: `${path}/${data.id_tipo_vehiculo}`,
+        path: `${path}/${data.id}`,
         method: 'PUT',
         data
     });

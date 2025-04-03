@@ -1,9 +1,9 @@
 import { Auction } from './entity/Auction';
 import { Auction as AuctionInterface } from './interface/Auction';
 
-export const getAll = async () => await Auction.find();
+export const getAll = async () => await Auction.find({ relations: { state: true, headquarter: true } });
 
-export const getById = async (id: number) => await Auction.findOne({ where: { id }, relations: { state: true, sede: true } });
+export const getById = async (id: number) => await Auction.findOne({ where: { id }, relations: { state: true, headquarter: true } });
 
 export const add = async (auction: AuctionInterface) => {
     const newAuction = new Auction();
@@ -11,7 +11,7 @@ export const add = async (auction: AuctionInterface) => {
     newAuction.crane_rate = auction.crane_rate;
     newAuction.is_active = auction.is_active ?? true;
     newAuction.state = auction.state;
-    newAuction.sede = auction.sede;
+    newAuction.headquarter = auction.headquarter;
     await newAuction.save();
     return newAuction;
 };

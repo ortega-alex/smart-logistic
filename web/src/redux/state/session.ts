@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { _KEYS } from '@/models';
-import { clearStorage, getStorage, saveStorage } from '@/services';
+import { _KEYS } from '@/constants';
 import { Sesion } from '@/interfaces';
+import { clearStorage, getStorage, saveStorage } from '@/services';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const emptySession: Sesion = {
     session_id: 0,

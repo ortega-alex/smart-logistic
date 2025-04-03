@@ -30,11 +30,9 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
             let res;
             if (profile.id > 0) res = await httpUpdateProfiles({ ...profile, ...values, permissions });
             else res = await httpAddProfiles({ ...values, permissions });
-            if (res.message) message.warning(res.message);
-            else {
-                message.success(`Perfil ${profile.id > 0 ? 'editada' : 'agregada'} correctamente`);
-                onClose();
-            }
+
+            message[res.error ? 'warning' : 'success'](res.message);
+            if (!res.error) onClose();
         } catch (error) {
             message.error(`Error http add or edit profile: ${(error as Error).message}`);
         } finally {
@@ -82,11 +80,11 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
                         label: 'Información',
                         children: (
                             <>
-                                <Form.Item label='Nombre' name='perfil' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                                <Form.Item label='Nombre' name='name' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                                     <Input placeholder='Ingrese el nombre' />
                                 </Form.Item>
 
-                                <Form.Item name='estado' label='Estado' valuePropName='checked'>
+                                <Form.Item name='is_active' label='Estado' valuePropName='checked'>
                                     <Switch checkedChildren='Activo' unCheckedChildren='Inactivo' />
                                 </Form.Item>
                             </>

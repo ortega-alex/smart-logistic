@@ -1,30 +1,20 @@
-import { Icon, ViewFiles } from '@/components';
+import { EmptyVehicle } from '@/context';
 import { useSocket } from '@/hooks';
-import { EmptyVehicle, ImportState, Vehicles } from '@/models';
-import { EmptyCustomerFile } from '@/constants';
+import { ImportState, Vehicle } from '@/interfaces';
+import { Icon, ImportHitory } from '@/components';
 import { httpGetImportState, httpGetVehiclesGetById } from '@/services';
-import { getDateFormat } from '@/utilities';
-import { Button, Divider, message, Modal, Steps, Table } from 'antd';
+import { Button, Divider, message, Steps } from 'antd';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const CustomerOrderDetail = () => {
     const { id } = useParams();
     const { socket } = useSocket();
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [vehicle, setVehicle] = useState<Vehicles>(EmptyVehicle);
+    const [vehicle, setVehicle] = useState<Vehicle>(EmptyVehicle);
     const [importStates, setImportStates] = useState<Array<ImportState>>([]);
-    const [file, setFile] = useState(EmptyCustomerFile);
-    const [modal, setModal] = useState(false);
-
-    const handleViewFile = (path: string) => {
-        setFile({
-            ...file,
-            path
-        });
-        setModal(true);
-    };
 
     const handleGetDetail = (id: number) => {
         setLoading(true);
@@ -44,32 +34,34 @@ export const CustomerOrderDetail = () => {
     }, []);
 
     return (
-        <div className='h-100 flex flex-row justify-between'>
-            <div className='card-customer-detail-gay'></div>
+        <div className='h-100 flex flex-row justify-between bg-dark-gray'>
             <div className='card-customer-detail'>
-                <Divider orientation='left'>Informacion del vehiculo</Divider>
+                <Button type='link' icon={<Icon.ArrowBack size={24} />} className='mb-3' onClick={() => navigate(-1)}>
+                    REGRESAR
+                </Button>
+                <Divider orientation='left'>Información del vehículo</Divider>
                 <div className='flex flex-column mb-3 px-5'>
                     <span className='text-label'>
-                        <strong>Lote:</strong> <span>{vehicle.cotizacion.lote}</span>
+                        <strong>Lote:</strong> <span>{vehicle.quoter.lot}</span>
                     </span>
                     <span className='text-label'>
                         <strong>Marca y modelo:</strong>
                         <span>
-                            {vehicle.cotizacion.marca} - {vehicle.cotizacion.modelo}
+                            {vehicle.quoter.mark} - {vehicle.quoter.model}
                         </span>
                     </span>
                 </div>
-                <Divider orientation='left'>Informacion del vendedor</Divider>
+                <Divider orientation='left'>Información del Vendedor</Divider>
                 <div className='flex flex-column mb-3 px-5'>
                     <span className='text-label'>
-                        <strong>Nombre:</strong> <span>{vehicle.cotizacion.vendedor?.nombre}</span>
+                        <strong>Nombre:</strong> <span>{vehicle.quoter.seller?.name}</span>
                     </span>
-                    <div className='flex justify-arround gap-3'>
+                    <div className='flex justify-around gap-3'>
                         <span className='text-label'>
-                            <strong>Telefono:</strong> <span>{vehicle.cotizacion.vendedor?.telefono}</span>
+                            <strong>Telefono:</strong> <span>{vehicle.quoter.seller?.phone_number}</span>
                         </span>
                         <span className='text-label'>
-                            <strong>Correo:</strong> <span>{vehicle.cotizacion.vendedor?.correo}</span>
+                            <strong>Correo:</strong> <span>{vehicle.quoter.seller?.email}</span>
                         </span>
                     </div>
                 </div>
@@ -79,66 +71,15 @@ export const CustomerOrderDetail = () => {
                     progressDot
                     size='small'
                     className='my-3'
-                    current={vehicle.estado_importacion.index}
+                    current={vehicle.importState.index}
                     items={importStates.map(item => ({
-                        title: <b>{item.estado_importacion}</b>
+                        title: <b>{item.name}</b>
                     }))}
                 />
                 <br />
                 <Divider orientation='left'>Archivos adjuntos</Divider>
-                <Table
-                    size='small'
-                    rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-                    pagination={false}
-                    className='table'
-                    loading={loading}
-                    showSorterTooltip={false}
-                    rowKey='id_historial_importacion'
-                    dataSource={vehicle.historial_vechiculo.filter(item => item.visible_cliente)}
-                    columns={[
-                        {
-                            title: 'Fecha',
-                            dataIndex: 'fecha_creacion',
-                            render: value => <span>{getDateFormat(value, 'DD/MM/YYYY')}</span>
-                        },
-                        {
-                            title: 'Descripcion',
-                            dataIndex: 'descripcion',
-                            ellipsis: true
-                        },
-                        {
-                            title: 'Archivo',
-                            dataIndex: 'archivo',
-                            render: value => (
-                                <div className='text-center'>
-                                    <Button type='link' icon={<Icon.Eye />} onClick={() => handleViewFile(value)} />
-                                </div>
-                            )
-                        }
-                    ]}
-                />
+                <ImportHitory details={vehicle?.record?.filter(item => item.is_visible_customer) ?? []} loading={loading} />
             </div>
-            <div className='card-customer-detail-gay'></div>
-
-            <Modal
-                open={modal}
-                onCancel={() => {
-                    setModal(false);
-                    setFile(EmptyCustomerFile);
-                }}
-                centered
-                destroyOnClose
-                closeIcon={
-                    <div className='bg-secondary px-2 border-sm'>
-                        <Icon.Close color='white' />
-                    </div>
-                }
-                width={1000}
-                footer={false}
-                className='bg-transparent'
-            >
-                <ViewFiles file={file} download={true} />
-            </Modal>
         </div>
     );
 };

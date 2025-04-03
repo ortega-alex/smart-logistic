@@ -1,5 +1,5 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { Quoter } from '../entities';
+import { Quoter } from '../quoter/entity/Quoter';
 import path from 'path';
 import fs from 'fs';
 
@@ -38,7 +38,7 @@ export const createPdfWithTable = async (quoter: Quoter, data: string[][]) => {
         color: rgb(0, 0, 0)
     });
 
-    page.drawText(quoter.cliente?.cliente ?? '', {
+    page.drawText(quoter.customer?.name ?? '', {
         x: 60,
         y: y - 250,
         size: 12,
@@ -70,7 +70,7 @@ export const createPdfWithTable = async (quoter: Quoter, data: string[][]) => {
         color: rgb(0, 0, 0)
     });
 
-    page.drawText(`Vehiculo: ${quoter.anio} ${quoter.marca} ${quoter.modelo}`, {
+    page.drawText(`Vehiculo: ${quoter.year} ${quoter.mark} ${quoter.model}`, {
         x: 60,
         y: y - 410,
         size: 12,
@@ -172,8 +172,8 @@ export const createPdfWithTable = async (quoter: Quoter, data: string[][]) => {
         color: rgb(0, 0, 0)
     });
 
-    page.drawText(quoter.vendedor?.nombre ?? '', {
-        x: x / 2 - quoter.vendedor?.nombre?.length * 3.5,
+    page.drawText(quoter.seller?.name ?? '', {
+        x: x / 2 - quoter.seller?.name?.length * 3.5,
         y: 210,
         size: 12,
         font: TimesRomanBold,

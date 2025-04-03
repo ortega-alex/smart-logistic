@@ -1,6 +1,6 @@
-import { Department } from '../../department/entity/Department';
-import { Sede } from '../../sede/entity/Sede';
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Department } from '../../department/entity/Department';
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 
 // Municipios de Guatemala
 @Entity()
@@ -31,6 +31,6 @@ export class Municipality extends BaseEntity {
     @JoinColumn({ name: 'department_id' })
     department: Department;
 
-    @OneToMany(() => Sede, sede => sede.municipality, { cascade: true })
-    sedes: Sede[];
+    @OneToMany(() => Headquarter, headquarter => headquarter.municipality, { cascade: true })
+    headquarters: Headquarter[];
 }

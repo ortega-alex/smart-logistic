@@ -1,4 +1,5 @@
 export * from './Icon';
+export * from './ImportHitory';
 export * from './Loading';
 export * from './Navbar';
 export * from './Notification';

@@ -84,44 +84,6 @@
     margin-top: -1.5vh;
 }
 
-@media (min-width: 576px) {
-    .hex-container {
-        width: 15vh;
-        height: 15vh;
-        margin: -0.75vh;
-    }
-    .hex-border {
-        width: 13.5vh;
-        height: 13.5vh;
-    }
-    .hex-button {
-        width: 12vh;
-        height: 12vh;
-    }
-    .menu-bottom {
-        margin-top: -2.25vh;
-    }
-}
-
-@media (min-width: 768px) {
-    .hex-container {
-        width: 20vh;
-        height: 20vh;
-        margin: -1vh;
-    }
-    .hex-border {
-        width: 18vh;
-        height: 18vh;
-    }
-    .hex-button {
-        width: 16vh;
-        height: 16vh;
-    }
-    .menu-bottom {
-        margin-top: -3vh;
-    }
-}
-
 .text-primary {
     color: var(--primary) !important;
 }
@@ -140,7 +102,9 @@
 
 .navbar {
     width: 100%;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 2;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
@@ -327,23 +291,6 @@
 .flex-column {
     -ms-flex-direction: column !important;
     flex-direction: column !important;
-}
-
-@media (min-width: 768px) {
-    .flex-md-column {
-        -ms-flex-direction: row !important;
-        flex-direction: row !important;
-    }
-    .flex-md-row {
-        -ms-flex-direction: column !important;
-        flex-direction: column !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .w-md-100 {
-        width: 100% !important;
-    }
 }
 
 .justify-start {
@@ -824,7 +771,8 @@
     max-width: 250px !important;
 }
 
-.item-list {
+.item-list,
+.item-list-gost {
     width: 100% !important;
     background: var(--secondary) !important;
     color: var(--white);
@@ -835,32 +783,20 @@
     flex-direction: column;
 }
 
+.item-list-gost {
+    background: var(--white) !important;
+    border: 1px solid var(--secondary);
+    color: var(--secondary);
+}
+
 .search {
     width: 300px;
 }
 
-@media (max-width: 768px) {
-    .search {
-        width: 100%;
-    }
-}
-
-.card-customer-detail,
-.card-customer-detail-gay {
-    background-color: var(--white-light);
-}
-
 .card-customer-detail {
-    padding: 2rem 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.card-customer-detail-gay {
-    display: flex;
-    background-color: var(--gray) !important;
-    width: 300px;
+    margin: 0;
+    background-color: white;
+    padding: 2rem 3rem;
 }
 
 .text-label {
@@ -869,16 +805,6 @@
 }
 .text-label > span {
     margin-left: 0.5rem;
-}
-
-@media (max-width: 768px) {
-    .card-customer-detail-gay {
-        display: none;
-    }
-
-    .text-label {
-        flex-direction: column;
-    }
 }
 
 .text-decoration {
@@ -921,4 +847,97 @@
 
 .text-navbar:hover {
     color: var(--primary) !important;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container {
+    width: 100%;
+}
+
+.p-auto {
+    padding: 0.5rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .p-auto {
+        padding: 1rem 3rem;
+    }
+    .container {
+        max-width: 640px;
+    }
+    .hex-container {
+        width: 15vh;
+        height: 15vh;
+        margin: -0.75vh;
+    }
+    .hex-border {
+        width: 13.5vh;
+        height: 13.5vh;
+    }
+    .hex-button {
+        width: 12vh;
+        height: 12vh;
+    }
+    .menu-bottom {
+        margin-top: -2.25vh;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+    .hex-container {
+        width: 20vh;
+        height: 20vh;
+        margin: -1vh;
+    }
+    .hex-border {
+        width: 18vh;
+        height: 18vh;
+    }
+    .hex-button {
+        width: 16vh;
+        height: 16vh;
+    }
+    .menu-bottom {
+        margin-top: -3vh;
+    }
+
+    .flex-md-column {
+        -ms-flex-direction: row !important;
+        flex-direction: row !important;
+    }
+    .flex-md-row {
+        -ms-flex-direction: column !important;
+        flex-direction: column !important;
+    }
+
+    .flex-md-column {
+        -ms-flex-direction: row !important;
+        flex-direction: row !important;
+    }
+    .flex-md-row {
+        -ms-flex-direction: column !important;
+        flex-direction: column !important;
+    }
+    .card-customer-detail {
+        margin: 0 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .w-md-100 {
+        width: 100% !important;
+    }
+    .search {
+        width: 100%;
+    }
+    .text-label {
+        flex-direction: column;
+    }
 }

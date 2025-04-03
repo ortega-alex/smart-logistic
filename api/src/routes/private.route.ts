@@ -18,15 +18,27 @@ import {
     getPagination as getCustomerPaginatedData,
     updateById as updateCustomerById
 } from '../customer/customer.controller';
+import { getAll as getAllSede } from '../headquarter/headquarter.controller';
+import { addHistory as addImportHistory, getAll as getImportState } from '../import/import.controller';
 import { getByProfileId as getPermissionMenuByProfileId } from '../menu-permission-profile/menu-permission-profile.controller';
 import { getAll as getMenus } from '../menu/menu.controller';
-import { fileUpload } from '../middleware';
+import { fileBufferUpload, fileUpload } from '../middleware';
 import { getAll as getAllPermission } from '../permission/permission.controller';
 import { add as addProfile, getAll as getAllProfile, update as updateProfile } from '../profile/profile.controller';
+import {
+    add as addQuoter,
+    generatePdf as generateQuoterPdf,
+    getAll as getAllQuoter,
+    getPaginate as getQuoterPaginatedData,
+    getById as getQuotersById,
+    update as updateQuoter
+} from '../quoter/quoter.controller';
+import { getAll as getAllState, getById as getStateById } from '../state/state.controller';
 import {
     add as addTransportRate,
     getAll as getAllTransportRate,
     getById as getTransportRateById,
+    getRateFiler as getTransportRateFiler,
     update as updateTransportRate
 } from '../transport-rate/transport-rate.controller';
 import {
@@ -40,7 +52,14 @@ import {
     getAll as getAllVehicleType,
     updateById as updateVehicleTypeById
 } from '../vehicle-type/vehicle-type.controller';
-import { getAll as getAllState, getById as getStateById } from '../state/state.controller';
+import {
+    add as addVehicle,
+    getAll as getAllVehicle,
+    paginated as getVechiclesPaginatedData,
+    getById as getVehicleById,
+    getByCustomerId as getVehiclesByCustomerId,
+    update as updateVehicle
+} from '../vehicle/vehicle.controller';
 
 const routes = Router();
 
@@ -81,6 +100,7 @@ routes.get('/transport-rate', getAllTransportRate);
 routes.get('/transport-rate/:id', getTransportRateById);
 routes.post('/transport-rate', addTransportRate);
 routes.put('/transport-rate/:id', updateTransportRate);
+routes.post('/transport-rate/get-rate', getTransportRateFiler);
 
 routes.get('/aution', getAllAuction);
 routes.get('/aution/:id', getAuctionById);
@@ -90,30 +110,25 @@ routes.put('/aution/:id', updateAuctionById);
 routes.get('/state', getAllState);
 routes.get('/state/:id', getStateById);
 
-// routes.get('/crane', getCrane);
-// routes.post('/crane', addCrane);
-// routes.put('/crane/:id', updateCrane);
+routes.get('/headquarter/:filter?', getAllSede);
 
-// routes.get('/port', getPort);
-// routes.post('/port', addPort);
-// routes.put('/port/:id', updatePort);
+routes.get('/quoter', getAllQuoter);
+routes.get('/quoter/:id', getQuotersById);
+routes.get('/quoter/invoice/:id', generateQuoterPdf);
+routes.post('/quoter', addQuoter);
+routes.put('/quoter/:id', updateQuoter);
+routes.post('/quoter/pagination', getQuoterPaginatedData);
 
-// routes.get('/quoter', getQuoters);
-// routes.get('/quoter/:id', getQuotersById);
-// routes.get('/quoter/invoice/:id', generatePdf);
-// routes.post('/quoter', addQuoter);
-// routes.put('/quoter/:id', updateQuoter);
-// routes.post('/quoter/pagination', getQuoterPaginatedData);
+routes.get('/vehicle', getAllVehicle);
+routes.get('/vehicle/:id', getVehicleById);
+routes.get('/vehicle/customer/:id', getVehiclesByCustomerId);
+routes.post('/vehicle', addVehicle);
+routes.post('/vehicle/pagination', getVechiclesPaginatedData);
+routes.put('/vehicle/:id', updateVehicle);
 
-// routes.get('/vehicles', getVehicles);
-// routes.get('/vehicles/:id', getVehiclesById);
-// routes.post('/vehicles', addVehicles);
-// routes.post('/vehicles/pagination', getVechiclesPaginatedData);
-// routes.get('/vehicles/customer/:id', getVehiclesByCustomerId);
+routes.get('/import/get-state', getImportState);
+routes.post('/import/history/:id', fileBufferUpload.single('path'), addImportHistory);
 
-// routes.get('/import-state', getImportState);
-
-// routes.post('/import-history/:id', fileBufferUpload.single('file'), addImportHistory);
 // // routes.post('/import-history/evidence/:id', validateFileType, addImportHistory);
 
 // routes.post('/notification', addNotification);

@@ -1,4 +1,4 @@
-import { Sede } from '../../sede/entity/Sede';
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 import { State } from '../../state/entity/State';
 
 export interface Auction {
@@ -7,5 +7,5 @@ export interface Auction {
     crane_rate: number;
     is_active?: boolean;
     state: State;
-    sede: Sede;
+    headquarter: Headquarter;
 }
