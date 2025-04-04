@@ -1,28 +1,31 @@
-import { Map } from '@/models';
+import { Map } from '@/interfaces';
 import { AiFillLock, AiOutlineClose, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
 import { BiCopy, BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi';
 import { BsArrowDown, BsArrowUp, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
 import { CiMenuKebab } from 'react-icons/ci';
 import { FaCogs, FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
-import { FaAngleDown } from 'react-icons/fa6';
+import { FaAngleDown, FaSackDollar } from 'react-icons/fa6';
+import { FiUsers } from 'react-icons/fi';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { IoIosInformationCircleOutline, IoMdArrowRoundBack } from 'react-icons/io';
 import { IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { LuDownload } from 'react-icons/lu';
 import { MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
+import { RiAuctionLine } from 'react-icons/ri';
 import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
 export const Icon = {
     AngleDown: FaAngleDown,
-    Attachment: GrAttachment,
     ArrowBack: IoMdArrowRoundBack,
     ArrowDown: BsArrowDown,
     ArrowsExchange: TbArrowsExchange2,
     ArrowUp: BsArrowUp,
+    Attachment: GrAttachment,
+    AuctionLine: RiAuctionLine,
     Bell: GoBell,
     Calculate: MdOutlineCalculate,
     Car: LiaCarAltSolid,
@@ -39,6 +42,7 @@ export const Icon = {
     Eye: BsEye,
     EyeSlash: BsEyeSlash,
     FilePdf: FaRegFilePdf,
+    InfoCircle: IoIosInformationCircleOutline,
     Lock: AiFillLock,
     Logout: AiOutlineLogout,
     MenuFold: AiOutlineMenuFold,
@@ -47,11 +51,13 @@ export const Icon = {
     Printshop: MdOutlineLocalPrintshop,
     Profile: CgProfile,
     Plus: BiPlus,
+    SackDollar: FaSackDollar,
     Reload: IoReload,
     Trash: FaRegTrashAlt,
     Upload: AiOutlineUpload,
     User: BiUser,
-    Users: TbUsersPlus,
+    Users: FiUsers,
+    UsersPlus: TbUsersPlus,
     Report: HiOutlineDocumentReport,
     Save: BiSave,
     Search: BiSearch,
@@ -68,7 +74,10 @@ export const IconEnun: Map = {
     report: <Icon.Report size='32%' />,
     store: <Icon.Store size='32%' />,
     users: <Icon.Users size='32%' />,
+    usersPlus: <Icon.UsersPlus size='32%' />,
     user: <Icon.User size='32%' />,
+    auction: <Icon.AuctionLine size='32%' />,
+    sackDollar: <Icon.SackDollar size='32%' />,
     calculate_mobile: <Icon.Calculate />,
     car_mobile: <Icon.Car />,
     car2_mobile: <Icon.Car2 />,

@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from '../../profile/entity/Profile';
 import { TransportRate } from '../../transport-rate/entity/TransportRate';
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 // import { TransportRate } from '../../transport-rate/entity/TransportRate';
 
 @Entity()
@@ -42,9 +43,13 @@ export class User extends BaseEntity {
     })
     edited_at: Date;
 
-    @ManyToOne(() => Profile)
+    @ManyToOne(() => Profile, { nullable: false })
     @JoinColumn({ name: 'profile_id' })
     profile: Profile;
+
+    @ManyToOne(() => Headquarter, { nullable: false })
+    @JoinColumn({ name: 'headquarter_id' })
+    headquarter: Headquarter;
 
     @OneToMany(() => TransportRate, transportRate => transportRate.user, { cascade: true })
     transportRates: TransportRate[];

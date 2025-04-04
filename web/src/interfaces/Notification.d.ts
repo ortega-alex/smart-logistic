@@ -1,4 +1,4 @@
-import { Customer, User, Vehicles } from './';
+import { Customer, User, Vehicles } from '../models';
 
 export interface Notification {
     id_notificacion: number;

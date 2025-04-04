@@ -17,3 +17,10 @@ export const add = async (auction: AuctionInterface) => {
 };
 
 export const update = async (id: number, auction: AuctionInterface) => await Auction.update({ id: Number(id) }, auction);
+
+export default {
+    getAll,
+    getById,
+    add,
+    update
+};

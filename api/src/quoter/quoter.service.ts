@@ -72,7 +72,7 @@ export const add = async (quoter: QuoterInterface) => {
 
 export const update = async (id: number, quoter: OptionalQuoter) => await Quoter.update({ id }, quoter);
 
-export const insertDetail = async (quoter: Quoter, details: Array<QuoterDetailInterface>) => {
+export const addDetail = async (quoter: Quoter, details: Array<QuoterDetailInterface>) => {
     return details.map(async item => {
         const quoterDetail = new QuoterDetail();
 
@@ -88,3 +88,13 @@ export const insertDetail = async (quoter: Quoter, details: Array<QuoterDetailIn
 
 export const deleteDetailByQuoterId = async (id: number) =>
     await QuoterDetail.createQueryBuilder().delete().where({ quoter: { id } }).execute();
+
+export default {
+    getAll,
+    getById,
+    pagination,
+    add,
+    update,
+    addDetail,
+    deleteDetailByQuoterId
+};

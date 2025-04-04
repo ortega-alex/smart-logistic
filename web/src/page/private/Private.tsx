@@ -2,7 +2,7 @@ import { permissionMenuAdapter } from '@/adapter';
 import { Navbar, RoutesWithNotFound } from '@/components';
 import { privateRoutes } from '@/constants';
 import { QuoterState, VehicleState } from '@/context';
-import { Menu, Sesion } from '@/interfaces';
+import { Menu, Session } from '@/interfaces';
 import { RootState } from '@/redux';
 import { modifyDevice, setMenu } from '@/redux/state';
 import { httpGetPermissionsMenusByProfileId } from '@/services';
@@ -23,11 +23,13 @@ const Auction = lazy(() => import('./maintenance/auction/Auction').then(module =
 const VehicleType = lazy(() => import('./maintenance/vehicle-type/VehicleType').then(module => ({ default: module.VehicleType })));
 const Profile = lazy(() => import('./maintenance/profile/Profile').then(module => ({ default: module.Profile })));
 const CustomerType = lazy(() => import('./maintenance/customer-type/CustomerType').then(module => ({ default: module.CustomerType })));
+const Headquarter = lazy(() => import('./maintenance/headquarter/Headquarter').then(module => ({ default: module.Headquarter })));
+const TransportRate = lazy(() => import('./maintenance/transport-rate/TransportRate').then(module => ({ default: module.TransportRate })));
 
 export const Private = () => {
     const dispatch = useDispatch();
     const menuState: Array<Menu> = useSelector((store: RootState) => store.menu);
-    const sesionState: Sesion = useSelector((store: RootState) => store.session);
+    const sesionState: Session = useSelector((store: RootState) => store.session);
 
     const eventListenerResize = () => {
         const isMovile = calculateScreenSize();
@@ -80,6 +82,10 @@ export const Private = () => {
                                 />
                             ))}
 
+                        {menuState.some(item => item.path === privateRoutes.TRANSPORT_RATE) && (
+                            <Route path={privateRoutes.TRANSPORT_RATE} element={<TransportRate />} />
+                        )}
+
                         {menuState.some(item => item.path === privateRoutes.CUSTOMERS) && (
                             <Route path={privateRoutes.CUSTOMERS} element={<Customer />} />
                         )}
@@ -88,8 +94,8 @@ export const Private = () => {
                             <Route path={privateRoutes.USERS} element={<User />} />
                         )}
 
-                        {menuState.some(item => item.path === privateRoutes.ACUTION) && (
-                            <Route path={privateRoutes.ACUTION} element={<Auction />} />
+                        {menuState.some(item => item.path === privateRoutes.AUCTION) && (
+                            <Route path={privateRoutes.AUCTION} element={<Auction />} />
                         )}
 
                         {menuState.some(item => item.path === privateRoutes.VEHICLE_TYPE) && (
@@ -102,6 +108,10 @@ export const Private = () => {
 
                         {menuState.some(item => item.path === privateRoutes.CUSTOMER_TYPE) && (
                             <Route path={privateRoutes.CUSTOMER_TYPE} element={<CustomerType />} />
+                        )}
+
+                        {menuState.some(item => item.path === privateRoutes.HEADQUARTERS) && (
+                            <Route path={privateRoutes.HEADQUARTERS} element={<Headquarter />} />
                         )}
                     </>
                 </RoutesWithNotFound>

@@ -4,9 +4,9 @@ import type { SorterResult } from 'antd/es/table/interface';
 // type ColumnsType<T extends object = object> = TableProps<T>['columns'];
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 
-// export interface Map {
-//     [key: string]: JSX.Element;
-// }
+export interface Map {
+    [key: string]: JSX.Element;
+}
 
 // export interface ObjectCustomer {
 //     [key: string]: string;
@@ -19,14 +19,14 @@ export interface TableParams {
     filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
-// export enum ValidatorName {
-//     OnlyNumbers = 'onlyNumbers',
-//     Mail = 'mailIsValied',
-//     Password = 'passwordIsValid',
-//     PhoneNumber = 'phoneNumberIsValid',
-//     Nit = 'nitIsValid',
-//     Dpi = 'noDpiIsValid'
-// }
+export enum ValidatorName {
+    OnlyNumbers = 'onlyNumbers',
+    Mail = 'mailIsValied',
+    Password = 'passwordIsValid',
+    PhoneNumber = 'phoneNumberIsValid',
+    Nit = 'nitIsValid',
+    Dpi = 'noDpiIsValid'
+}
 
 // export enum Moneda {
 //     USD = '$',

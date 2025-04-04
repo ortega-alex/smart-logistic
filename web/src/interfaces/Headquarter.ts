@@ -4,7 +4,7 @@ export interface State {
     is_active: boolean;
 }
 
-export interface Municipality {
+export interface Department {
     id: number;
     name: string;
     is_active: boolean;
@@ -14,8 +14,10 @@ export interface Headquarter {
     id: number;
     name: string;
     is_active: boolean;
+    department_id?: number;
+    state_id?: number;
     state?: State;
-    municipality?: Municipality;
+    department?: Department;
 }
 
 export enum HeadquarterFilter {

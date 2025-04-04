@@ -1,6 +1,5 @@
 import { Icon } from '@/components';
-import { Customer, CustomerType } from '@/interfaces';
-import { ValidatorName } from '@/models';
+import { Customer, CustomerType, ValidatorName } from '@/interfaces';
 import { httpAddCustomer, httpEditCustomer, httpGetCustomerType } from '@/services';
 import { mailIsValied, nitIsValid, noDpiIsValid, phoneNumberIsValid } from '@/utilities';
 import { Button, Form, FormProps, Input, message, Select, Switch, Upload } from 'antd';

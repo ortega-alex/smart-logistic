@@ -1,7 +1,7 @@
 import { Icon, Search } from '@/components';
-import { Auction as AuctionInterface } from '@/interfaces';
+import { Auction as AuctionInterface, Headquarter, HeadquarterFilter, State } from '@/interfaces';
 import { RootState } from '@/redux';
-import { httpGetAllAuctions } from '@/services';
+import { httpGetAllAuctions, httpGetAllHeadquarter, httpGetAllStates } from '@/services';
 import { commaSeparateNumber } from '@/utilities';
 import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
@@ -24,6 +24,8 @@ export const Auction = () => {
     const [auctionsCopy, setAuctionsCopy] = useState<Array<AuctionInterface>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [states, setStates] = useState<Array<State>>([]);
+    const [headquarters, setHeadquarters] = useState<Array<Headquarter>>([]);
 
     const handleSearch = (value: string = '') => {
         let _autions = [...auctionsCopy];
@@ -51,6 +53,13 @@ export const Auction = () => {
 
     useEffect(() => {
         handleGet();
+        httpGetAllStates()
+            .then(res => setStates(res))
+            .catch(err => message.error(`Error http get states: ${err.message}`));
+
+        httpGetAllHeadquarter(HeadquarterFilter.EEUU)
+            .then(res => setHeadquarters(res))
+            .catch(err => message.error(`Error http get sedes: ${err.message}`));
     }, []);
 
     return (
@@ -86,7 +95,7 @@ export const Auction = () => {
                                 <strong>Estadp EEUU: </strong>&nbsp;{item.state?.name}
                             </div>
                             <div>
-                                <strong>Sede: </strong>&nbsp;{item.sede?.name}
+                                <strong>Sede: </strong>&nbsp;{item.headquarter?.name}
                             </div>
                             <div className='flex-1'>
                                 <strong>Tarifa: </strong>&nbsp;{commaSeparateNumber(item.crane_rate)}
@@ -180,7 +189,7 @@ export const Auction = () => {
                 destroyOnClose
             >
                 <FormAution
-                    auction={auction}
+                    {...{ auction, states, headquarters }}
                     onClose={() => {
                         handleGet();
                         setModal(false);

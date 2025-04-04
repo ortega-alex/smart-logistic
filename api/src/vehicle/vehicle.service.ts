@@ -83,3 +83,12 @@ export const add = async (vehicle: VehicleInterface) => {
 };
 
 export const update = async (id: number, vehicle: OptionalVehicle) => await Vehicle.update({ id }, vehicle);
+
+export default {
+    getAll,
+    getById,
+    getByCustomerId,
+    pagination,
+    add,
+    update
+};

@@ -1,4 +1,3 @@
-import { CustomerType } from '../customer-type/entity/CustomerType';
 import { Customer } from './entity/Customer';
 import { Customer as CustomerInterface } from './interface/Customer';
 
@@ -8,7 +7,7 @@ export const getByEmail = async (email: string) => await Customer.findOne({ wher
 
 export const getById = async (id: number) => await Customer.findOne({ where: { id }, relations: { type: true, files: true } });
 
-export const save = async (customer: CustomerInterface) => {
+export const add = async (customer: CustomerInterface) => {
     const newCustomer = new Customer();
     newCustomer.name = customer.name;
     newCustomer.phone_number = customer.phone_number;
@@ -51,4 +50,13 @@ export const pagination = async (filter: string, sortField: string, sortOrder: s
 
     // Ejecutar la consulta
     return await query.getManyAndCount();
+};
+
+export default {
+    getAll,
+    getByEmail,
+    getById,
+    add,
+    update,
+    pagination
 };

@@ -1,17 +1,17 @@
-import { Profile, User } from '@/interfaces';
-import { ValidatorName } from '@/models';
-import { httpAddUser, httpEditUser, httpGetProfiles } from '@/services';
+import { Headquarter, Profile, User, ValidatorName } from '@/interfaces';
+import { httpAddUser, httpEditUser } from '@/services';
 import { mailIsValied, phoneNumberIsValid } from '@/utilities';
 import { Button, Form, FormProps, Input, message, Select, Switch } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface Props {
     user: User;
+    profiles: Array<Profile>;
+    headquarters: Array<Headquarter>;
     onClose: () => void;
 }
 
-export const FormUser: React.FC<Props> = ({ user, onClose }) => {
-    const [profiles, setProfiles] = useState<Array<Profile>>([]);
+export const FormUser: React.FC<Props> = ({ user, profiles, headquarters, onClose }) => {
     const [loading, setLoading] = useState(false);
 
     const handleSubmit: FormProps<User>['onFinish'] = async values => {
@@ -21,8 +21,8 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
             if (user.id > 0) res = await httpEditUser({ ...user, ...values });
             else res = await httpAddUser(values);
 
-            message[res.error ? 'warning' : 'success'](res.message);
-            if (!res.error) onClose();
+            message[res.success ? 'success' : 'warning'](res.message);
+            if (res.success) onClose();
         } catch (error) {
             message.error(`Error http add user: ${(error as Error).message}`);
         } finally {
@@ -38,18 +38,13 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
         if (error) throw new Error(error);
     };
 
-    useEffect(() => {
-        httpGetProfiles()
-            .then(res => setProfiles(res))
-            .catch(err => message.error(`Erro http get profiles: ${err.message}`));
-    }, []);
-
     return (
         <Form
             layout='vertical'
             initialValues={{
                 ...user,
-                profile_id: user.profile?.id
+                profile_id: user.profile?.id && user.profile.id > 0 ? user.profile.id : undefined,
+                headquarter_id: user?.headquarter?.id
             }}
             onFinish={handleSubmit}
         >
@@ -57,30 +52,41 @@ export const FormUser: React.FC<Props> = ({ user, onClose }) => {
                 <Input placeholder='Ingrese el nombre' />
             </Form.Item>
 
-            <Form.Item label='Tipo de perfil' name='profile_id' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+            <Form.Item label='Perfil' name='profile_id' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Select
                     className='w-100'
                     placeholder='Seleccione una opción'
                     options={profiles.filter(item => item.is_active).map(item => ({ value: item.id, label: item.name }))}
                 />
             </Form.Item>
-            <Form.Item
-                label='Teléfono'
-                name='phone_number'
-                className='flex-1'
-                rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.PhoneNumber, value) }]}
-            >
-                <Input placeholder='Ingrese un número de teléfono' />
+
+            <Form.Item label='Sede' name='headquarter_id' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
+                <Select
+                    className='w-100'
+                    placeholder='Seleccione una opción'
+                    options={headquarters.filter(item => item.is_active).map(item => ({ value: item.id, label: item.name }))}
+                />
             </Form.Item>
 
-            <Form.Item
-                label='Correo'
-                name='email'
-                className='flex-1'
-                rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.Mail, value) }]}
-            >
-                <Input placeholder='Ingrese un email' />
-            </Form.Item>
+            <div className='flex gap-3'>
+                <Form.Item
+                    label='Teléfono'
+                    name='phone_number'
+                    className='flex-1'
+                    rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.PhoneNumber, value) }]}
+                >
+                    <Input placeholder='Ingrese un número de teléfono' />
+                </Form.Item>
+
+                <Form.Item
+                    label='Correo'
+                    name='email'
+                    className='flex-1'
+                    rules={[{ required: true, validator: (_, value) => handleValidate(ValidatorName.Mail, value) }]}
+                >
+                    <Input placeholder='Ingrese un email' />
+                </Form.Item>
+            </div>
 
             <Form.Item label='Usuario' name='username' className='flex-1' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                 <Input placeholder='Ingrese un usuario' disabled={user.id > 0} />

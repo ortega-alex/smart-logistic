@@ -15,3 +15,10 @@ export const add = async (transportType: TransportTypeInterface) => {
 
 export const update = async (id: number, transportType: TransportTypeInterface) =>
     await TransportType.update({ id: Number(id) }, transportType);
+
+export default {
+    getAll,
+    getById,
+    add,
+    update
+};

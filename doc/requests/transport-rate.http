@@ -14,10 +14,10 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "rate": 950,
+    "rate": 2210,
     "is_active": true,
     "user_id": 1,
-    "vehicle_type_id": 2,
+    "vehicle_type_id": 1,
     "transport_type_id": 2,
     "headquarter_id": 1,
     "customer_type_id": 1

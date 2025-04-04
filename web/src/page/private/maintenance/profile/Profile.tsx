@@ -1,8 +1,8 @@
 import { Icon, Search } from '@/components';
 import { EmptyProfile } from '@/constants';
-import { Profile as ProfileInterface } from '@/interfaces';
+import { Menu, Permission, Profile as ProfileInterface, Role } from '@/interfaces';
 import { RootState } from '@/redux';
-import { httpGetProfiles } from '@/services';
+import { httpGetAllRoles, httpGetMenus, httpGetPermissions, httpGetProfiles } from '@/services';
 import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,8 @@ export const Profile = () => {
     const [profilesCopy, setProfilesCopy] = useState<Array<ProfileInterface>>([]);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [roles, setRoles] = useState<Array<Role>>([]);
+    const [permissions, setPermissions] = useState([]);
 
     const handleOnSearch = (value: string) => {
         let _profiles = [...profilesCopy];
@@ -43,6 +45,26 @@ export const Profile = () => {
 
     useEffect(() => {
         handleGet();
+        httpGetAllRoles()
+            .then(res => setRoles(res))
+            .catch(err => message.error(`Error http get roles: ${err.message}`));
+
+        (async () => {
+            try {
+                const [menus, permissions] = await Promise.all([httpGetMenus(), httpGetPermissions()]);
+                const res = menus.map((item: Menu) => ({
+                    key: item.id,
+                    title: item.name,
+                    children: permissions.map((_item: Permission) => ({
+                        key: `${item.id}-${_item.id}`,
+                        title: _item.name
+                    }))
+                }));
+                setPermissions(res);
+            } catch (error) {
+                message.error(`Error get permissions: ${(error as Error).message}`);
+            }
+        })();
     }, []);
 
     return (
@@ -107,6 +129,11 @@ export const Profile = () => {
                             sorter: true
                         },
                         {
+                            title: 'Rol',
+                            dataIndex: 'role',
+                            render: role => <span>{role?.name}</span>
+                        },
+                        {
                             title: 'Estado',
                             dataIndex: 'is_active',
                             render: value => <span className={value ? 'text-success' : 'text-danger'}>{value ? 'Activo' : 'Inactivo'}</span>
@@ -144,7 +171,7 @@ export const Profile = () => {
                 destroyOnClose
             >
                 <FormProfile
-                    profile={profile}
+                    {...{ roles, profile, permissions }}
                     onClose={() => {
                         handleGet();
                         setModal(false);

@@ -10,11 +10,13 @@ export const privateRoutes = {
     VEHICLE_TYPE: 'vehicle-type',
     PROFILES: 'profiles',
     REPORTS: 'reports',
-    ACUTION: 'aution',
+    AUCTION: 'auction',
     CUSTOMER_TYPE: 'customer-type',
     PRIVATE_CUSTOMER: 'private-customer',
     CUSTOMER_ORDER: 'customer-order',
-    CUSTOMER_ORDER_DETAIL: 'customer-order-detail'
+    CUSTOMER_ORDER_DETAIL: 'customer-order-detail',
+    HEADQUARTERS: 'headquarters',
+    TRANSPORT_RATE: 'transport-rate'
 } as const;
 
 export const publicRoutes = {

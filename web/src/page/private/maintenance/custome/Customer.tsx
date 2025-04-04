@@ -1,6 +1,5 @@
 import { Icon, Search, ViewFiles } from '@/components';
-import { TableParams } from '@/models';
-import { CustomerFile, Customer as TypeCustomer } from '@/interfaces';
+import { CustomerFile, TableParams, Customer as TypeCustomer } from '@/interfaces';
 import { EmptyCustomer, EmptyCustomerFile } from '@/constants';
 import { RootState } from '@/redux';
 import { httpDeleteCustomerFile, httpGetCustomerById, httpGetCustomerPaginationData } from '@/services';

@@ -19,8 +19,8 @@ export const FormCustomerType: React.FC<Props> = ({ customerType, onClose }) => 
             if (customerType.id && customerType.id > 0) res = await httpEditCustomerType({ ...customerType, ...values });
             else res = await httpAddCustomerType(values);
 
-            message[res.error ? 'warning' : 'success'](res.message);
-            if (!res.error) onClose();
+            message[res.success ? 'success' : 'warning'](res.message);
+            if (res.success) onClose();
         } catch (error) {
             message.error(`Error add or edit ouoter: ${(error as Error).message}`);
         } finally {

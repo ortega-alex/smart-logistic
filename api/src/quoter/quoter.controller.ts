@@ -1,27 +1,18 @@
+import archiver from 'archiver';
 import { Request, Response } from 'express';
-
 import { getById as getAuctionByIdServices } from '../auction/auction.service';
 import { getById as getCustomerByIdService } from '../customer/customer.service';
 import { getById as getIssuingHeadquarterByIdService } from '../headquarter/headquarter.service';
 import { getById as getTransportTypeByIdService } from '../transport-type/transport-type.service';
 import { getById as getUserByIdService } from '../user/user.service';
-import { getById as getVehicleTypeByIdService } from '../vehicle-type/vehicle-type.service';
-import {
-    add as addQuoterService,
-    deleteDetailByQuoterId as deleteDetailByQuoterIdService,
-    getAll as getAllQuoterService,
-    getById as getQuoterByIdService,
-    insertDetail as insertDetailQuoterService,
-    pagination as paginationQuoterService,
-    update as updateQuoterService
-} from './quoter.service';
-import { Coin } from './interface/Quoter';
-import archiver from 'archiver';
 import { commaSeparateNumber, createPdfWithTable, unionEndPfd } from '../utils';
+import { getById as getVehicleTypeByIdService } from '../vehicle-type/vehicle-type.service';
+import { Coin } from './interface/Quoter';
+import QuoterService from './quoter.service';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
-        const quoters = await getAllQuoterService();
+        const quoters = await QuoterService.getAll();
         return res.json(quoters);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -31,7 +22,7 @@ export const getAll = async (_req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const quoter = await getQuoterByIdService(Number(id));
+        const quoter = await QuoterService.getById(Number(id));
         if (!quoter) return res.status(404).json({ message: 'Cotización no existe' });
 
         return res.json(quoter);
@@ -97,7 +88,7 @@ export const add = async (req: Request, res: Response) => {
         let auction;
         if (auction_id) auction = await getAuctionByIdServices(Number(auction_id));
 
-        const quoter = await addQuoterService({
+        const quoter = await QuoterService.add({
             mark,
             model,
             year,
@@ -114,7 +105,7 @@ export const add = async (req: Request, res: Response) => {
             auction: auction ?? undefined
         });
 
-        await insertDetailQuoterService(quoter, details);
+        await QuoterService.addDetail(quoter, details);
 
         return res.json({ message: 'Cotización creada', data: quoter });
     } catch (error) {
@@ -145,7 +136,7 @@ export const update = async (req: Request, res: Response) => {
             details
         } = req.body;
 
-        const quoter = await getQuoterByIdService(Number(id));
+        const quoter = await QuoterService.getById(Number(id));
         if (!quoter) return res.status(203).json({ error: true, message: 'Cotización no existe' });
 
         let customer;
@@ -172,7 +163,7 @@ export const update = async (req: Request, res: Response) => {
         let auction;
         if (auction_id) auction = await getAuctionByIdServices(Number(auction_id));
 
-        const update = await updateQuoterService(Number(id), {
+        const update = await QuoterService.update(Number(id), {
             mark: mark ?? quoter.mark,
             model: model ?? quoter.model,
             year: year ?? quoter.year,
@@ -193,8 +184,8 @@ export const update = async (req: Request, res: Response) => {
 
         if ((update?.affected ?? 0) > 0) {
             if (!is_aproverd) {
-                await deleteDetailByQuoterIdService(Number(id));
-                await insertDetailQuoterService(quoter, details);
+                await QuoterService.deleteDetailByQuoterId(Number(id));
+                await QuoterService.addDetail(quoter, details);
             } else {
                 // setea a vehiculos la cotizacion aprobada
                 //     const estado_importacion = await ImportState.findOneBy({ id_estado_importacion: 1 });
@@ -213,7 +204,7 @@ export const update = async (req: Request, res: Response) => {
 export const generatePdf = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const quoter = await getQuoterByIdService(Number(id));
+        const quoter = await QuoterService.getById(Number(id));
         if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
 
         const dollars = quoter.details?.filter(item => item.coin === Coin.USD);
@@ -257,7 +248,7 @@ export const generatePdf = async (req: Request, res: Response) => {
     }
 };
 
-export const getPaginate = async (req: Request, res: Response) => {
+export const pagination = async (req: Request, res: Response) => {
     try {
         const { pageSize = 100, current = 1, sortField = 'id', sortOrder = 'ASC', filter = '' } = req.body;
 
@@ -269,7 +260,7 @@ export const getPaginate = async (req: Request, res: Response) => {
         if (!validDirections.includes(sortOrder.toUpperCase())) return res.status(203).json({ message: 'Dirección de orden inválida' });
 
         // Ejecutar la consulta
-        const [data, total] = await paginationQuoterService(filter, sortField, sortOrder, current, pageSize);
+        const [data, total] = await QuoterService.pagination(filter, sortField, sortOrder, current, pageSize);
 
         // Retornar los datos paginados
         return res.status(200).json({
@@ -282,4 +273,13 @@ export const getPaginate = async (req: Request, res: Response) => {
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }
+};
+
+export default {
+    getAll,
+    getById,
+    add,
+    update,
+    generatePdf,
+    pagination
 };

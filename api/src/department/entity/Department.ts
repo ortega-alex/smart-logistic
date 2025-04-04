@@ -1,5 +1,4 @@
-import { Municipality } from '../../municipality/entity/Municipality';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 // Departamentos de gustemala
 @Entity()
@@ -25,7 +24,4 @@ export class Department extends BaseEntity {
         onUpdate: 'CURRENT_TIMESTAMP'
     })
     edited_at: Date;
-
-    @OneToMany(() => Municipality, municipality => municipality.department)
-    municipalities: Municipality[];
 }

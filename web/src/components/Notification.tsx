@@ -1,6 +1,6 @@
+import { privateRoutes } from '@/constants';
 import { useSocket } from '@/hooks';
-import { Notification as TypeNotification, VehiclesNotification } from '@/models';
-import { Customer, User } from '@/interfaces';
+import { Customer, Notification as TypeNotification, User, Vehicle } from '@/interfaces';
 import { RootState } from '@/redux';
 import {
     // httpEditCustomer,
@@ -17,7 +17,6 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon } from './Icon';
 import { Loader } from './Loading';
-import { privateRoutes } from '@/constants';
 
 export const Notification = () => {
     const sessionState: User = useSelector((store: RootState) => store.session);
@@ -28,11 +27,10 @@ export const Notification = () => {
     const [notifications, setNotifications] = useState<TypeNotification[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const handleNavigate = (vehicle: VehiclesNotification) => {
+    const handleNavigate = (vehicle: Vehicle) => {
         let path;
-        if (sessionState.id > 0) path = `${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${vehicle.lote}`;
-        if (sessionCustomerState.id > 0)
-            path = `${privateRoutes.PRIVATE_CUSTOMER}/${privateRoutes.CUSTOMER_ORDER_DETAIL}/${vehicle.id_vehiculo}`;
+        if (sessionState.id > 0) path = `${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${vehicle.quoter.lot}`;
+        if (sessionCustomerState.id > 0) path = `${privateRoutes.PRIVATE_CUSTOMER}/${privateRoutes.CUSTOMER_ORDER_DETAIL}/${vehicle.id}`;
         window.open(`${window.location.origin}/#/${path}`, '_blank');
     };
 

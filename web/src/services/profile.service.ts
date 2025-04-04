@@ -9,6 +9,18 @@ export const httpGetProfiles = async () =>
         method: 'GET'
     });
 
+export const httpGetAllRoles = async () =>
+    await httpRequest({
+        path: `${path}/roles`,
+        method: 'GET'
+    });
+
+export const httpGetProfilesRoles = async () =>
+    await httpRequest({
+        path: `${path}/roles`,
+        method: 'GET'
+    });
+
 export const httpAddProfiles = async (data: Profile) =>
     await httpRequest({
         path,

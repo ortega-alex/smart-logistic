@@ -1,6 +1,6 @@
 import icon from '@/assets/images/icon.png';
 import { privateRoutes, publicRoutes, color } from '@/constants';
-import { Menu, Sesion } from '@/interfaces';
+import { Menu, Session } from '@/interfaces';
 import { resetSesion, RootState } from '@/redux';
 import { httpResetPassword } from '@/services';
 import { passwordIsValid } from '@/utilities';
@@ -11,7 +11,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon, IconEnun, Notification } from './';
 
 export const Navbar = () => {
-    const sessionState: Sesion = useSelector((store: RootState) => store.session);
+    const sessionState: Session = useSelector((store: RootState) => store.session);
     const deviceState: Boolean = useSelector((store: RootState) => store.device);
     const menuState: Array<Menu> = useSelector((store: RootState) => store.menu);
     const dispatch = useDispatch();

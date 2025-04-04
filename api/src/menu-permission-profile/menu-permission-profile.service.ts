@@ -40,3 +40,9 @@ export const addPermissions = async (profile: any, permissions: { [key: string]:
 };
 
 export const deleteByProfileId = async (id: number) => await MenuPermissionProfile.delete({ profile: { id } });
+
+export default {
+    getByProfileId,
+    addPermissions,
+    deleteByProfileId
+};

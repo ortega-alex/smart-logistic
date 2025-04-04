@@ -3,6 +3,10 @@ GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+### GET ALL ROLES
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile/roles
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### ADD PROFILE
 POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/profile

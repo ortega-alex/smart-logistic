@@ -1,7 +1,8 @@
 import { TransportRate } from './entity/TransportRate';
-import { OptionalTransportRate, TransportRateFilter, TransportRate as TransportRateInterface } from './interface/TransportRate';
+import { FilterIds, OptionalTransportRate, TransportRateFilter, TransportRate as TransportRateInterface } from './interface/TransportRate';
 
-export const getAll = async () => await TransportRate.find();
+export const getAll = async () =>
+    await TransportRate.find({ relations: { vehicleType: true, transportType: true, headquarter: true, customerType: true } });
 
 export const getById = async (id: string) =>
     await TransportRate.findOne({
@@ -15,6 +16,16 @@ export const getById = async (id: string) =>
         }
     });
 
+export const getByIds = async (ids: FilterIds) =>
+    await TransportRate.findOne({
+        where: {
+            vehicleType: { id: ids.vehicle_type_id },
+            transportType: { id: ids.transport_type_id },
+            headquarter: { id: ids.headquarter_id },
+            customerType: { id: ids.customer_type_id }
+        }
+    });
+
 export const getRateFiler = async (transportRateFiler: TransportRateFilter) =>
     await TransportRate.findOne({
         where: {
@@ -25,7 +36,7 @@ export const getRateFiler = async (transportRateFiler: TransportRateFilter) =>
         }
     });
 
-export const save = async (transportRate: TransportRateInterface) => {
+export const add = async (transportRate: TransportRateInterface) => {
     const newTransportRate = new TransportRate();
     newTransportRate.rate = transportRate.rate;
     newTransportRate.is_active = transportRate.is_active ?? true;
@@ -40,3 +51,15 @@ export const save = async (transportRate: TransportRateInterface) => {
 };
 
 export const update = async (id: string, transportRate: OptionalTransportRate) => await TransportRate.update({ id }, transportRate);
+
+export const deleteById = async (id: string) => await TransportRate.delete({ id });
+
+export default {
+    getAll,
+    getById,
+    getByIds,
+    getRateFiler,
+    add,
+    update,
+    deleteById
+};

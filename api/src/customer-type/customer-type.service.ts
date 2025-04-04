@@ -5,7 +5,7 @@ export const getAll = async () => await CustomerType.find();
 
 export const getById = async (id: number) => await CustomerType.findOneBy({ id });
 
-export const save = async (customerType: CustomerTypeInterface) => {
+export const add = async (customerType: CustomerTypeInterface) => {
     const newCustomerType = new CustomerType();
     newCustomerType.name = customerType.name;
     newCustomerType.is_active = customerType.is_active ?? true;
@@ -15,3 +15,10 @@ export const save = async (customerType: CustomerTypeInterface) => {
 
 export const update = async (id: number, customerType: CustomerTypeInterface) =>
     await CustomerType.update({ id: Number(id) }, customerType);
+
+export default {
+    getAll,
+    getById,
+    add,
+    update
+};

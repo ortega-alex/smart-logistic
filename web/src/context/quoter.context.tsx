@@ -1,4 +1,4 @@
-import { Customer, Quoter, QuoterDetail, Sesion, Coin, DetailsCoin } from '@/interfaces';
+import { Customer, Quoter, QuoterDetail, Session, Coin, DetailsCoin } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpAddQuoter, httpDowloadInvoice, httpGetCustomer, httpUpdateQuoter } from '@/services';
 import { downloadFile } from '@/utilities';
@@ -16,7 +16,7 @@ export type QuoterContextType = {
     quoter: Quoter;
     details: DetailsCoin;
     customers: Array<Customer>;
-    session: Sesion;
+    session: Session;
     onDownloadInvoice: (quoter: Quoter) => void;
     onAproveQuoter: (quoter: Quoter) => Promise<Response>;
     addOrUpdate: (quoter: Quoter) => Promise<Response>;
@@ -39,7 +39,7 @@ export const EmptyQuoter: Quoter = {
 
 export const QuoterContext = createContext<QuoterContextType | null>(null);
 export const QuoterState: React.FC<{ children: React.ReactNode }> = props => {
-    const sessionState: Sesion = useSelector((store: RootState) => store.session);
+    const sessionState: Session = useSelector((store: RootState) => store.session);
     const [quoter, setQuoter] = useState(EmptyQuoter);
     const [customers, setCustomers] = useState<Array<Customer>>([]);
     const [details, setDetails] = useState<DetailsCoin>({

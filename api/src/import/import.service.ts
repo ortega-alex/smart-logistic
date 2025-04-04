@@ -18,3 +18,9 @@ export const addHistory = async (history: ImportHistoryInterface) => {
     await newHistory.save();
     return newHistory;
 };
+
+export default {
+    getAll,
+    getImportStateById,
+    addHistory
+};

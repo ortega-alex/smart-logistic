@@ -15,3 +15,9 @@ export const save = async (customer: Customer, files: Express.Multer.File[]) => 
 };
 
 export const deleteById = async (id: number) => CustomerFile.delete(id);
+
+export default {
+    getById,
+    save,
+    deleteById
+};

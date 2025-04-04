@@ -5,7 +5,7 @@ export const getAll = async () => await VehicleType.find();
 
 export const getById = async (id: number) => await VehicleType.findOneBy({ id });
 
-export const save = async (typeVehicle: VehicleTypeInterface) => {
+export const add = async (typeVehicle: VehicleTypeInterface) => {
     const newTypeVehicle = new VehicleType();
     newTypeVehicle.name = typeVehicle.name;
     newTypeVehicle.is_active = typeVehicle.is_active ?? true;
@@ -14,3 +14,10 @@ export const save = async (typeVehicle: VehicleTypeInterface) => {
 };
 
 export const update = async (id: number, typeVehicle: VehicleTypeInterface) => await VehicleType.update({ id: Number(id) }, typeVehicle);
+
+export default {
+    getAll,
+    getById,
+    add,
+    update
+};

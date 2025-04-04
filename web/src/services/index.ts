@@ -1,6 +1,7 @@
 export * from './aution.service';
 export * from './customer-file.service';
 export * from './customer.service';
+export * from './department.service';
 export * from './firebase.service';
 export * from './headquarter.service';
 export * from './import.service';

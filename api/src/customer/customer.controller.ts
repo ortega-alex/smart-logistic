@@ -1,14 +1,7 @@
 import { Request, Response } from 'express';
 import { save as saveCustomerFileService } from '../customer-file/customer-file.service';
 import { getById as getCustomerTypeByIdService } from '../customer-type/customer-type.service';
-import {
-    getAll as getAllCustomerService,
-    getByEmail as getCustomerByEmailService,
-    getById as getCustomerByIdService,
-    pagination as paginationCustomerService,
-    save as saveCustomerService,
-    update as updateCustomerService
-} from '../customer/customer.service';
+import CustomerService from '../customer/customer.service';
 import { generateToken } from '../middleware';
 
 export const login = async (req: Request, res: Response) => {
@@ -16,7 +9,7 @@ export const login = async (req: Request, res: Response) => {
         const { email } = req.body;
         if (!email) return res.status(203).json({ message: 'El correo es requerido' });
 
-        const customer = await getCustomerByEmailService(email);
+        const customer = await CustomerService.getByEmail(email);
         if (!customer) return res.status(203).json({ message: 'El cliente no existe' });
 
         const token = generateToken({
@@ -47,7 +40,7 @@ export const add = async (req: Request, res: Response) => {
         const customerType = await getCustomerTypeByIdService(Number(customer_type_id));
         if (!customerType) return res.status(404).json({ message: 'Tipo de cliente no encontrado' });
 
-        const customer = await saveCustomerService({
+        const customer = await CustomerService.add({
             name,
             phone_number,
             landline,
@@ -69,7 +62,7 @@ export const add = async (req: Request, res: Response) => {
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
-        const customer = await getAllCustomerService();
+        const customer = await CustomerService.getAll();
         return res.json(customer);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -79,7 +72,7 @@ export const getAll = async (_req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const customer = await getCustomerByIdService(Number(id));
+        const customer = await CustomerService.getById(Number(id));
         if (!customer) return res.status(404).json({ message: 'Cliente no exite' });
         return res.json(customer);
     } catch (error) {
@@ -87,17 +80,17 @@ export const getById = async (req: Request, res: Response) => {
     }
 };
 
-export const updateById = async (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { name, phone_number, landline, address, nit, dpi, email, customer_type_id, token_fcm } = req.body;
-        const customer = await getCustomerByIdService(Number(id));
+        const customer = await CustomerService.getById(Number(id));
         if (!customer) return res.status(404).json({ message: 'Cliente no exite' });
 
         let customerType = null;
         if (customer_type_id) customerType = await getCustomerTypeByIdService(Number(customer_type_id));
 
-        const update = await updateCustomerService(Number(id), {
+        const update = await CustomerService.update(Number(id), {
             name: name ?? customer.name,
             phone_number: phone_number ?? customer.phone_number,
             landline: landline ?? customer.landline,
@@ -119,7 +112,7 @@ export const updateById = async (req: Request, res: Response) => {
     }
 };
 
-export const getPagination = async (req: Request, res: Response) => {
+export const pagination = async (req: Request, res: Response) => {
     try {
         const { pageSize = 100, current = 1, sortField = 'id', sortOrder = 'ASC', filter = '' } = req.body;
 
@@ -130,7 +123,7 @@ export const getPagination = async (req: Request, res: Response) => {
         const validDirections = ['ASC', 'DESC'];
         if (!validDirections.includes(sortOrder.toUpperCase())) return res.status(203).json({ message: 'Dirección de orden inválida' });
 
-        const [data, total] = await paginationCustomerService(filter, sortField, sortOrder, Number(current), Number(pageSize));
+        const [data, total] = await CustomerService.pagination(filter, sortField, sortOrder, Number(current), Number(pageSize));
 
         // Retornar los datos paginados
         return res.status(200).json({
@@ -143,4 +136,13 @@ export const getPagination = async (req: Request, res: Response) => {
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }
+};
+
+export default {
+    login,
+    getAll,
+    getById,
+    add,
+    update,
+    pagination
 };

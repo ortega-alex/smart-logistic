@@ -1,3 +1,4 @@
+import { Headquarter } from '../../headquarter/entity/Headquarter';
 import { Profile } from '../../profile/entity/Profile';
 
 export interface User {
@@ -10,6 +11,7 @@ export interface User {
     is_active?: boolean;
     token_fcm?: string;
     profile: Profile;
+    headquarter: Headquarter;
 }
 
 export type OptionalUser = Partial<User>;

@@ -1,0 +1,5 @@
+### GET ALL DEPARTMENTS
+
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/department
+Content-Type: application/json
+Authorization: Bearer {{token}}

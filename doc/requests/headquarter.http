@@ -2,3 +2,30 @@
 GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/headquarter
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### GET BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/headquarter/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ADD SEDE
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/headquarter
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Villa nueva ",
+    "address": "Direccion de la sede",
+    "department_id": 7
+}
+
+### UPDATE SEDE
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/headquarter/3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Villa nueva las tapias",
+    "address": "Direccion de la sede",
+    "department_id": 7
+}

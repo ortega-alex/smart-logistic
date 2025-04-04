@@ -3,15 +3,11 @@ import { getById as getCustomerByIdService } from '../customer/customer.service'
 import { saveFile } from '../middleware';
 import { getById as getUserByIdService } from '../user/user.service';
 import { getById as getVehicleByIdService, update as updateVehicleService } from '../vehicle/vehicle.service';
-import {
-    addHistory as addHistoryService,
-    getAll as getAllImportStateService,
-    getImportStateById as getImportStateByIdService
-} from './import.service';
+import ImportService from './import.service';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
-        const import_states = await getAllImportStateService();
+        const import_states = await ImportService.getAll();
         res.status(200).json(import_states);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -31,7 +27,7 @@ export const addHistory = async (req: Request, res: Response) => {
         const vehicle = await getVehicleByIdService(Number(id));
         if (!vehicle) return res.status(203).json({ message: 'El vehiculo no existe' });
 
-        const importState = await getImportStateByIdService(Number(import_state_id));
+        const importState = await ImportService.getImportStateById(Number(import_state_id));
         if (!importState) return res.status(203).json({ message: 'El estado de la importacion no exite' });
 
         let user;
@@ -49,7 +45,7 @@ export const addHistory = async (req: Request, res: Response) => {
         let path = '';
         if (file) path = await saveFile(file);
 
-        const history = await addHistoryService({
+        const history = await ImportService.addHistory({
             description,
             path,
             is_visible_customer: Boolean(is_visible_customer),
@@ -119,4 +115,9 @@ export const addHistory = async (req: Request, res: Response) => {
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }
+};
+
+export default {
+    getAll,
+    addHistory
 };

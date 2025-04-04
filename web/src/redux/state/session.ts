@@ -1,9 +1,9 @@
 import { _KEYS } from '@/constants';
-import { Sesion } from '@/interfaces';
+import { Session } from '@/interfaces';
 import { clearStorage, getStorage, saveStorage } from '@/services';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const emptySession: Sesion = {
+const emptySession: Session = {
     session_id: 0,
     id: 0,
     email: '',
@@ -19,13 +19,13 @@ export const sessionSlice = createSlice({
     name: 'session',
     initialState: session ? session : emptySession,
     reducers: {
-        setSession: (_, action: PayloadAction<{ session: Sesion; token?: string }>) => {
+        setSession: (_, action: PayloadAction<{ session: Session; token?: string }>) => {
             const { session, token } = action.payload;
             if (token) saveStorage(_KEYS.TOKEN, token);
             saveStorage(_KEYS.SESSION, session);
             return session;
         },
-        modifySession: (state, action: PayloadAction<Partial<Sesion>>) => ({ ...state, ...action.payload }),
+        modifySession: (state, action: PayloadAction<Partial<Session>>) => ({ ...state, ...action.payload }),
         resetSesion: () => {
             clearStorage();
             return emptySession;

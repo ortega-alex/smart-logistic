@@ -1,6 +1,7 @@
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { MenuPermissionProfile } from '../../menu-permission-profile/entity/MenuPermissionProfile';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../user/entity/User';
+import { Role } from './Role';
 
 @Entity()
 export class Profile extends BaseEntity {
@@ -25,6 +26,10 @@ export class Profile extends BaseEntity {
         onUpdate: 'CURRENT_TIMESTAMP'
     })
     edited_at: Date;
+
+    @ManyToOne(() => Role, { nullable: false })
+    @JoinColumn({ name: 'role_id' })
+    role: Role;
 
     @OneToMany(() => MenuPermissionProfile, menuProfilePermission => menuProfilePermission.profile, { cascade: true })
     menuProfiles: MenuPermissionProfile[];

@@ -1,16 +1,18 @@
-import { Menu, Profile, Permission } from '@/interfaces';
-import { httpAddProfiles, httpGetMenus, httpGetPermissions, httpGetPermissionsMenusByProfileId, httpUpdateProfiles } from '@/services';
-import { Button, Form, FormProps, Input, message, Switch, Tabs, Tree, TreeProps } from 'antd';
+import { Icon } from '@/components';
+import { Profile, Role } from '@/interfaces';
+import { httpAddProfiles, httpGetPermissionsMenusByProfileId, httpUpdateProfiles } from '@/services';
+import { Button, Form, FormProps, Input, message, Radio, Switch, Tabs, Tree, TreeProps } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface Props {
     profile: Profile;
+    roles: Array<Role>;
+    permissions: Array<any>;
     onClose: () => void;
 }
 
-export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
+export const FormProfile: React.FC<Props> = ({ profile, roles, permissions, onClose }) => {
     const [loading, setLoading] = useState(false);
-    const [permissions, setPermissions] = useState([]);
     const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
     const handleSubmit: FormProps<Profile>['onFinish'] = async values => {
@@ -27,35 +29,17 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
                     return { ...acumulate };
                 }, {});
 
+            const data = { ...profile, ...values, permissions };
             let res;
-            if (profile.id > 0) res = await httpUpdateProfiles({ ...profile, ...values, permissions });
-            else res = await httpAddProfiles({ ...values, permissions });
+            if (profile.id > 0) res = await httpUpdateProfiles(data);
+            else res = await httpAddProfiles(data);
 
-            message[res.error ? 'warning' : 'success'](res.message);
-            if (!res.error) onClose();
+            message[res.success ? 'success' : 'warning'](res.message);
+            if (res.success) onClose();
         } catch (error) {
             message.error(`Error http add or edit profile: ${(error as Error).message}`);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleGet = async () => {
-        try {
-            const menus = await httpGetMenus();
-            const permissions = await httpGetPermissions();
-
-            const res = menus.map((item: Menu) => ({
-                key: item.id,
-                title: item.name,
-                children: permissions.map((_item: Permission) => ({
-                    key: `${item.id}-${_item.id}`,
-                    title: _item.name
-                }))
-            }));
-            setPermissions(res);
-        } catch (error) {
-            message.error(`Error get permissions: ${(error as Error).message}`);
         }
     };
 
@@ -67,11 +51,10 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
                 const permissos: React.Key[] = res?.map((item: any) => `${item?.menu?.id}-${item?.permission?.id}`);
                 setCheckedKeys(permissos);
             });
-        handleGet();
     }, []);
 
     return (
-        <Form layout='vertical' initialValues={profile} onFinish={handleSubmit}>
+        <Form layout='vertical' initialValues={{ ...profile, role_id: profile.role?.id ?? 3 }} onFinish={handleSubmit}>
             <Tabs
                 defaultActiveKey='1'
                 items={[
@@ -82,6 +65,24 @@ export const FormProfile: React.FC<Props> = ({ profile, onClose }) => {
                             <>
                                 <Form.Item label='Nombre' name='name' rules={[{ required: true, message: 'El campo es obligatorio' }]}>
                                     <Input placeholder='Ingrese el nombre' />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label='Rol'
+                                    name='role_id'
+                                    rules={[{ required: true, message: 'El campo es obligatorio' }]}
+                                    tooltip={{
+                                        title: 'Define el nivel de información que el usuario puede ver y editar',
+                                        icon: <Icon.InfoCircle />
+                                    }}
+                                >
+                                    <Radio.Group>
+                                        {roles.map(item => (
+                                            <Radio value={item.id} key={item.id}>
+                                                {item.name}
+                                            </Radio>
+                                        ))}
+                                    </Radio.Group>
                                 </Form.Item>
 
                                 <Form.Item name='is_active' label='Estado' valuePropName='checked'>

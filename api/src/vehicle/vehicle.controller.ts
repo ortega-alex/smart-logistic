@@ -1,18 +1,11 @@
 import { Request, Response } from 'express';
 import { getImportStateById as getImportStateByIdService } from '../import/import.service';
 import { getById as getQuoterByIdService } from '../quoter/quoter.service';
-import {
-    add as addVehicleService,
-    update as updateVehicleService,
-    getAll as getAllVehicleService,
-    getById as getVehicleByIdService,
-    getByCustomerId as getVehiclesByCustomerIdService,
-    pagination as paginationVehicleService
-} from './vehicle.service';
+import VehicleService from './vehicle.service';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
-        const vehicles = await getAllVehicleService();
+        const vehicles = await VehicleService.getAll();
         return res.json(vehicles);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -22,7 +15,7 @@ export const getAll = async (_req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const vehicle = await getVehicleByIdService(Number(id));
+        const vehicle = await VehicleService.getById(Number(id));
         if (!vehicle) return res.status(203).json({ error: true, message: 'Vehiculo no encontrado' });
         return res.json(vehicle);
     } catch (error) {
@@ -52,7 +45,7 @@ export const paginated = async (req: Request, res: Response) => {
         const validDirections = ['ASC', 'DESC'];
         if (!validDirections.includes(sortOrder.toUpperCase())) return res.status(203).json({ message: 'Dirección de orden inválida' });
 
-        const [data, total] = await paginationVehicleService(filter, sortField, sortOrder, current, pageSize);
+        const [data, total] = await VehicleService.pagination(filter, sortField, sortOrder, current, pageSize);
 
         return res.status(200).json({
             data,
@@ -69,7 +62,7 @@ export const paginated = async (req: Request, res: Response) => {
 export const getByCustomerId = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const vehicles = await getVehiclesByCustomerIdService(Number(id));
+        const vehicles = await VehicleService.getByCustomerId(Number(id));
         return res.status(200).json(vehicles);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
@@ -87,7 +80,7 @@ export const add = async (req: Request, res: Response) => {
         const importState = await getImportStateByIdService(Number(import_state_id));
         if (!importState) return res.status(203).json({ error: true, message: 'estado de importacion no encontrado' });
 
-        const vehicle = await addVehicleService({
+        const vehicle = await VehicleService.add({
             quoter,
             importState
         });
@@ -103,7 +96,7 @@ export const update = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { quoter_id, import_state_id, is_active } = req.body;
 
-        const vehicle = await getVehicleByIdService(Number(id));
+        const vehicle = await VehicleService.getById(Number(id));
         if (!vehicle) return res.status(203).json({ error: true, message: 'Vehiculo no encontrado' });
 
         let quoter;
@@ -112,7 +105,7 @@ export const update = async (req: Request, res: Response) => {
         let importState;
         if (import_state_id) importState = await getImportStateByIdService(Number(import_state_id));
 
-        const update = await updateVehicleService(Number(id), {
+        const update = await VehicleService.update(Number(id), {
             is_active: is_active ?? vehicle.is_active,
             quoter: quoter ?? vehicle.quoter,
             importState: importState ?? vehicle.importState
@@ -123,4 +116,13 @@ export const update = async (req: Request, res: Response) => {
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }
+};
+
+export default {
+    getAll,
+    getById,
+    getByCustomerId,
+    paginated,
+    add,
+    update
 };

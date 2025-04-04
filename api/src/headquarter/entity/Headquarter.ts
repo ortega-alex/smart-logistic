@@ -1,8 +1,9 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Municipality } from '../../municipality/entity/Municipality';
+import { Auction } from '../../auction/entity/Auction';
+import { Department } from '../../department/entity/Department';
 import { State } from '../../state/entity/State';
 import { TransportRate } from '../../transport-rate/entity/TransportRate';
-import { Auction } from '../../auction/entity/Auction';
+import { User } from '../../user/entity/User';
 
 // sedes de Guatemala y EEUU
 @Entity()
@@ -12,6 +13,9 @@ export class Headquarter extends BaseEntity {
 
     @Column('varchar', { length: 45 })
     name: string;
+
+    @Column('text', { nullable: true })
+    address: string;
 
     @Column({ default: true })
     is_active: boolean;
@@ -29,9 +33,9 @@ export class Headquarter extends BaseEntity {
     })
     edited_at: Date;
 
-    @ManyToOne(() => Municipality, { nullable: true })
-    @JoinColumn({ name: 'municipality_id' })
-    municipality: Municipality;
+    @ManyToOne(() => Department, { nullable: true })
+    @JoinColumn({ name: 'department_id' })
+    department: Department;
 
     @ManyToOne(() => State, { nullable: true })
     @JoinColumn({ name: 'state_id' })
@@ -42,4 +46,7 @@ export class Headquarter extends BaseEntity {
 
     @OneToMany(() => Auction, auction => auction.headquarter, { cascade: true })
     auctions: Auction[];
+
+    @OneToMany(() => User, quoter => quoter.headquarter, { cascade: true })
+    users: User[];
 }

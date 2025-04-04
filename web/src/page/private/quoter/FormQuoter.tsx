@@ -115,8 +115,8 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
 
         httpGetAllHeadquarter()
             .then(res => {
-                const eeuu = res.filter((item: Headquarter) => item.state && !item.municipality);
-                const gt = res.filter((item: Headquarter) => item.municipality && !item.state);
+                const eeuu = res.filter((item: Headquarter) => item.state && !item.department);
+                const gt = res.filter((item: Headquarter) => item.department && !item.state);
                 setHeadquarters({
                     [HeadquarterFilter.EEUU]: eeuu,
                     [HeadquarterFilter.GT]: gt

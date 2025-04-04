@@ -17,6 +17,13 @@ export interface TransportRate {
 
 export type OptionalTransportRate = Partial<TransportRate>;
 
+export interface FilterIds {
+    vehicle_type_id: number;
+    transport_type_id: number;
+    headquarter_id: number;
+    customer_type_id: number;
+}
+
 export interface TransportRateFilter {
     customer_type_id: number;
     transport_type_id: number;

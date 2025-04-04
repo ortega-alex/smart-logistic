@@ -8,21 +8,23 @@ import { CustomerType } from './customer-type/entity/CustomerType';
 import { Customer } from './customer/entity/Customer';
 import { Department } from './department/entity/Department';
 import { Headquarter } from './headquarter/entity/Headquarter';
+import { ImportHistory } from './import/entity/ImportHistory';
+import { ImportState } from './import/entity/ImportState';
 import { MenuPermissionProfile } from './menu-permission-profile/entity/MenuPermissionProfile';
 import { Menu } from './menu/entity/Menu';
-import { Municipality } from './municipality/entity/Municipality';
+import { OrderPaper } from './order-paper/entity/OrderPaper';
+import { OrderPaperStatus } from './order-paper/entity/OrderPaperStatus';
 import { Permission } from './permission/entity/Permission';
 import { Profile } from './profile/entity/Profile';
+import { Role } from './profile/entity/Role';
+import { Quoter } from './quoter/entity/Quoter';
+import { QuoterDetail } from './quoter/entity/QuoterDetail';
 import { State } from './state/entity/State';
 import { TransportRate } from './transport-rate/entity/TransportRate';
 import { TransportType } from './transport-type/entity/TransportType';
 import { User } from './user/entity/User';
 import { VehicleType } from './vehicle-type/entity/VehicleType';
-import { Quoter } from './quoter/entity/Quoter';
-import { QuoterDetail } from './quoter/entity/QuoterDetail';
-import { ImportState } from './import/entity/ImportState';
 import { Vehicle } from './vehicle/entity/Vehicle';
-import { ImportHistory } from './import/entity/ImportHistory';
 
 export default new DataSource({
     type: 'mysql',
@@ -36,6 +38,7 @@ export default new DataSource({
         Customer,
         CustomerType,
         CustomerFile,
+        Role,
         Profile,
         Permission,
         MenuPermissionProfile,
@@ -44,7 +47,6 @@ export default new DataSource({
         TransportType,
         State,
         Department,
-        Municipality,
         Headquarter,
         TransportRate,
         Auction,
@@ -52,7 +54,9 @@ export default new DataSource({
         QuoterDetail,
         ImportState,
         Vehicle,
-        ImportHistory
+        ImportHistory,
+        OrderPaperStatus,
+        OrderPaper
     ],
     migrations: ['./migrations/*.ts'],
     migrationsTableName: 'custom_migrations_table',

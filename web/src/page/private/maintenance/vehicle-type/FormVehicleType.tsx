@@ -18,8 +18,8 @@ export const FormVehicleType: React.FC<Props> = ({ vehicleType, onClose }) => {
             if (vehicleType.id > 0) res = await httpUpdateVehicleType({ ...vehicleType, ...values });
             else res = await httpAddVehicleType(values);
 
-            message[res.error ? 'warning' : 'success'](res.message);
-            if (!res.error) onClose();
+            message[res.success ? 'success' : 'warning'](res.message);
+            if (res.success) onClose();
         } catch (error) {
             message.error(`Error http add or edit port: ${(error as Error).message}`);
         } finally {

@@ -1,9 +1,9 @@
-import { Icon } from '@/components';
+import { Icon, Search } from '@/components';
 import { UserEmpty } from '@/constants';
-import { User as UserInterface } from '@/interfaces';
+import { Headquarter, Profile, User as UserInterface } from '@/interfaces';
 import { RootState } from '@/redux';
-import { httpGelUser } from '@/services';
-import { Button, Input, List, Modal, Table } from 'antd';
+import { httpGelUser, httpGetAllHeadquarter, httpGetProfiles } from '@/services';
+import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormUser } from './FormUser';
@@ -12,15 +12,28 @@ export const User = () => {
     const deviceState = useSelector((store: RootState) => store.device);
     const title = 'Usuarios';
 
-    const [users, setusers] = useState<Array<UserInterface>>([]);
+    const [users, setUsers] = useState<Array<UserInterface>>([]);
+    const [usersCopy, setUserCopy] = useState<Array<UserInterface>>([]);
     const [user, setUser] = useState<UserInterface>(UserEmpty);
     const [modal, setModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [profiles, setProfiles] = useState<Array<Profile>>([]);
+    const [headquarters, setHeadquarters] = useState<Array<Headquarter>>([]);
+
+    const handleOnSearch = (value: string) => {
+        let _users = [...usersCopy];
+        if (value.trim() !== '')
+            _users = _users.filter(item => item.id === Number(value) || item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+        setUsers(_users);
+    };
 
     const handleGet = () => {
         setLoading(true);
         httpGelUser()
-            .then(res => setusers(res))
+            .then(res => {
+                setUsers(res);
+                setUserCopy(res);
+            })
             .catch(err => `Error http get users: ${err.message}`)
             .finally(() => setLoading(false));
     };
@@ -32,6 +45,12 @@ export const User = () => {
 
     useEffect(() => {
         handleGet();
+        httpGetProfiles()
+            .then(res => setProfiles(res))
+            .catch(err => message.error(`Erro http get profiles: ${err.message}`));
+        httpGetAllHeadquarter()
+            .then(res => setHeadquarters(res))
+            .catch(err => message.error(`Erro http get headquarters: ${err.message}`));
     }, []);
 
     return (
@@ -39,7 +58,7 @@ export const User = () => {
             <div className='flex flex-md-column gap-3 justify-between'>
                 <h3>{title}</h3>
                 <div>
-                    <Input.Search placeholder='Buscar' onSearch={() => {}} enterButton />
+                    <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
                 </div>
                 <Button
                     type='primary'
@@ -155,7 +174,7 @@ export const User = () => {
                 destroyOnClose
             >
                 <FormUser
-                    user={user}
+                    {...{ user, profiles, headquarters }}
                     onClose={() => {
                         handleGet();
                         setModal(false);

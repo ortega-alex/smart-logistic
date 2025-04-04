@@ -1,7 +1,6 @@
 import { Icon } from '@/components';
 import { useVehicle } from '@/hooks';
-import { ImportHistory, ImportState, Sesion } from '@/interfaces';
-// import { ImportHistory, ImportState } from '@/models';
+import { ImportHistory, ImportState, Session } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpAddImportHistory, httpGetImportState } from '@/services';
 import { Button, Checkbox, Form, FormProps, Input, message, Select, Upload } from 'antd';
@@ -13,7 +12,7 @@ interface Props {
 }
 
 export const FormEvidence: React.FC<Props> = ({ onClose }) => {
-    const sessionState: Sesion = useSelector((store: RootState) => store.session);
+    const sessionState: Session = useSelector((store: RootState) => store.session);
     const { vehicle } = useVehicle();
 
     const [loading, setLoading] = useState(false);
