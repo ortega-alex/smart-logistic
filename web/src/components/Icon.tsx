@@ -4,16 +4,16 @@ import { BiCopy, BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi
 import { BsArrowDown, BsArrowUp, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
 import { CiMenuKebab } from 'react-icons/ci';
-import { FaCogs, FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaCogs, FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
 import { FaAngleDown, FaSackDollar } from 'react-icons/fa6';
 import { FiUsers } from 'react-icons/fi';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { IoIosInformationCircleOutline, IoMdArrowRoundBack } from 'react-icons/io';
-import { IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
+import { IoCalendar, IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
-import { LuDownload } from 'react-icons/lu';
+import { LuAlarmClock, LuDownload } from 'react-icons/lu';
 import { MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
 import { RiAuctionLine } from 'react-icons/ri';
 import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
@@ -24,9 +24,12 @@ export const Icon = {
     ArrowDown: BsArrowDown,
     ArrowsExchange: TbArrowsExchange2,
     ArrowUp: BsArrowUp,
+    ArrowLef: FaArrowLeft,
+    ArrowRight: FaArrowRight,
     Attachment: GrAttachment,
     AuctionLine: RiAuctionLine,
     Bell: GoBell,
+    Calendar: IoCalendar,
     Calculate: MdOutlineCalculate,
     Car: LiaCarAltSolid,
     Car2: TbCar,
@@ -34,6 +37,7 @@ export const Icon = {
     Close: AiOutlineClose,
     Cog: FaCogs,
     Copy: BiCopy,
+    Clock: LuAlarmClock,
     Crane: TbCarCrane,
     Done: IoCheckmarkDone,
     Download: LuDownload,
@@ -66,6 +70,7 @@ export const Icon = {
 };
 
 export const IconEnun: Map = {
+    calendar: <Icon.Calendar size='32%' />,
     calculate: <Icon.Calculate size='32%' />,
     car: <Icon.Car size='32%' />,
     car2: <Icon.Car2 size='32%' />,
@@ -79,6 +84,7 @@ export const IconEnun: Map = {
     auction: <Icon.AuctionLine size='32%' />,
     sackDollar: <Icon.SackDollar size='32%' />,
     calculate_mobile: <Icon.Calculate />,
+    calendar_mobile: <Icon.Calendar />,
     car_mobile: <Icon.Car />,
     car2_mobile: <Icon.Car2 />,
     crane_mobile: <Icon.Crane />,
@@ -86,5 +92,7 @@ export const IconEnun: Map = {
     report_mobile: <Icon.Report />,
     store_mobile: <Icon.Store />,
     users_mobile: <Icon.Users />,
-    user_mobile: <Icon.User />
+    user_mobile: <Icon.User />,
+    usersPlus_mobile: <Icon.UsersPlus />,
+    sackDollar_mobile: <Icon.SackDollar />
 };

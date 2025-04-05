@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import AppointmentController from '../appointment/appointment.controller';
 import AuctionController from '../auction/auction.controller';
 import CustomerFileController from '../customer-file/customer-file.controller';
 import CustomerTypeController from '../customer-type/customer-type.controller';
 import CustomerController from '../customer/customer.controller';
+import departmentController from '../department/department.controller';
 import HeadquarterController from '../headquarter/headquarter.controller';
 import ImportController from '../import/import.controller';
 import MenuPermissionProfileController from '../menu-permission-profile/menu-permission-profile.controller';
@@ -17,8 +19,6 @@ import TransportTypeController from '../transport-type/transport-type.controller
 import UserController from '../user/user.controller';
 import VehicleTypeController from '../vehicle-type/vehicle-type.controller';
 import VehicleController from '../vehicle/vehicle.controller';
-import OrderPaperController from '../order-paper/order-paper.controller';
-import departmentController from '../department/department.controller';
 
 const routes = Router();
 
@@ -92,11 +92,12 @@ routes.put('/vehicle/:id', VehicleController.update);
 routes.get('/import/get-state', ImportController.getAll);
 routes.post('/import/history/:id', fileBufferUpload.single('path'), ImportController.addHistory);
 
-routes.get('/order-paper', OrderPaperController.getAll);
-routes.get('/order-paper/status', OrderPaperController.getAllStatus);
-routes.get('/order-paper/:id', OrderPaperController.getById);
-routes.post('/order-paper', OrderPaperController.add);
-routes.put('/order-paper/:id', OrderPaperController.update);
+routes.get('/appointment', AppointmentController.getAll);
+routes.get('/appointment/status', AppointmentController.getAllStatus);
+routes.get('/appointment/:id', AppointmentController.getById);
+routes.post('/appointment', AppointmentController.add);
+routes.post('/appointment/date', AppointmentController.getByDateAndUserId);
+routes.put('/appointment/:id', AppointmentController.update);
 
 routes.get('/department', departmentController.getAll);
 

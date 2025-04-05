@@ -1,12 +1,12 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customer } from '../../customer/entity/Customer';
 import { User } from '../../user/entity/User';
-import { OrderPaperStatus } from './OrderPaperStatus';
+import { AppointmentStatus } from './AppointmentStatus';
 
 @Entity()
-export class OrderPaper extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Appointment extends BaseEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column('varchar', { length: 45 })
     title: string;
@@ -33,9 +33,9 @@ export class OrderPaper extends BaseEntity {
     })
     edited_at: Date;
 
-    @ManyToOne(() => OrderPaperStatus, { nullable: false })
+    @ManyToOne(() => AppointmentStatus, { nullable: false })
     @JoinColumn({ name: 'status_id' })
-    status: OrderPaperStatus;
+    status: AppointmentStatus;
 
     @ManyToOne(() => User, { nullable: false })
     @JoinColumn({ name: 'user_id' })
@@ -43,5 +43,5 @@ export class OrderPaper extends BaseEntity {
 
     @ManyToOne(() => Customer, { nullable: true })
     @JoinColumn({ name: 'customer_id' })
-    customer: Customer;
+    customer: Customer | null;
 }

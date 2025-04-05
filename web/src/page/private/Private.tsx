@@ -15,6 +15,7 @@ import { Navigate, Route } from 'react-router-dom';
 const Home = lazy(() => import('./home/Home').then(module => ({ default: module.Home })));
 const Quoter = lazy(() => import('./quoter/Quoter').then(module => ({ default: module.Quoter })));
 const Vehicle = lazy(() => import('./vehicle/Vehicle').then(module => ({ default: module.Vehicle })));
+const Appointment = lazy(() => import('./appointment/Appointment').then(module => ({ default: module.Appointment })));
 
 // MANTENIMIENTOS
 const Customer = lazy(() => import('./maintenance/custome/Customer').then(module => ({ default: module.Customer })));
@@ -81,6 +82,10 @@ export const Private = () => {
                                     }
                                 />
                             ))}
+
+                        {menuState.some(item => item.path === privateRoutes.APPOINTMENTS) && (
+                            <Route path={privateRoutes.APPOINTMENTS} element={<Appointment />} />
+                        )}
 
                         {menuState.some(item => item.path === privateRoutes.TRANSPORT_RATE) && (
                             <Route path={privateRoutes.TRANSPORT_RATE} element={<TransportRate />} />

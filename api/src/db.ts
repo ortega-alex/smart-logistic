@@ -12,8 +12,6 @@ import { ImportHistory } from './import/entity/ImportHistory';
 import { ImportState } from './import/entity/ImportState';
 import { MenuPermissionProfile } from './menu-permission-profile/entity/MenuPermissionProfile';
 import { Menu } from './menu/entity/Menu';
-import { OrderPaper } from './order-paper/entity/OrderPaper';
-import { OrderPaperStatus } from './order-paper/entity/OrderPaperStatus';
 import { Permission } from './permission/entity/Permission';
 import { Profile } from './profile/entity/Profile';
 import { Role } from './profile/entity/Role';
@@ -25,6 +23,8 @@ import { TransportType } from './transport-type/entity/TransportType';
 import { User } from './user/entity/User';
 import { VehicleType } from './vehicle-type/entity/VehicleType';
 import { Vehicle } from './vehicle/entity/Vehicle';
+import { AppointmentStatus } from './appointment/entity/AppointmentStatus';
+import { Appointment } from './appointment/entity/Appointment';
 
 export default new DataSource({
     type: 'mysql',
@@ -55,8 +55,8 @@ export default new DataSource({
         ImportState,
         Vehicle,
         ImportHistory,
-        OrderPaperStatus,
-        OrderPaper
+        AppointmentStatus,
+        Appointment
     ],
     migrations: ['./migrations/*.ts'],
     migrationsTableName: 'custom_migrations_table',

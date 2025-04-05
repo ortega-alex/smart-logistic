@@ -1,3 +1,4 @@
+export * from './Appointment';
 export * from './Customer';
 export * from './Headquarter';
 export * from './Menu.d';

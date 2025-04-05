@@ -1,0 +1,52 @@
+### GET ORDER PAPER
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/appointment
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET ORDER PAPER STATUS
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/appointment/status
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET ORDER PAPER BY ID
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/appointment/5d1eee13-a357-4d9d-925b-7bea89005dcd
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### GET ORDER PAPER BY DATE AND USER ID
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/appointment/date
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "start_date": "2025-03-31 06:00:00",
+    "end_date": "2025-06-04 23:59:59",
+    "user_id": 1
+}
+
+### ADD ORDER PAPER
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/appointment
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Nuevo posible cliente",
+    "description": "Descripción del pedido",
+    "date": "2025-05-09 13:00:00",
+    "user_id": 1,
+    "status_id": "6d2c236e-11c3-11f0-83d2-0242ac130002",
+    "customer_id": 1
+}
+
+### UPDATE ORDER PAPER
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/appointment/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Pedido de vehículo",
+    "description": "Descripción del pedido",
+    "user_id": 1,
+    "status_id": 1,
+    "customer_id": 1
+}

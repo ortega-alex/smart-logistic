@@ -1,3 +1,4 @@
+export * from './appointment.service';
 export * from './aution.service';
 export * from './customer-file.service';
 export * from './customer.service';

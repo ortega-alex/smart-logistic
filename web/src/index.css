@@ -100,11 +100,15 @@
     color: var(--success) !important;
 }
 
+.text-gray {
+    color: gray !important;
+}
+
 .navbar {
     width: 100%;
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 10;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
@@ -210,6 +214,10 @@
 
 .border-sm {
     border-radius: 8px !important;
+}
+
+.border-gray {
+    border: rgb(134, 134, 134) 1px solid !important;
 }
 
 .card,
@@ -940,4 +948,35 @@
     .text-label {
         flex-direction: column;
     }
+}
+
+.container-calendar {
+    position: relative;
+    height: 80%;
+    width: 100%;
+    background-color: aliceblue;
+    border-radius: 10px;
+}
+
+.appointment-content {
+    background: var(--white);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 0.2rem 0;
+    position: relative;
+}
+
+.appointment-time {
+    background-color: var(--black);
+    width: 100px;
+    color: white;
+    border-radius: 16px;
+    position: absolute;
+    top: -10px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
 }

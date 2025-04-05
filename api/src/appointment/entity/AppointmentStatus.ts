@@ -1,9 +1,9 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class OrderPaperStatus extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class AppointmentStatus extends BaseEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column('varchar', { length: 45 })
     name: string;

@@ -9,7 +9,9 @@ INSERT INTO menu (name, icon, path, is_main_menu, is_maintenance) VALUES
 ('Subasta', 'auction', 'auction', 1, 1),
 ('Tipos de clientes', 'usersPlus', 'customer-type', 1, 1),
 ('Sedes', 'store', 'headquarters', 1, 1),
-('Tarifa Transporte', 'sackDollar', 'transport-rate', 0, 1);
+('Tarifa Transporte', 'sackDollar', 'transport-rate', 0, 1),
+('Citas', 'calendar', 'appointments ', 0, 1);
+
 
 INSERT INTO customer_type (name) VALUES
 ('Particular'),
@@ -165,8 +167,8 @@ INSERT INTO `smart_logistic`.`import_state` (`name`, `index`, `color`) VALUES
 INSERT INTO user (name, username, password, phone_number, email, profile_id, headquarter_id) VALUES
 ('Admin', 'admin', '$2a$08$pfPpnWYXvYzuXBDkqgzmMev13jo7QDnKNzuJzUwzV06.7VzDZwHJS', '--sin telefono--',	'--sin correo--', 1, 2);
 
-INSERT INTO `smart_logistic`.`order_paper_status` (`name`, `color`) VALUES 
-('Programada', '#0d7ec4'),
-('Reprogramada', '#7d17b5'),
-('Pospuesta', '#a8191b'),
-('Realizada', '#0dc47b');
+INSERT INTO `smart_logistic`.`appointment_status` (`id`, `name`, `color`) VALUES 
+(uuid(), 'Programada', '#0d7ec4'),
+(uuid(), 'Reprogramada', '#7d17b5'),
+(uuid(), 'Pospuesta', '#a8191b'),
+(uuid(), 'Realizada', '#0dc47b');

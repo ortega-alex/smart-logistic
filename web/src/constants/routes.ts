@@ -16,7 +16,8 @@ export const privateRoutes = {
     CUSTOMER_ORDER: 'customer-order',
     CUSTOMER_ORDER_DETAIL: 'customer-order-detail',
     HEADQUARTERS: 'headquarters',
-    TRANSPORT_RATE: 'transport-rate'
+    TRANSPORT_RATE: 'transport-rate',
+    APPOINTMENTS: 'appointments'
 } as const;
 
 export const publicRoutes = {
