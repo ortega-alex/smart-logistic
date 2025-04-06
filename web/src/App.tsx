@@ -8,8 +8,8 @@ import { io, Socket } from 'socket.io-client';
 import { Loading, RoutesWithNotFound } from './components';
 import { privateRoutes, publicRoutes, color, _SERVER } from './constants';
 import { Interceptor } from './interceptors';
-import { ClienteToServerEvents, ServerToClientEvents } from './models';
 import { store } from './redux';
+import { ClienteToServerEvents, ServerToClientEvents } from './interfaces';
 
 const SingIn = lazy(() => import('@/page/sing-In/SingIn').then(module => ({ default: module.SingIn })));
 const SingInCustomer = lazy(() => import('@/page/sing-in-customer/SingInCustomer').then(module => ({ default: module.SingInCustomer })));

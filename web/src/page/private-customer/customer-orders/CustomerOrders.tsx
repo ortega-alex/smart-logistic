@@ -16,14 +16,28 @@ export const CustomerOrders = () => {
 
     const [loading, setLoading] = useState(false);
     const [vehicles, setVehicles] = useState<Array<Vehicle>>([]);
-    const [filter, setFilter] = useState('');
+    const [vehiclesCopy, setVehiclesCopy] = useState<Array<Vehicle>>([]);
+
+    const handleOnSearch = (value: string) => {
+        let _vehicles = [...vehiclesCopy];
+        if (value !== '')
+            _vehicles = _vehicles.filter(
+                item =>
+                    item.quoter.lot.toLowerCase().includes(value.toLowerCase()) ||
+                    item.quoter.mark.toLowerCase().includes(value.toLowerCase()) ||
+                    item.quoter.model.toLowerCase().includes(value.toLowerCase())
+            );
+        setVehicles(_vehicles);
+    };
 
     const handleViewDetail = (id: number) => navigate(`/${privateRoutes.PRIVATE_CUSTOMER}/${privateRoutes.CUSTOMER_ORDER_DETAIL}/${id}`);
 
     const handleGet = () => {
         setLoading(true);
         httpGetVehiclesByCustomerId(sessionCustomerState.id)
-            .then(res => setVehicles(res))
+            .then(res => {
+                setVehicles(res), setVehiclesCopy(res);
+            })
             .catch(err => message.error(`Error http get vehicles by customer id ${err.message}`))
             .finally(() => setLoading(false));
     };
@@ -46,7 +60,6 @@ export const CustomerOrders = () => {
     };
 
     useEffect(() => {
-        console.log(filter);
         handleGet();
     }, []);
 
@@ -56,34 +69,46 @@ export const CustomerOrders = () => {
                 <Tooltip title='Recargar'>
                     <Button type='text' htmlType='button' icon={<Icon.Reload />} onClick={() => handleGet()} />
                 </Tooltip>
-                <Search onSearch={(value: string) => setFilter(value)} onReset={() => setFilter('')} />
+                <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
             </div>
             {deviceState ? (
-                <List
-                    dataSource={vehicles}
-                    loading={loading}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>fecha_creacion: </strong>&nbsp;{getDateFormat(item.created_at ?? '', 'DD/MM/YYYY')}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Lote: </strong>&nbsp;{item.quoter.lot}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Marca y Modelo: </strong>&nbsp;{item.quoter.mark} - {item.quoter.model}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.importState.name}
+                <div className='vh-75 overflow-y'>
+                    <List
+                        dataSource={vehicles}
+                        loading={loading}
+                        rowKey='id'
+                        renderItem={item => (
+                            <div className='item-list text-capitalize' key={item.id}>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Calendar />
+                                    {getDateFormat(item.created_at ?? '', 'DD/MM/YYYY')}
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Eye />} onClick={() => handleViewDetail(item.id)}>
-                                    Ver
-                                </Button>
+                                <div className='flex-1'>
+                                    <strong>Lote: </strong>&nbsp;{item.quoter.lot}
+                                </div>
+                                <div className='flex items-center gap-1'>
+                                    <Icon.Marks />
+                                    {item.quoter.mark} - <Icon.Car /> {item.quoter.model}
+                                </div>
+                                <div className='flex flex-row justify-between'>
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.Clock />
+                                        <span style={{ color: item.importState.color }}>{item.importState.name}</span>
+                                    </div>
+                                    <Button
+                                        type='link'
+                                        danger
+                                        htmlType='button'
+                                        icon={item.importState.id === 1 ? <Icon.Upload /> : <Icon.Eye />}
+                                        onClick={() => handleViewDetail(item.id)}
+                                    >
+                                        {item.importState.id === 1 ? 'Cargar Factura' : 'Ver'}
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                />
+                        )}
+                    />
+                </div>
             ) : (
                 <div className='flex justify-center mx-5'>
                     <Table

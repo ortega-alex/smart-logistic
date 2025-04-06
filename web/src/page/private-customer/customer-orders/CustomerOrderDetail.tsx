@@ -6,11 +6,14 @@ import { httpGetImportState, httpGetVehiclesGetById } from '@/services';
 import { Button, Divider, message, Steps } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux';
 
 export const CustomerOrderDetail = () => {
     const { id } = useParams();
     const { socket } = useSocket();
     const navigate = useNavigate();
+    const deviceState = useSelector((store: RootState) => store.device);
 
     const [loading, setLoading] = useState(false);
     const [vehicle, setVehicle] = useState<Vehicle>(EmptyVehicle);
@@ -30,37 +33,42 @@ export const CustomerOrderDetail = () => {
             .then(res => setImportStates(res))
             .catch(err => message.error(`Error http get import state ${err.message}`));
 
-        if (socket) socket.on(`estado-${id}`, _ => handleGetDetail(Number(id)));
+        if (socket) socket.on(`estado-${id}`, () => handleGetDetail(Number(id)));
     }, []);
 
     return (
-        <div className='h-100 flex flex-row justify-between bg-dark-gray'>
+        <div className='h-100 flex flex-row justify-center bg-dark-gray text-capitalize overflow-hidden'>
             <div className='card-customer-detail'>
                 <Button type='link' icon={<Icon.ArrowBack size={24} />} className='mb-3' onClick={() => navigate(-1)}>
                     REGRESAR
                 </Button>
                 <Divider orientation='left'>Información del vehículo</Divider>
-                <div className='flex flex-column mb-3 px-5'>
-                    <span className='text-label'>
+                <div className='flex flex-column my-3 px-5'>
+                    <span className='flex gap-1'>
                         <strong>Lote:</strong> <span>{vehicle.quoter.lot}</span>
                     </span>
-                    <span className='text-label'>
-                        <strong>Marca y modelo:</strong>
-                        <span>
-                            {vehicle.quoter.mark} - {vehicle.quoter.model}
+                    <div className='flex flex-md-column justify-start gap-1'>
+                        <span className='flex gap-1'>
+                            <strong>Marca:</strong>
+                            {vehicle.quoter.mark}
                         </span>
-                    </span>
+                        <span className='flex gap-1'>
+                            <strong>Modelo:</strong>
+                            {vehicle.quoter.model}
+                        </span>
+                    </div>
                 </div>
                 <Divider orientation='left'>Información del Vendedor</Divider>
-                <div className='flex flex-column mb-3 px-5'>
-                    <span className='text-label'>
+                <div className='flex flex-column my-3 px-5'>
+                    <span className='flex gap-1'>
                         <strong>Nombre:</strong> <span>{vehicle.quoter.seller?.name}</span>
                     </span>
-                    <div className='flex justify-around gap-3'>
-                        <span className='text-label'>
+                    <div className='flex flex-md-column justify-start gap-1'>
+                        <span className='flex gap-1'>
                             <strong>Telefono:</strong> <span>{vehicle.quoter.seller?.phone_number}</span>
                         </span>
-                        <span className='text-label'>
+
+                        <span className='flex gap-1'>
                             <strong>Correo:</strong> <span>{vehicle.quoter.seller?.email}</span>
                         </span>
                     </div>
@@ -68,6 +76,7 @@ export const CustomerOrderDetail = () => {
 
                 <Divider orientation='left'>Estado de importación</Divider>
                 <Steps
+                    direction={deviceState ? 'vertical' : 'horizontal'}
                     progressDot
                     size='small'
                     className='my-3'

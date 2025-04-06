@@ -122,8 +122,9 @@ export const Vehicle = () => {
                                         <Icon.Calendar />
                                         {item.created_at}
                                     </div>
-                                    <div className='flex-1'>
-                                        <strong>Cliente: </strong>&nbsp;{item.quoter.customer?.name}
+                                    <div className='flex items-center gap-2'>
+                                        <Icon.User />
+                                        {item.quoter.seller?.name}
                                     </div>
                                     <div className='flex items-center gap-1'>
                                         <Icon.Users />

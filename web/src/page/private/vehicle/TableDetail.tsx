@@ -13,7 +13,7 @@ export const TableDetail: React.FC<Props> = ({ detail }) => {
             rowClassName={(_, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
             pagination={false}
             showSorterTooltip={false}
-            rowKey='id_subasta'
+            rowKey='id'
             dataSource={detail}
             columns={[
                 {

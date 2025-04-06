@@ -22,37 +22,43 @@ export const ImportHitory: React.FC<Props> = ({ details, loading }) => {
     };
 
     return (
-        <div>
+        <div className='py-3'>
             {deviceState ? (
-                <List
-                    dataSource={details}
-                    loading={loading}
-                    renderItem={item => (
-                        <div key={item.id} className='item-list-gost'>
-                            <div className='flex-1'>
-                                <strong>Fecha: </strong>&nbsp;{getDateFormat(item.created_at ?? '', 'DD/MM/YYYY HH:mm')}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Descripcion: </strong>&nbsp;{item.description}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Visible por el cliente: </strong>&nbsp;{item.is_visible_customer ? 'Si' : 'No'}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Archivo: </strong>
+                <>
+                    <List
+                        dataSource={details}
+                        loading={loading}
+                        rowKey='id'
+                        renderItem={item => (
+                            <div key={item.id} className='item-list text-capitalize'>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Calendar />
+                                    {getDateFormat(item.created_at ?? '', 'DD/MM/YYYY HH:mm')}
                                 </div>
-                                <div>
-                                    <Tooltip title='Ver' placement='right'>
-                                        <Button type='link' onClick={() => handleViewFile(String(item.path))}>
-                                            Ver
-                                        </Button>
-                                    </Tooltip>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.InfoCircle />
+                                    {item.description}
+                                </div>
+
+                                <div className='flex justify-between'>
+                                    <div className='flex gap-1 items-center'>
+                                        <Icon.Eye />
+                                        {item.is_visible_customer ? 'Si' : 'No'}
+                                    </div>
+                                    <div>
+                                        {item.path && (
+                                            <Button type='link' danger htmlType='button' onClick={() => handleViewFile(String(item.path))}>
+                                                Ver
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-                />
+                        )}
+                    />
+                    <br />
+                    <br />
+                </>
             ) : (
                 <Table
                     size='small'

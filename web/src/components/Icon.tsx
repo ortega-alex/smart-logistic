@@ -1,7 +1,7 @@
 import { Map } from '@/interfaces';
 import { AiFillLock, AiOutlineClose, AiOutlineLogout, AiOutlineMenuFold, AiOutlineMenuUnfold, AiOutlineUpload } from 'react-icons/ai';
 import { BiCopy, BiEdit, BiPlus, BiSave, BiSearch, BiUser } from 'react-icons/bi';
-import { BsArrowDown, BsArrowUp, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
+import { BsArrowDown, BsArrowUp, BsBookmarks, BsEye, BsEyeSlash, BsPersonWorkspace } from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
 import { CiMenuKebab } from 'react-icons/ci';
 import { FaArrowLeft, FaArrowRight, FaCogs, FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
@@ -11,13 +11,13 @@ import { GiGuatemala, GiUsaFlag } from 'react-icons/gi';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { IoIosInformationCircleOutline, IoMdArrowRoundBack } from 'react-icons/io';
+import { IoIosInformationCircleOutline, IoLogoModelS, IoMdArrowRoundBack } from 'react-icons/io';
 import { IoCalendar, IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { LuAlarmClock, LuDownload } from 'react-icons/lu';
 import { MdMyLocation, MdOutlineCalculate, MdOutlineDone, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
 import { RiAuctionLine } from 'react-icons/ri';
-import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
+import { TbArrowsExchange2, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
 export const Icon = {
     AngleDown: FaAngleDown,
@@ -32,8 +32,8 @@ export const Icon = {
     Bell: GoBell,
     Calendar: IoCalendar,
     Calculate: MdOutlineCalculate,
-    Car: LiaCarAltSolid,
-    Car2: TbCar,
+    Car: IoLogoModelS,
+    Car2: LiaCarAltSolid,
     ChangeAlt: FaExchangeAlt,
     Close: AiOutlineClose,
     Cog: FaCogs,
@@ -53,6 +53,7 @@ export const Icon = {
     Location: MdMyLocation,
     Lock: AiFillLock,
     Logout: AiOutlineLogout,
+    Marks: BsBookmarks,
     MenuFold: AiOutlineMenuFold,
     MenuKebab: CiMenuKebab,
     MenuUnfold: AiOutlineMenuUnfold,

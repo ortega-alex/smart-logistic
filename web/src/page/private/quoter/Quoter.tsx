@@ -114,20 +114,20 @@ export const Quoter = () => {
                             rowKey='id'
                             renderItem={item => (
                                 <div className='item-list text-capitalize' key={item.id}>
-                                    <div className='flex-1'>
-                                        <strong>Cliente: </strong>&nbsp;{item.customer?.name}
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.User />
+                                        {item.seller?.name}
                                     </div>
-                                    <div className='flex-1'>
-                                        <strong>Vendedor: </strong>&nbsp;{item.seller?.name}
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.Users />
+                                        {item.customer?.name}
                                     </div>
-                                    <div className='flex flex-row gap-2'>
-                                        <div>
-                                            <strong>Marca:</strong> {item.mark}
-                                        </div>
-                                        <div>
-                                            <strong>Modelo:</strong> {item.model}
-                                        </div>
+
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.Marks />
+                                        {item.mark} - <Icon.Car /> {item.model}
                                     </div>
+
                                     <div className='flex flex-row justify-between'>
                                         <div>
                                             <strong>Aprobada: </strong>&nbsp;
