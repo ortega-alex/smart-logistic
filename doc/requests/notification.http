@@ -1,12 +1,7 @@
-### POST add notificacion
-POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification
-Content-Type: application/json
+### GET notificaciones
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification
+Content-Type: application/json  
 Authorization: Bearer {{token}}
-
-{
-    "titulo": "para un usuario en particular",
-    "contenido": "este contenido es muy importante"
-}
 
 ### GET notificaciones por cliente
 GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/customer/1
@@ -18,8 +13,23 @@ GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/user/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+# las prioridades son: LOW, MEDIUM, HIGH
+# el path es opcional y se usa el path de la tabla menu
+# la notificacion puede ir libre o llevar el id del cliente o el usaurio o una combinacion de ambos
+### POST add notificacion
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "para un cliente en particular ",
+    "description": "este contenido es muy importante",
+    "priority": "HIGH",
+    "customer_id": 1
+}
+
 ### PUT update notificacion
-PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/7ed2da46-f873-403a-a965-0073a1390b16
+PUT {{protocol}}://{{host}}:{{port}}/api/{{version}}/notification/94e3ff84-5920-4573-a379-1a53acc5c93e
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

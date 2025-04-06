@@ -19,7 +19,7 @@ export const add = async (profile: ProfileInterface) => {
     return newProfile;
 };
 
-export const update = async (id: number, profile: ProfileInterface) => await Profile.update({ id: Number(id) }, profile);
+export const update = async (id: number, profile: ProfileInterface) => await Profile.update({ id }, profile);
 
 export default {
     getAll,

@@ -19,6 +19,7 @@ import TransportTypeController from '../transport-type/transport-type.controller
 import UserController from '../user/user.controller';
 import VehicleTypeController from '../vehicle-type/vehicle-type.controller';
 import VehicleController from '../vehicle/vehicle.controller';
+import NotificationController from '../notification/notificacion.controller';
 
 const routes = Router();
 
@@ -103,9 +104,10 @@ routes.get('/department', departmentController.getAll);
 
 // // routes.post('/import-history/evidence/:id', validateFileType, addImportHistory);
 
-// routes.post('/notification', addNotification);
-// routes.get('/notification/customer/:id', getNotificationByCustomer);
-// routes.get('/notification/user/:id', getNotificationByUserId);
-// routes.put('/notification/:id', updateNotification);
+routes.get('/notification', NotificationController.getAll);
+routes.get('/notification/customer/:id', NotificationController.getByCustomerId);
+routes.get('/notification/user/:id', NotificationController.getByUserId);
+routes.post('/notification', NotificationController.add);
+routes.put('/notification/:id', NotificationController.update);
 
 export const privateRoutes = routes;

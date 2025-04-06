@@ -2,6 +2,8 @@ import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { enviroment } from './utils';
 
+import { Appointment } from './appointment/entity/Appointment';
+import { AppointmentStatus } from './appointment/entity/AppointmentStatus';
 import { Auction } from './auction/entity/Auction';
 import { CustomerFile } from './customer-file/entity/CustomerFile';
 import { CustomerType } from './customer-type/entity/CustomerType';
@@ -12,6 +14,7 @@ import { ImportHistory } from './import/entity/ImportHistory';
 import { ImportState } from './import/entity/ImportState';
 import { MenuPermissionProfile } from './menu-permission-profile/entity/MenuPermissionProfile';
 import { Menu } from './menu/entity/Menu';
+import { Notification } from './notification/entity/Notification';
 import { Permission } from './permission/entity/Permission';
 import { Profile } from './profile/entity/Profile';
 import { Role } from './profile/entity/Role';
@@ -23,8 +26,6 @@ import { TransportType } from './transport-type/entity/TransportType';
 import { User } from './user/entity/User';
 import { VehicleType } from './vehicle-type/entity/VehicleType';
 import { Vehicle } from './vehicle/entity/Vehicle';
-import { AppointmentStatus } from './appointment/entity/AppointmentStatus';
-import { Appointment } from './appointment/entity/Appointment';
 
 export default new DataSource({
     type: 'mysql',
@@ -56,7 +57,8 @@ export default new DataSource({
         Vehicle,
         ImportHistory,
         AppointmentStatus,
-        Appointment
+        Appointment,
+        Notification
     ],
     migrations: ['./migrations/*.ts'],
     migrationsTableName: 'custom_migrations_table',
