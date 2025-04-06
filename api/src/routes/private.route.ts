@@ -82,6 +82,7 @@ routes.get('/quoter/invoice/:id', QuoterController.generatePdf);
 routes.post('/quoter', QuoterController.add);
 routes.put('/quoter/:id', QuoterController.update);
 routes.post('/quoter/pagination', QuoterController.pagination);
+routes.post('/quoter/send-email', QuoterController.sendEmailCustomer);
 
 routes.get('/vehicle', VehicleController.getAll);
 routes.get('/vehicle/:id', VehicleController.getById);

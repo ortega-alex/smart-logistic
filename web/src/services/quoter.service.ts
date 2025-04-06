@@ -1,4 +1,4 @@
-import { Quoter } from '@/interfaces';
+import { Email, Quoter } from '@/interfaces';
 import { httpRequest } from '@/utilities';
 
 const path = '/quoter';
@@ -20,3 +20,5 @@ export const httpGetQuoterPaginationData = async (data: any) =>
         method: 'POST',
         data
     });
+
+export const httpSendQuoterEmail = async (data: Email) => await httpRequest({ path: `${path}/send-email`, method: 'POST', data });

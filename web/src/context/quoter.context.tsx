@@ -3,6 +3,7 @@ import { RootState } from '@/redux';
 import { httpAddQuoter, httpDowloadInvoice, httpGetCustomer, httpUpdateQuoter } from '@/services';
 import { downloadFile } from '@/utilities';
 import { message, Modal } from 'antd';
+import { c } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 import React, { createContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -84,11 +85,12 @@ export const QuoterState: React.FC<{ children: React.ReactNode }> = props => {
     };
 
     const handleDownloadInvoice = async (quoter: Quoter) => {
-        console.log(quoter);
         try {
             setLoading(true);
             const res = await httpDowloadInvoice(quoter.id);
-            downloadFile(res, `${quoter.customer?.name ?? 'cotizacion'}-invoice.zip`);
+            let extension = 'zip';
+            if (res?.type === 'application/pdf') extension = 'pdf';
+            downloadFile(res, `${quoter.customer?.name ?? 'cotizacion'}-invoice.${extension}`);
         } catch (error) {
             message.error(`Error http download invoice: ${(error as Error).message}`);
         } finally {

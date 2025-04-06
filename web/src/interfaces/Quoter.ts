@@ -49,3 +49,12 @@ export interface Quoter {
     auction?: Auction;
     details?: Array<QuoterDetail>;
 }
+
+export interface Email {
+    quoter_id?: number;
+    from: string;
+    to: string;
+    subject: string;
+    body: string;
+    sendAttachment: boolean;
+}

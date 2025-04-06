@@ -19,9 +19,10 @@ import {
     httpGetAllVehicleType,
     httpGetTransportRateFiler
 } from '@/services';
-import { Button, Divider, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
+import { Button, Divider, Form, FormInstance, FormProps, Input, message, Modal, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { QuoterDetail } from './QuoterDetail';
+import { FormQuoterEmail } from './FormQuoterEmail';
 
 interface Props {
     onClose: () => void;
@@ -40,6 +41,7 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
         [HeadquarterFilter.EEUU]: [],
         [HeadquarterFilter.GT]: []
     });
+    const [modal, setModal] = useState(false);
 
     const handleEditDetail = (name: string, value: number, deleter: boolean = false) => {
         const newDetails = [...details[Coin.USD]];
@@ -296,7 +298,14 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
                     >
                         Descargar
                     </Button>
-                    <Button type='dashed' htmlType='button' loading={loading} disabled={loading || quoter.id === 0} icon={<Icon.EMail />}>
+                    <Button
+                        onClick={() => setModal(true)}
+                        type='dashed'
+                        htmlType='button'
+                        loading={loading}
+                        disabled={loading || quoter.id === 0}
+                        icon={<Icon.EMail />}
+                    >
                         Enviar Correo
                     </Button>
                     {!quoter.is_aproverd && (
@@ -327,6 +336,10 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
                     </Button>
                 </div>
             </Form>
+
+            <Modal open={modal} onCancel={() => setModal(false)} footer={null} title={<h3>Enviar correo</h3>} centered destroyOnClose>
+                <FormQuoterEmail onClose={() => setModal(false)} />
+            </Modal>
         </>
     );
 };

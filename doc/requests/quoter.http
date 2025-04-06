@@ -94,3 +94,17 @@ Authorization: Bearer {{token}}
         }
     ]
 }
+
+#### SEND EMAIL
+POST {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/send-email
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "quoter_id": 2,
+    "from": "from@email.com",
+    "to": "mortegalex27@gmail.com",
+    "subject": "Envio de cotizacion",
+    "body": "Estimado cliente,\n\nSe ha enviado una cotización de octización para su vehículo.\n\nGracias.",
+    "sendAttachment": true
+}

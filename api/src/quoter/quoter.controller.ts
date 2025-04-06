@@ -5,10 +5,12 @@ import { getById as getCustomerByIdService } from '../customer/customer.service'
 import { getById as getIssuingHeadquarterByIdService } from '../headquarter/headquarter.service';
 import { getById as getTransportTypeByIdService } from '../transport-type/transport-type.service';
 import { getById as getUserByIdService } from '../user/user.service';
-import { commaSeparateNumber, createPdfWithTable, unionEndPfd } from '../utils';
+import { commaSeparateNumber, createPdfWithTable, generateAttachmentPdf, unionEndPfd } from '../utils';
 import { getById as getVehicleTypeByIdService } from '../vehicle-type/vehicle-type.service';
 import { Coin } from './interface/Quoter';
 import QuoterService from './quoter.service';
+import { Email } from '../interfaces';
+import { sendEmail } from '../email';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
@@ -204,45 +206,26 @@ export const update = async (req: Request, res: Response) => {
 export const generatePdf = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+
         const quoter = await QuoterService.getById(Number(id));
         if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
 
-        const dollars = quoter.details?.filter(item => item.coin === Coin.USD);
-        const quetzales = quoter.details?.filter(item => item.coin === Coin.GTQ);
-
-        const zip = archiver('zip', { zlib: { level: 9 } });
-
-        if (dollars.length > 0) {
-            const total_dollars = dollars?.reduce((acum, item) => acum + Number(item.value), 0);
-            const detail_dollars = dollars?.map(item => [item.name, `${item.coin}. ${commaSeparateNumber(item.value ?? '')}`]);
-
-            const tablePdfDoc = await createPdfWithTable(quoter, [
-                ['CONCEPTO', 'VALOR'],
-                ...(<[]>detail_dollars),
-                ['TOTAL', `$. ${commaSeparateNumber(total_dollars ?? '')}`]
-            ]);
-            const pdfBytes = await unionEndPfd(tablePdfDoc);
-            zip.append(Buffer.from(pdfBytes), { name: `${quoter.customer.name ?? 'cotizacion'}-dolares.pdf` });
+        const attachments = await generateAttachmentPdf(quoter);
+        if (attachments.length === 0) return res.status(203).json({ message: 'No hay archivos para descargar' });
+        if (attachments.length === 1) {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${attachments[0].filename}"`);
+            return res.send(attachments[0].content);
+        } else {
+            const zip = archiver('zip', { zlib: { level: 9 } });
+            res.setHeader('Content-Type', 'application/zip');
+            res.setHeader('Content-Disposition', 'attachment; filename="cotizaciones.zip"');
+            zip.pipe(res);
+            for (const attachment of attachments) {
+                zip.append(attachment.content, { name: attachment.filename });
+            }
+            zip.finalize();
         }
-
-        if (quetzales.length > 0) {
-            const total_quetzales = quetzales?.reduce((acum, item) => acum + Number(item.value), 0);
-            const detail_quetzales = quetzales?.map(item => [item.name, `${item.coin}. ${commaSeparateNumber(item.value)}`]);
-
-            const tablePdfDoc = await createPdfWithTable(quoter, [
-                ['CONCEPTO', 'VALOR'],
-                ...(<[]>detail_quetzales),
-                ['TOTAL', `Q. ${commaSeparateNumber(total_quetzales)}`]
-            ]);
-            const pdfBytes = await unionEndPfd(tablePdfDoc);
-            zip.append(Buffer.from(pdfBytes), { name: `${quoter.customer.name ?? 'cotizacion'}-quetzales.pdf` });
-        }
-
-        res.setHeader('Content-Type', 'application/zip');
-        res.setHeader('Content-Disposition', 'attachment; filename="cotizaciones.zip"');
-
-        zip.pipe(res);
-        zip.finalize();
     } catch (error) {
         return res.status(500).json({ error: true, message: (error as Error).message });
     }
@@ -275,11 +258,46 @@ export const pagination = async (req: Request, res: Response) => {
     }
 };
 
+export const sendEmailCustomer = async (req: Request, res: Response) => {
+    try {
+        const { quoter_id, from, to, subject, body, sendAttachment } = req.body;
+
+        if (!quoter_id) return res.status(203).json({ message: 'El id de cotizacion es requerido' });
+        if (!subject) return res.status(203).json({ message: 'El asunto es requerido' });
+        if (!body) return res.status(203).json({ message: 'El cuerpo es requerido' });
+
+        const quoter = await QuoterService.getById(Number(quoter_id));
+        if (!quoter) return res.status(203).json({ message: 'Cotización no existe' });
+
+        let _to = to;
+        if (!_to) {
+            _to = quoter.customer.email;
+            if (!_to) return res.status(203).json({ message: 'El destinatario es requerido' });
+        }
+
+        let attachments: any[] = [];
+        if (sendAttachment) attachments = await generateAttachmentPdf(quoter);
+
+        const newEmail: Email = {
+            from,
+            to: _to,
+            subject,
+            html: body,
+            attachments
+        };
+        await sendEmail(newEmail);
+        return res.json({ success: true, message: 'Email enviado correctamente' });
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 export default {
     getAll,
     getById,
     add,
     update,
     generatePdf,
-    pagination
+    pagination,
+    sendEmailCustomer
 };

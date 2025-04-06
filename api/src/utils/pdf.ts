@@ -2,6 +2,48 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { Quoter } from '../quoter/entity/Quoter';
 import path from 'path';
 import fs from 'fs';
+import { Coin, QuoterDetail } from '../quoter/interface/Quoter';
+import { commaSeparateNumber } from './format.utility';
+
+export interface Attachment {
+    filename: string;
+    content: Buffer;
+    contentType: string;
+}
+
+export const generteBufferPdf = async (quoter: Quoter, arry: QuoterDetail[]) => {
+    const total = arry?.reduce((acum, item) => acum + Number(item.value), 0);
+    const detail = arry?.map(item => [item.name, `${item.coin}. ${commaSeparateNumber(item.value ?? '')}`]);
+
+    const tablePdfDoc = await createPdfWithTable(quoter, [
+        ['CONCEPTO', 'VALOR'],
+        ...(<[]>detail),
+        ['TOTAL', `${arry[0].coin}. ${commaSeparateNumber(total ?? '')}`]
+    ]);
+    return await unionEndPfd(tablePdfDoc);
+};
+
+export const generateAttachmentPdf = async (quoter: Quoter) => {
+    const attachment: Attachment[] = [];
+
+    const monedas: Record<string, QuoterDetail[]> = { quetzales: [], dolares: [] };
+    quoter.details?.forEach(item => {
+        if (item.coin === Coin.USD) monedas.dolares.push(item);
+        if (item.coin === Coin.GTQ) monedas.quetzales.push(item);
+    });
+
+    for (const key of Object.keys(monedas)) {
+        if (monedas[key].length > 0) {
+            const content = await generteBufferPdf(quoter, monedas[key]);
+            attachment.push({
+                filename: `${quoter.customer.name ?? 'cotizacion'}-${key}.pdf`,
+                content: Buffer.from(content),
+                contentType: 'application/pdf'
+            });
+        }
+    }
+    return attachment;
+};
 
 export const createPdfWithTable = async (quoter: Quoter, data: string[][]) => {
     const pdfDoc = await PDFDocument.create();
