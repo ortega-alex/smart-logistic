@@ -32,6 +32,8 @@ export const pagination = async (filter: string, sortField: string, sortOrder: s
             query
                 .where('quoter.created_at LIKE :filter', { filter: `%${filter}%` })
                 .orWhere('seller.name LIKE :filter', { filter: `%${filter}%` })
+                .orWhere('quoter.mark LIKE :filter', { filter: `%${filter}%` })
+                .orWhere('quoter.model LIKE :filter', { filter: `%${filter}%` })
                 .orWhere('customer.name LIKE :filter', { filter: `%${filter}%` });
         } else {
             query.where('customer.id = :id', { id: Number(filter) });

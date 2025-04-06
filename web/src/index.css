@@ -104,6 +104,10 @@
     color: gray !important;
 }
 
+.text-capitalize {
+    text-transform: capitalize !important;
+}
+
 .navbar {
     width: 100%;
     position: sticky;
@@ -256,7 +260,7 @@
 }
 
 .vh-66 {
-    height: 66.666667vh !important;
+    height: 66vh !important;
 }
 
 .vh-75 {

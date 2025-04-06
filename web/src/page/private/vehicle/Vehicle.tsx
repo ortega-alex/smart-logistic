@@ -5,7 +5,7 @@ import { Customer, TableParams, Vehicle as VehicleInterface } from '@/interfaces
 import { RootState } from '@/redux';
 import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
 import { getDateFormat } from '@/utilities';
-import { Button, List, Modal, Select, Table, TableProps, Tag, Tooltip, message } from 'antd';
+import { Button, List, Modal, Pagination, Select, Table, TableProps, Tag, Tooltip, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -86,7 +86,7 @@ export const Vehicle = () => {
 
     return (
         <div className='h-100 flex flex-column p-3'>
-            <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
+            <div className='flex flex-md-column gap-2 justify-between items-end mb-2'>
                 <div className='flex flex-column w-md-100'>
                     <label htmlFor='cliente'>Cliente</label>
                     <Select
@@ -110,28 +110,65 @@ export const Vehicle = () => {
             </div>
 
             {deviceState ? (
-                <List
-                    dataSource={vehicles}
-                    loading={loading}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Cliente: </strong>&nbsp;{item.quoter.customer?.id}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Vendedor: </strong>&nbsp;{item.quoter.customer?.name}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                <>
+                    <div className='vh-66 overflow-y'>
+                        <List
+                            dataSource={vehicles}
+                            loading={loading}
+                            rowKey='id'
+                            renderItem={item => (
+                                <div className='item-list text-capitalize' key={item.id}>
+                                    <div className='flex gap-1 items-center'>
+                                        <Icon.Calendar />
+                                        {item.created_at}
+                                    </div>
+                                    <div className='flex-1'>
+                                        <strong>Cliente: </strong>&nbsp;{item.quoter.customer?.name}
+                                    </div>
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.Users />
+                                        {item.quoter.customer?.name}
+                                    </div>
+                                    <div className='flex flex-row justify-start gap-2'>
+                                        <div className='flex items-center gap-1'>
+                                            <Icon.Car2 /> {item.quoter.lot}
+                                        </div>
+                                        <div className='flex items-center gap-1'>
+                                            <Icon.Car /> {item.quoter.transportType?.name}
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row justify-between'>
+                                        <div>
+                                            <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                                        </div>
+                                        <Button
+                                            type='link'
+                                            danger
+                                            htmlType='button'
+                                            icon={<Icon.Edit />}
+                                            onClick={() => handleViewDetail(item)}
+                                        >
+                                            Editar
+                                        </Button>
+                                    </div>
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleViewDetail(item)}>
-                                    Editar
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                />
+                            )}
+                        />
+                    </div>
+                    <Pagination
+                        className='mt-3'
+                        align='end'
+                        {...tableParams.pagination}
+                        onChange={current =>
+                            setTableParams({
+                                pagination: {
+                                    ...tableParams.pagination,
+                                    current
+                                }
+                            })
+                        }
+                    />
+                </>
             ) : (
                 <Table
                     size='small'
@@ -226,7 +263,7 @@ export const Vehicle = () => {
                 open={modal}
                 title={
                     <h3>
-                        Vehiculo <Tag color={vehicle.importState.color}>{vehicle.importState.name}</Tag>
+                        Vehículo <Tag color={vehicle.importState.color}>{vehicle.importState.name}</Tag>
                     </h3>
                 }
                 footer={null}

@@ -1,4 +1,4 @@
-import { Icon, Search } from '@/components';
+import { Icon, PageHeader } from '@/components';
 import { UserEmpty } from '@/constants';
 import { Headquarter, Profile, User as UserInterface } from '@/interfaces';
 import { RootState } from '@/redux';
@@ -55,50 +55,49 @@ export const User = () => {
 
     return (
         <div className='h-100 flex flex-column p-auto'>
-            <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>{title}</h3>
-                <div>
-                    <Search onSearch={handleOnSearch} onReset={() => handleOnSearch('')} />
-                </div>
-                <Button
-                    type='primary'
-                    htmlType='button'
-                    onClick={() => {
-                        setUser(UserEmpty);
-                        setModal(true);
-                    }}
-                >
-                    Agregar
-                </Button>
-            </div>
+            <PageHeader
+                title={title}
+                onGet={handleGet}
+                onSearch={handleOnSearch}
+                onAdd={() => {
+                    setUser(UserEmpty);
+                    setModal(true);
+                }}
+            />
 
             {deviceState ? (
-                <List
-                    dataSource={users}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.name}
-                            </div>
-                            <div className='flex flex-row justify-between'>
+                <div className='vh-75 overflow-y'>
+                    <List
+                        dataSource={users}
+                        loading={loading}
+                        rowKey='id'
+                        renderItem={item => (
+                            <div className='item-list text-capitalize' key={item.id}>
                                 <div className='flex-1'>
-                                    <strong>Perfil: </strong>&nbsp;{item.profile?.name}
+                                    <strong>Nombre: </strong>&nbsp;{item.name}
                                 </div>
-                                <div className='flex-1'>
-                                    <strong>Usuario: </strong>&nbsp;{item.username}
+                                <div className='flex flex-row justify-start gap-2'>
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.Profile />
+                                        {item.profile?.name}
+                                    </div>
+                                    <div className='flex items-center gap-1'>
+                                        <Icon.User />
+                                        {item.username}
+                                    </div>
+                                </div>
+                                <div className='flex flex-row justify-between'>
+                                    <div>
+                                        <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                                    </div>
+                                    <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                        Editar
+                                    </Button>
                                 </div>
                             </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
-                                </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
-                                    Editar
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                />
+                        )}
+                    />
+                </div>
             ) : (
                 <Table
                     size='small'

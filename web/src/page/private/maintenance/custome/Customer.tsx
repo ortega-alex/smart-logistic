@@ -1,9 +1,9 @@
-import { Icon, Search, ViewFiles } from '@/components';
-import { CustomerFile, TableParams, Customer as TypeCustomer } from '@/interfaces';
+import { Icon, PageHeader, ViewFiles } from '@/components';
 import { EmptyCustomer, EmptyCustomerFile } from '@/constants';
+import { CustomerFile, TableParams, Customer as TypeCustomer } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpDeleteCustomerFile, httpGetCustomerById, httpGetCustomerPaginationData } from '@/services';
-import { Button, List, message, Modal, Popover, Table, TableProps } from 'antd';
+import { Button, List, message, Modal, Pagination, Popover, Table, TableProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormCustomer } from './FormCustomer';
@@ -98,53 +98,67 @@ export const Customer = () => {
 
     return (
         <div className='h-100 flex flex-column p-auto'>
-            <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>{title}</h3>
-                <div>
-                    <Search onSearch={(value: string) => setFilter(value)} onReset={() => setFilter('')} />
-                </div>
-                <Button
-                    type='primary'
-                    htmlType='button'
-                    onClick={() => {
-                        setCustomer(EmptyCustomer);
-                        hamdleChangeModal('customer');
-                    }}
-                >
-                    Agregar
-                </Button>
-            </div>
+            <PageHeader
+                title={title}
+                onGet={handleGet}
+                onSearch={setFilter}
+                onAdd={() => {
+                    setCustomer(EmptyCustomer);
+                    hamdleChangeModal('customer');
+                }}
+            />
 
             {deviceState ? (
-                <List
-                    dataSource={customers}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.name}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.type?.name}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div className='flex-1'>
-                                    <strong>Telefono: </strong>&nbsp;{item.phone_number}
+                <>
+                    <div className='vh-66 overflow-y'>
+                        <List
+                            dataSource={customers}
+                            loading={loading}
+                            rowKey='id'
+                            renderItem={item => (
+                                <div className='item-list text-capitalize' key={item.id}>
+                                    <div className='flex-1'>
+                                        <strong>Nombre: </strong>&nbsp;{item.name}
+                                    </div>
+                                    <div className='flex-1'>
+                                        <strong>Tipo: </strong>&nbsp;{item.type?.name}
+                                    </div>
+                                    <div className='flex flex-row justify-start gap-2'>
+                                        <div className='flex items-center gap-1'>
+                                            <Icon.Phone />
+                                            {item.phone_number}
+                                        </div>
+                                        <div className='flex items-center gap-1'>
+                                            <Icon.EMail />
+                                            {item.email}
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row justify-between'>
+                                        <div>
+                                            <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                                        </div>
+                                        <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                            Editar
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div className='flex-1'>
-                                    <strong>Correo: </strong>&nbsp;{item.email}
-                                </div>
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
-                                </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
-                                    Editar
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                />
+                            )}
+                        />
+                    </div>
+                    <Pagination
+                        className='mt-3'
+                        align='end'
+                        {...tableParams.pagination}
+                        onChange={current =>
+                            setTableParams({
+                                pagination: {
+                                    ...tableParams.pagination,
+                                    current
+                                }
+                            })
+                        }
+                    />
+                </>
             ) : (
                 <Table
                     size='small'

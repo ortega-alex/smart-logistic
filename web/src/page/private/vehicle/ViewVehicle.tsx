@@ -46,21 +46,21 @@ export const ViewVehicle = () => {
     }, []);
 
     return (
-        <div className='flex flex-column'>
-            <div className='flex flex-row gap-3 mb-3'>
-                <div className='flex flex-column flex-1 px-3'>
-                    <Divider orientation='left'>Informacion del cliente</Divider>
+        <div className='flex flex-column text-capitalize'>
+            <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
+                <div className='flex flex-column w-100 p-auto'>
+                    <Divider orientation='left'>Información del cliente</Divider>
                     <div className='flex flex-column'>
                         <strong>Cliente:</strong>
                         <div className='text-decoration'>{vehicle.quoter.customer?.name}</div>
                     </div>
-                    <div className='flex flex-row gap-3 items-center justify-between'>
-                        <div className='flex flex-1 flex-column'>
-                            <strong>Telefono Fijo:</strong>
+                    <div className='flex flex-md-column gap-3 items-center justify-between'>
+                        <div className='flex flex-column w-100'>
+                            <strong>Teléfono Fijo:</strong>
                             <div className='text-decoration'>{vehicle.quoter.customer?.landline}</div>
                         </div>
-                        <div className='flex flex-1 flex-column'>
-                            <strong>Telefono Celular:</strong>
+                        <div className='flex flex-column w-100'>
+                            <strong>Teléfono Celular:</strong>
                             <div className='text-decoration'>{vehicle.quoter.customer?.phone_number}</div>
                         </div>
                     </div>
@@ -68,12 +68,12 @@ export const ViewVehicle = () => {
                         <strong>Direccion:</strong>
                         <div className='text-decoration'>{vehicle.quoter.customer?.address}</div>
                     </div>
-                    <div className='flex flex-row gap-3 items-center justify-between'>
-                        <div className='flex flex-1 flex-column'>
+                    <div className='flex flex-md-column gap-3 items-center justify-between'>
+                        <div className='flex flex-column w-100'>
                             <strong>No. NIT:</strong>
                             <div className='text-decoration'>{vehicle.quoter.customer?.nit}</div>
                         </div>
-                        <div className='flex flex-1 flex-column'>
+                        <div className='flex flex-column w-100'>
                             <strong>No. DPI:</strong>
                             <div className='text-decoration'>{vehicle.quoter.customer?.dpi}</div>
                         </div>
@@ -82,23 +82,23 @@ export const ViewVehicle = () => {
                         <strong>Correo:</strong>
                         <div className='text-decoration'>{vehicle.quoter.customer?.email}</div>
                     </div>
-                    <Divider orientation='left'>Informacion del vehiculo</Divider>
-                    <div className='flex flex-row gap-3 items-center justify-between'>
-                        <div className='flex flex-1 flex-column'>
+                    <Divider orientation='left'>Información del vehículo</Divider>
+                    <div className='flex flex-md-column gap-3 items-center justify-between'>
+                        <div className='flex flex-column w-100'>
                             <strong>No. VIN:</strong>
                             <div className='text-decoration'>{vehicle.quoter.vin}</div>
                         </div>
-                        <div className='flex flex-1 flex-column'>
+                        <div className='flex flex-column w-100'>
                             <strong>No. Lote:</strong>
                             <div className='text-decoration'>{vehicle.quoter.lot}</div>
                         </div>
                     </div>
-                    <div className='flex  flex-row gap-3 items-center justify-between'>
-                        <div className='flex flex-1 flex-column'>
-                            <strong>Tipo de vehiculo:</strong>
+                    <div className='flex  flex-md-column gap-3 items-center justify-between'>
+                        <div className='flex flex-column w-100'>
+                            <strong>Tipo de vehículo:</strong>
                             <div className='text-decoration'>{vehicle.quoter.vehicleType?.name}</div>
                         </div>
-                        <div className='flex flex-1 flex-column'>
+                        <div className='flex flex-column w-100'>
                             <strong>Marca y modelo:</strong>
                             <div className='text-decoration'>
                                 {vehicle.quoter.mark} - {vehicle.quoter.model}
@@ -106,18 +106,18 @@ export const ViewVehicle = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-column flex-1'>
-                    <Divider orientation='left'>Informacion del vendedor</Divider>
+                <div className='flex flex-column w-100 p-auto'>
+                    <Divider orientation='left'>Información del vendedor</Divider>
                     <div className='flex flex-column'>
                         <strong>Nombre:</strong>
                         <div className='text-decoration'>{vehicle.quoter.seller?.name}</div>
                     </div>
-                    <div className='flex flex-row gap-3 items-center justify-between'>
-                        <div className='flex flex-1 flex-column'>
-                            <strong>Telefono:</strong>
+                    <div className='flex flex-md-column gap-3 items-center justify-between'>
+                        <div className='flex flex-column w-100'>
+                            <strong>Teléfono:</strong>
                             <div className='text-decoration'>{vehicle.quoter.seller?.phone_number}</div>
                         </div>
-                        <div className='flex flex-1 flex-column'>
+                        <div className='flex flex-column w-100'>
                             <strong>Correo:</strong>
                             <div className='text-decoration'>{vehicle.quoter.seller?.email}</div>
                         </div>
@@ -134,7 +134,7 @@ export const ViewVehicle = () => {
                         <div className='text-decoration'>{vehicle.quoter.headquarter?.name}</div>
                     </div>
                     <div className='flex flex-column'>
-                        <strong>Descripcion:</strong>
+                        <strong>Descripción:</strong>
                         <Input.TextArea rows={4} autoSize={{ minRows: 3, maxRows: 6 }} disabled>
                             {vehicle.quoter?.description}{' '}
                         </Input.TextArea>
@@ -142,23 +142,23 @@ export const ViewVehicle = () => {
                 </div>
             </div>
 
-            <div className='flex  mb-3 px-5 gap-3'>
+            <div className='flex flex-md-column p-auto gap-3'>
                 {vehicle.quoter.details?.some(item => item.coin === Coin.USD) && (
-                    <div className='flex-1'>
+                    <div className='w-100'>
                         <Divider orientation='left'>Detalle en USD</Divider>
                         <TableDetail detail={vehicle.quoter.details.filter(item => item.coin === Coin.USD) ?? []} />
                     </div>
                 )}
 
                 {vehicle.quoter.details?.some(item => item.coin === Coin.GTQ) && (
-                    <div className='flex-1'>
+                    <div className='w-100'>
                         <Divider orientation='left'>Detalle en GTQ</Divider>
                         <TableDetail detail={vehicle.quoter.details?.filter(item => item.coin === Coin.GTQ) ?? []} />
                     </div>
                 )}
             </div>
 
-            <Divider orientation='left'>Historico</Divider>
+            <Divider orientation='left'>Histórico</Divider>
             <ImportHitory details={vehicle?.record ?? []} loading={loading} />
 
             <div className='flex  flex-row gap-3 justify-end'>

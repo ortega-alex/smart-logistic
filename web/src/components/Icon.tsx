@@ -6,7 +6,8 @@ import { CgProfile } from 'react-icons/cg';
 import { CiMenuKebab } from 'react-icons/ci';
 import { FaArrowLeft, FaArrowRight, FaCogs, FaExchangeAlt, FaRegFilePdf, FaRegTrashAlt } from 'react-icons/fa';
 import { FaAngleDown, FaSackDollar } from 'react-icons/fa6';
-import { FiUsers } from 'react-icons/fi';
+import { FiPhone, FiUsers } from 'react-icons/fi';
+import { GiGuatemala, GiUsaFlag } from 'react-icons/gi';
 import { GoBell } from 'react-icons/go';
 import { GrAttachment } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
@@ -14,7 +15,7 @@ import { IoIosInformationCircleOutline, IoMdArrowRoundBack } from 'react-icons/i
 import { IoCalendar, IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { LuAlarmClock, LuDownload } from 'react-icons/lu';
-import { MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
+import { MdMyLocation, MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
 import { RiAuctionLine } from 'react-icons/ri';
 import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
@@ -46,12 +47,15 @@ export const Icon = {
     Eye: BsEye,
     EyeSlash: BsEyeSlash,
     FilePdf: FaRegFilePdf,
+    Guatemala: GiGuatemala,
     InfoCircle: IoIosInformationCircleOutline,
+    Location: MdMyLocation,
     Lock: AiFillLock,
     Logout: AiOutlineLogout,
     MenuFold: AiOutlineMenuFold,
     MenuKebab: CiMenuKebab,
     MenuUnfold: AiOutlineMenuUnfold,
+    Phone: FiPhone,
     Printshop: MdOutlineLocalPrintshop,
     Profile: CgProfile,
     Plus: BiPlus,
@@ -59,6 +63,7 @@ export const Icon = {
     Reload: IoReload,
     Trash: FaRegTrashAlt,
     Upload: AiOutlineUpload,
+    Usa: GiUsaFlag,
     User: BiUser,
     Users: FiUsers,
     UsersPlus: TbUsersPlus,
@@ -70,6 +75,7 @@ export const Icon = {
 };
 
 export const IconEnun: Map = {
+    auction: <Icon.AuctionLine size='32%' />,
     calendar: <Icon.Calendar size='32%' />,
     calculate: <Icon.Calculate size='32%' />,
     car: <Icon.Car size='32%' />,
@@ -81,8 +87,8 @@ export const IconEnun: Map = {
     users: <Icon.Users size='32%' />,
     usersPlus: <Icon.UsersPlus size='32%' />,
     user: <Icon.User size='32%' />,
-    auction: <Icon.AuctionLine size='32%' />,
     sackDollar: <Icon.SackDollar size='32%' />,
+    auction_mobile: <Icon.AuctionLine />,
     calculate_mobile: <Icon.Calculate />,
     calendar_mobile: <Icon.Calendar />,
     car_mobile: <Icon.Car />,

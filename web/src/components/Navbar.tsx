@@ -140,7 +140,7 @@ export const Navbar = () => {
                 onClose={() => setSideMenu(false)}
                 closeIcon={null}
                 open={sideMenu}
-                width={200}
+                width={300}
             >
                 <div className='flex flex-column text-white'>
                     <Link to='/' className='navbar-brand'>
@@ -148,11 +148,15 @@ export const Navbar = () => {
                     </Link>
 
                     {menuState.map(item => (
-                        <h3 key={item.id} className='text-left ' onClick={() => handleNavigation(item.path)}>
+                        <h2
+                            key={item.id}
+                            className={`text-navbar ${pathname === `/${privateRoutes.PRIVATE}/${item.path}` ? 'text-primary' : ''}`}
+                            onClick={() => handleNavigation(item.path)}
+                        >
                             <span className='flex items-center gap-2'>
                                 {IconEnun[`${item.icon}_mobile`]} {item.name}
                             </span>
-                        </h3>
+                        </h2>
                     ))}
                 </div>
             </Drawer>

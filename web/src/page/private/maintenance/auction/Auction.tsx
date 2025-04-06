@@ -1,4 +1,4 @@
-import { Icon, Search } from '@/components';
+import { Icon, PageHeader } from '@/components';
 import { Auction as AuctionInterface, Headquarter, HeadquarterFilter, State } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetAllAuctions, httpGetAllHeadquarter, httpGetAllStates } from '@/services';
@@ -64,53 +64,49 @@ export const Auction = () => {
 
     return (
         <div className='h-100 flex flex-column p-auto'>
-            <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>{title}</h3>
-                <div>
-                    <Search onSearch={handleSearch} onReset={() => handleSearch('')} />
-                </div>
-                <Button
-                    type='primary'
-                    htmlType='button'
-                    onClick={() => {
-                        setAuction(EmptyAuction);
-                        setModal(true);
-                    }}
-                >
-                    Agregar
-                </Button>
-            </div>
+            <PageHeader
+                title={title}
+                onGet={handleGet}
+                onSearch={handleSearch}
+                onAdd={() => {
+                    setAuction(EmptyAuction);
+                    setModal(true);
+                }}
+            />
 
             {deviceState ? (
-                <List
-                    dataSource={auctions}
-                    loading={loading}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.name}
-                            </div>
-
-                            <div>
-                                <strong>Estadp EEUU: </strong>&nbsp;{item.state?.name}
-                            </div>
-                            <div>
-                                <strong>Sede: </strong>&nbsp;{item.headquarter?.name}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Tarifa: </strong>&nbsp;{commaSeparateNumber(item.crane_rate)}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                <div className='vh-75 overflow-y'>
+                    <List
+                        dataSource={auctions}
+                        loading={loading}
+                        renderItem={item => (
+                            <div className='item-list text-capitalize' key={item.id}>
+                                <div className='flex-1'>
+                                    <strong>Nombre: </strong>&nbsp;{item.name}
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
-                                    Editar
-                                </Button>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Usa />
+                                    {item.state?.name}
+                                </div>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Store />
+                                    {item.headquarter?.name}
+                                </div>
+                                <div className='flex-1'>
+                                    <strong>Tarifa: </strong>&nbsp;{commaSeparateNumber(item.crane_rate)}
+                                </div>
+                                <div className='flex flex-row justify-between'>
+                                    <div>
+                                        <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                                    </div>
+                                    <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                        Editar
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                />
+                        )}
+                    />
+                </div>
             ) : (
                 <Table
                     size='small'

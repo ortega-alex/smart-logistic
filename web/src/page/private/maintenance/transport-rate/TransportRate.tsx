@@ -1,4 +1,4 @@
-import { Icon, Search } from '@/components';
+import { Icon, PageHeader } from '@/components';
 import {
     CustomerType,
     Headquarter,
@@ -94,44 +94,53 @@ export const TransportRate = () => {
 
     return (
         <div className='h-100 flex flex-column p-auto'>
-            <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>{title}</h3>
-                <div>
-                    <Search onSearch={handleSearch} onReset={() => handleSearch('')} />
-                </div>
-                <Button
-                    type='primary'
-                    htmlType='button'
-                    onClick={() => {
-                        settransportRate(EmptyTransportRate);
-                        setModal(true);
-                    }}
-                >
-                    Agregar
-                </Button>
-            </div>
+            <PageHeader
+                title={title}
+                onGet={handleGet}
+                onSearch={handleSearch}
+                onAdd={() => {
+                    settransportRate(EmptyTransportRate);
+                    setModal(true);
+                }}
+            />
 
             {deviceState ? (
-                <List
-                    dataSource={transportRates}
-                    loading={loading}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{commaSeparateNumber(item.rate)}
-                            </div>
-
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                <div className='vh-75 overflow-y'>
+                    <List
+                        dataSource={transportRates}
+                        loading={loading}
+                        renderItem={item => (
+                            <div className='item-list text-capitalize' key={item.id}>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Store /> {item.headquarter?.name}
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item.id)}>
-                                    Editar
-                                </Button>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Car2 /> {item.vehicleType?.name}
+                                </div>
+                                <div className='flex justify-start gap-2'>
+                                    <div className='flex gap-1 items-center'>
+                                        <Icon.UsersPlus /> {item.customerType?.name}
+                                    </div>
+                                    <div className='flex gap-1 items-center'>
+                                        <Icon.Car /> {item.transportType?.name}
+                                    </div>
+                                </div>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.SackDollar /> {commaSeparateNumber(item.rate)}
+                                </div>
+
+                                <div className='flex flex-row justify-between'>
+                                    <div>
+                                        <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                                    </div>
+                                    <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item.id)}>
+                                        Editar
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                />
+                        )}
+                    />
+                </div>
             ) : (
                 <Table
                     size='small'

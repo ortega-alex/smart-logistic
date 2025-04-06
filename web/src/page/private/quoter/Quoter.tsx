@@ -5,7 +5,7 @@ import { Quoter as QuoterInterface, TableParams } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetQuoterPaginationData, httpGetQuotersById } from '@/services';
 import { getDateFormat } from '@/utilities';
-import { Button, List, message, Modal, Select, Table, TableProps, Tag, Tooltip } from 'antd';
+import { Button, List, message, Modal, Pagination, Select, Table, TableProps, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ export const Quoter = () => {
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: 1,
-            pageSize: 250
+            pageSize: 50
         }
     });
     const [filter, setFilter] = useState('');
@@ -77,7 +77,7 @@ export const Quoter = () => {
         <div className='h-100 flex flex-column p-auto'>
             <div className='flex flex-md-column gap-3 justify-between items-end mb-3'>
                 <div className='flex flex-column w-md-100'>
-                    <label htmlFor='cliente'>Cliente</label>
+                    <label htmlFor='cliente'>Cliente:</label>
                     <Select
                         placeholder='Selecciones una opción'
                         options={customers.filter(item => item.is_active).map(item => ({ label: item.name, value: item.id }))}
@@ -106,28 +106,63 @@ export const Quoter = () => {
             </div>
 
             {deviceState ? (
-                <List
-                    dataSource={quoters}
-                    loading={loadingData}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Cliente: </strong>&nbsp;{item.customer?.name}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Vendedor: </strong>&nbsp;{item.seller?.name}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                <>
+                    <div className='vh-66 overflow-y'>
+                        <List
+                            dataSource={quoters}
+                            loading={loadingData}
+                            rowKey='id'
+                            renderItem={item => (
+                                <div className='item-list text-capitalize' key={item.id}>
+                                    <div className='flex-1'>
+                                        <strong>Cliente: </strong>&nbsp;{item.customer?.name}
+                                    </div>
+                                    <div className='flex-1'>
+                                        <strong>Vendedor: </strong>&nbsp;{item.seller?.name}
+                                    </div>
+                                    <div className='flex flex-row gap-2'>
+                                        <div>
+                                            <strong>Marca:</strong> {item.mark}
+                                        </div>
+                                        <div>
+                                            <strong>Modelo:</strong> {item.model}
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row justify-between'>
+                                        <div>
+                                            <strong>Aprobada: </strong>&nbsp;
+                                            <span className={item.is_aproverd ? 'text-success' : 'text-danger'}>
+                                                {item.is_aproverd ? 'Sí' : 'No'}
+                                            </span>
+                                        </div>
+                                        <Button
+                                            type='link'
+                                            danger
+                                            htmlType='button'
+                                            icon={<Icon.Edit />}
+                                            onClick={() => handleEdit(item.id)}
+                                        >
+                                            Editar
+                                        </Button>
+                                    </div>
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item.id)}>
-                                    Editar
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                />
+                            )}
+                        />
+                    </div>
+                    <Pagination
+                        className='mt-3'
+                        align='end'
+                        {...tableParams.pagination}
+                        onChange={current =>
+                            setTableParams({
+                                pagination: {
+                                    ...tableParams.pagination,
+                                    current
+                                }
+                            })
+                        }
+                    />
+                </>
             ) : (
                 <Table
                     size='small'
@@ -136,7 +171,7 @@ export const Quoter = () => {
                         position: ['none', 'bottomRight'],
                         ...tableParams.pagination,
                         showSizeChanger: true,
-                        pageSizeOptions: [50, 100, 250, 500]
+                        pageSizeOptions: [2, 50, 100, 250, 500]
                     }}
                     onChange={handleTableChange}
                     className='table'

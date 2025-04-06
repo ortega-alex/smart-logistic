@@ -1,4 +1,4 @@
-import { Icon, Search } from '@/components';
+import { Icon, PageHeader } from '@/components';
 import { Department, Headquarter as HeadquarterInterface, State } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetAllDepartments, httpGetAllHeadquarter, httpGetAllStates } from '@/services';
@@ -61,53 +61,53 @@ export const Headquarter = () => {
 
     return (
         <div className='h-100 flex flex-column p-auto'>
-            <div className='flex flex-md-column gap-3 justify-between'>
-                <h3>{title}</h3>
-                <div>
-                    <Search onSearch={handleSearch} onReset={() => handleSearch('')} />
-                </div>
-                <Button
-                    type='primary'
-                    htmlType='button'
-                    onClick={() => {
-                        setHeadquarter(EmptyHeadquarter);
-                        setModal(true);
-                    }}
-                >
-                    Agregar
-                </Button>
-            </div>
+            <PageHeader
+                title={title}
+                onGet={handleGet}
+                onSearch={handleSearch}
+                onAdd={() => {
+                    setHeadquarter(EmptyHeadquarter);
+                    setModal(true);
+                }}
+            />
 
             {deviceState ? (
-                <List
-                    dataSource={headquarters}
-                    loading={loading}
-                    renderItem={item => (
-                        <div className='item-list' key={item.id}>
-                            <div className='flex-1'>
-                                <strong>Nombre: </strong>&nbsp;{item.name}
-                            </div>
-
-                            <div>
-                                <strong>Estadp EEUU: </strong>&nbsp;{item.state?.name}
-                            </div>
-                            <div>
-                                <strong>Sede: </strong>&nbsp;{item.name}
-                            </div>
-                            <div className='flex-1'>
-                                <strong>Estado/Departamento: </strong>&nbsp;{item?.state?.name ?? item?.department?.name}
-                            </div>
-                            <div className='flex flex-row justify-between'>
-                                <div>
-                                    <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                <div className='vh-75 overflow-y'>
+                    <List
+                        dataSource={headquarters}
+                        loading={loading}
+                        renderItem={item => (
+                            <div className='item-list text-capitalize' key={item.id}>
+                                <div className='flex-1'>
+                                    <strong>Nombre: </strong>&nbsp;{item.name}
                                 </div>
-                                <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
-                                    Editar
-                                </Button>
+                                <div className='flex gap-1 items-center'>
+                                    <Icon.Location />
+                                    {item.name}
+                                </div>
+                                {item.state ? (
+                                    <div className='flex gap-1 items-center'>
+                                        <Icon.Usa />
+                                        {item.state?.name}
+                                    </div>
+                                ) : (
+                                    <div className='flex gap-1 items-center'>
+                                        <Icon.Guatemala />
+                                        {item.department?.name}
+                                    </div>
+                                )}
+                                <div className='flex flex-row justify-between'>
+                                    <div>
+                                        <strong>Estado: </strong>&nbsp;{item.is_active ? 'Activo' : 'Inactivo'}
+                                    </div>
+                                    <Button type='link' danger htmlType='button' icon={<Icon.Edit />} onClick={() => handleEdit(item)}>
+                                        Editar
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                />
+                        )}
+                    />
+                </div>
             ) : (
                 <Table
                     size='small'
