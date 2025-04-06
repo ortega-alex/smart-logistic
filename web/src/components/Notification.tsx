@@ -1,52 +1,68 @@
-import { privateRoutes } from '@/constants';
+import { _SERVER, NotificationPriorityLabel, privateRoutes } from '@/constants';
 import { useSocket } from '@/hooks';
-import { Customer, Notification as TypeNotification, User, Vehicle } from '@/interfaces';
+import { Customer, Notification as NotificationInterface, NotificationPriority, Session } from '@/interfaces';
 import { RootState } from '@/redux';
 import {
-    // httpEditCustomer,
-    // httpEditUser,
+    httpEditCustomer,
+    httpEditUser,
     httpGetNotificationByCustomerId,
     httpGetNotificationByUserId,
-    httpUpdateNotification
-    // onMessageListener,
-    // requestForToken
+    httpUpdateNotification,
+    onMessageListener,
+    requestForToken
 } from '@/services';
 import { durationInDaysBetweenDateHumanize, getDateFromString } from '@/utilities';
-import { Badge, Button, message, Popover } from 'antd';
+import { Badge, Button, message, Modal, notification as NotificationAnt, Popover } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon } from './Icon';
 import { Loader } from './Loading';
 
+export const NotificationEmpty = {
+    id: '',
+    title: '',
+    description: '',
+    priority: NotificationPriority.LOW,
+    seen: false,
+    is_active: true,
+    created_at: ''
+};
+
 export const Notification = () => {
-    const sessionState: User = useSelector((store: RootState) => store.session);
+    const sessionState: Session = useSelector((store: RootState) => store.session);
     const sessionCustomerState: Customer = useSelector((store: RootState) => store.session_customer);
+    const deviceState = useSelector((store: RootState) => store.device);
     const { socket } = useSocket();
-    // const [api, contextHolder] = notification.useNotification();
+    const [api, contextHolder] = NotificationAnt.useNotification();
 
-    const [notifications, setNotifications] = useState<TypeNotification[]>([]);
+    const [notifications, setNotifications] = useState<NotificationInterface[]>([]);
+    const [notification, setNotification] = useState<NotificationInterface>(NotificationEmpty);
     const [loading, setLoading] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [popover, setPopover] = useState(false);
 
-    const handleNavigate = (vehicle: Vehicle) => {
-        let path;
-        if (sessionState.id > 0) path = `${privateRoutes.PRIVATE}/${privateRoutes.VEHICLES}/${vehicle.quoter.lot}`;
-        if (sessionCustomerState.id > 0) path = `${privateRoutes.PRIVATE_CUSTOMER}/${privateRoutes.CUSTOMER_ORDER_DETAIL}/${vehicle.id}`;
-        window.open(`${window.location.origin}/#/${path}`, '_blank');
+    const handleNavigate = (path: string) => {
+        const _path = sessionState.session_id > 0 ? `${privateRoutes.PRIVATE}/${path}` : `${privateRoutes.PRIVATE_CUSTOMER}/${path}`;
+        window.open(`${window.location.origin}/#/${_path}`, '_blank');
     };
 
-    const handleUpdateNotification = async (notificacion: TypeNotification) => {
+    const handleSeenNotification = async (notificacion: NotificationInterface) => {
         try {
-            setLoading(true);
-            if (!notificacion.visto) {
-                await httpUpdateNotification(notificacion.id_notificacion);
-                handleGetNotifications();
+            setPopover(false);
+            if (!notificacion.seen) {
+                const _notifications = [...notifications];
+                await httpUpdateNotification(notificacion.id);
+                setNotifications([
+                    ..._notifications.map(item => {
+                        if (item.id === notificacion.id) return { ...item, seen: true };
+                        return item;
+                    })
+                ]);
             }
-            if (sessionState.id && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
-            if (sessionCustomerState.id && notificacion.cliente && notificacion.vehiculo) handleNavigate(notificacion.vehiculo);
+            setNotification(notificacion);
+            setModal(true);
         } catch (error) {
             message.error(`Error http update notification: ${(error as Error).message}`);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -56,22 +72,26 @@ export const Notification = () => {
                 {loading && <Loader />}
                 <div className='flex flex-column'>{notifications.length === 0 && <p>No tienes notificaciones</p>}</div>
                 {notifications.map((item, i) => (
-                    <div key={i} className={`notification-item ${i % 2 === 0 ? 'bg-white' : 'bg-gray'} flex flex-column`}>
-                        <Badge count={!item.visto ? 1 : 0} dot={!item.visto}></Badge>
-                        <div className='flex justify-between'>
-                            <strong style={{ color: item.prioridad }}> {item.titulo}</strong>
-                            <small>
-                                <b>{durationInDaysBetweenDateHumanize(getDateFromString(item.fecha_creacion))}</b>
-                            </small>
+                    <div
+                        key={i}
+                        className={`notification-item ${i % 2 === 0 ? 'bg-white' : 'bg-gray'} flex flex-column`}
+                        onClick={() => handleSeenNotification(item)}
+                    >
+                        <Badge.Ribbon color={item.priority} text={NotificationPriorityLabel[item.priority as NotificationPriority]} />
+                        <h3 className='text-capitalize mt-4 mb-0'> {item.title}</h3>
+                        <div>
+                            {item.description.slice(0, 50)} {item.description.length > 50 && '...'}
                         </div>
-                        <div> {item.contenido}</div>
-                        {(item.vehiculo || !item.visto) && (
-                            <div className='text-right'>
-                                <Button size='small' type='link' color='cyan' onClick={() => handleUpdateNotification(item)}>
-                                    {item.vehiculo ? 'Ir' : 'Visto!'}
-                                </Button>
-                            </div>
-                        )}
+                        <div className='flex justify-end gap-1'>
+                            <small>
+                                <b>{durationInDaysBetweenDateHumanize(getDateFromString(item.created_at))}</b>
+                            </small>
+                            <Button
+                                size='small'
+                                type='link'
+                                icon={item.seen ? <Icon.DoneAll color='green' /> : <Icon.Done color='gray' />}
+                            />
+                        </div>
                     </div>
                 ))}
             </div>
@@ -82,7 +102,7 @@ export const Notification = () => {
         try {
             setLoading(true);
             let res;
-            if (sessionState.id) res = await httpGetNotificationByUserId(sessionState.id);
+            if (sessionState.session_id) res = await httpGetNotificationByUserId(sessionState.session_id);
             if (sessionCustomerState.id) res = await httpGetNotificationByCustomerId(sessionCustomerState.id);
             setNotifications(res);
         } catch (error) {
@@ -92,51 +112,84 @@ export const Notification = () => {
         }
     };
 
-    // const handleGetToken_fcm = async () => {
-    //     try {
-    //         const token = await requestForToken();
-    //         if (sessionState.id_usuario > 0) await httpEditUser({ ...sessionState, token_fcm: token });
-    //         if (sessionCustomerState.id_cliente > 0) await httpEditCustomer({ ...sessionCustomerState, token_fcm: token });
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    const handleGetToken_fcm = async () => {
+        try {
+            const token = await String(requestForToken());
+            if (sessionState.session_id > 0) await httpEditUser({ ...sessionState, token_fcm: token });
+            if (sessionCustomerState.id > 0) await httpEditCustomer({ ...sessionCustomerState, token_fcm: token });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
-        // handleGetNotifications();
-        // if (socket) {
-        //     if (sessionState.id) {
-        //         socket.on('notification', _notifications => handleGetNotifications());
-        //         socket.on(`notification-${sessionState.id}`, _notifications => handleGetNotifications());
-        //     }
-        //     if (sessionCustomerState.id_cliente)
-        //         socket.on(`notification-${sessionCustomerState.id_cliente}`, _notifications => handleGetNotifications());
-        // }
-        // handleGetToken_fcm();
-        // onMessageListener().then((payload: any) => {
-        //     console.log(payload?.data.key);
-        //     api.open({
-        //         type: 'info',
-        //         message: payload?.notification?.title ?? 'Nueva Notificacion',
-        //         description: payload?.notification?.body ?? 'Nueva Notificacion',
-        //         showProgress: true,
-        //         pauseOnHover: true,
-        //         placement: 'bottomRight',
-        //         btn: payload?.data && (
-        //             <Button onClick={() => handleNavigate({ lote: payload?.data?.lote, id_vehiculo: payload?.data?.id })}>Ver</Button>
-        //         )
-        //     });
-        // });
+        handleGetNotifications();
+        if (socket) {
+            if (sessionState.session_id) {
+                socket.on('notification', () => handleGetNotifications());
+                socket.on(`notification-${sessionState.session_id}`, () => handleGetNotifications());
+            }
+            if (sessionCustomerState.id) socket.on(`notification-${sessionCustomerState.id}`, () => handleGetNotifications());
+        }
+        if (window.location.protocol === 'https:' || _SERVER.NODE_ENV === 'development') {
+            handleGetToken_fcm();
+            onMessageListener().then((payload: any) => {
+                api.open({
+                    type: 'info',
+                    message: payload?.notification?.title ?? 'Nueva Notificacion',
+                    description: payload?.notification?.body ?? 'Nueva Notificacion',
+                    showProgress: true,
+                    pauseOnHover: true,
+                    placement: 'bottomRight',
+                    btn: payload?.data?.path && <Button onClick={() => handleNavigate(payload.data.path)}>Ver</Button>
+                });
+            });
+        }
     }, []);
 
     return (
         <>
-            {/* contextHolder */}
-            <Popover content={renderNotification}>
-                <Badge count={notifications.filter(item => !item.visto).length} className='mr-3'>
+            {contextHolder}
+            <Popover
+                content={renderNotification}
+                trigger={deviceState ? 'click' : 'hover'}
+                open={popover}
+                onOpenChange={value => setPopover(value)}
+            >
+                <Badge count={notifications.filter(item => !item.seen).length} className='mr-3'>
                     <Icon.Bell color='white' size={32} />
                 </Badge>
             </Popover>
+            <Modal title={<h3>Notificación</h3>} open={modal} onCancel={() => setModal(false)} footer={null} centered>
+                <div className='flex flex-column'>
+                    <div className='flex justify-statr gap-2'>
+                        <div className='flex gap-1'>
+                            <strong>Prioridad:</strong>
+                            <span>{NotificationPriorityLabel[notification.priority]}</span>
+                        </div>
+                        <div className='flex gap-1'>
+                            <strong>Fecha:</strong>
+                            <span>{notification.created_at}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong>Titulo:</strong>
+                        <h3 className='text-capitalize'> {notification.title} </h3>
+                    </div>
+
+                    <div>
+                        <strong>Descripción:</strong>
+                        <p>{notification.description}</p>
+                    </div>
+
+                    {notification.path && (
+                        <div className='text-right'>
+                            <Button onClick={() => handleNavigate(String(notification.path))}>Ir</Button>
+                        </div>
+                    )}
+                </div>
+            </Modal>
         </>
     );
 };

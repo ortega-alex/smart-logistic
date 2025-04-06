@@ -825,9 +825,16 @@
 }
 
 .notification-item {
-    padding: 10px;
-    border-radius: 5px;
-    width: 250px;
+    padding: 1rem;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: 350px;
+    transition: transform 0.2s;
+}
+
+.notification-item:hover {
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
 .loader {

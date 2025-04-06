@@ -27,7 +27,7 @@ export const httpRequest = async (payload: RequesParam): Promise<any> => {
         }
 
         // CIFRA LA INFORMACION POST | PUT, PRODUCCION
-        if (process.env.NODE_ENV !== 'development' && data && payload?.type !== 'multipart') data = encryptRequest(data);
+        if (_SERVER.NODE_ENV !== 'development' && data && payload?.type !== 'multipart') data = encryptRequest(data);
 
         const res = await axios({
             method: payload.method,

@@ -15,7 +15,7 @@ import { IoIosInformationCircleOutline, IoMdArrowRoundBack } from 'react-icons/i
 import { IoCalendar, IoCheckmarkDone, IoReload, IoStorefrontOutline } from 'react-icons/io5';
 import { LiaCarAltSolid } from 'react-icons/lia';
 import { LuAlarmClock, LuDownload } from 'react-icons/lu';
-import { MdMyLocation, MdOutlineCalculate, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
+import { MdMyLocation, MdOutlineCalculate, MdOutlineDone, MdOutlineLocalPrintshop, MdOutlineMail } from 'react-icons/md';
 import { RiAuctionLine } from 'react-icons/ri';
 import { TbArrowsExchange2, TbCar, TbCarCrane, TbUsersPlus } from 'react-icons/tb';
 
@@ -40,7 +40,8 @@ export const Icon = {
     Copy: BiCopy,
     Clock: LuAlarmClock,
     Crane: TbCarCrane,
-    Done: IoCheckmarkDone,
+    DoneAll: IoCheckmarkDone,
+    Done: MdOutlineDone,
     Download: LuDownload,
     Edit: BiEdit,
     EMail: MdOutlineMail,

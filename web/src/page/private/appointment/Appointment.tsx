@@ -67,7 +67,10 @@ export const Appointment = () => {
                     <ul style={{ listStyle: 'none', padding: 0 }}>
                         {dayAppointments.map(item => (
                             <li key={item.id}>
-                                <Badge color={item.status?.color} text={`${item.title} - ${dayjs(item.date).format('HH:mm').toString()}`} />
+                                <Badge
+                                    color={item.status?.color}
+                                    text={`${item.title.slice(0, 14)}... - ${dayjs(item.date).format('HH:mm').toString()}`}
+                                />
                             </li>
                         ))}
                     </ul>
@@ -138,7 +141,7 @@ export const Appointment = () => {
                                 >
                                     {dayjs.months().map((month, i) => (
                                         <Select.Option key={i} value={i}>
-                                            {month}
+                                            <span className='text-capitalize'>{month}</span>
                                         </Select.Option>
                                     ))}
                                 </Select>

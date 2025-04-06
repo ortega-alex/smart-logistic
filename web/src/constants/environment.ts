@@ -21,7 +21,8 @@ else {
 
 export const _SERVER = {
     baseUrl: domain,
-    apiUrl: `${domain}api/${VERSION_API}`
+    apiUrl: `${domain}api/${VERSION_API}`,
+    NODE_ENV
 } as const;
 
 export const _KEYS = {

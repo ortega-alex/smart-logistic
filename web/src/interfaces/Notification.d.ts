@@ -1,14 +1,21 @@
-import { Customer, User, Vehicles } from '../models';
+import { Customer } from './Customer';
+import { User } from './User';
+
+export enum NotificationPriority {
+    LOW = '#096dd9',
+    MEDIUM = '#FA541C',
+    HIGH = '#F5222D'
+}
 
 export interface Notification {
-    id_notificacion: number;
-    titulo: string;
-    contenido: string;
-    prioridad: string;
-    visto: boolean;
-    estado: boolean;
-    fecha_creacion: string;
-    cliente?: Customer;
-    usuario?: User;
-    vehiculo?: Vehicles;
+    id: string;
+    title: string;
+    description: string;
+    path?: string;
+    priority: NotificationPriority;
+    seen: boolean;
+    is_active: boolean;
+    created_at: string;
+    customer?: Customer;
+    user?: User;
 }

@@ -6,4 +6,4 @@ export const httpGetNotificationByUserId = async (id: number) => await httpReque
 
 export const httpGetNotificationByCustomerId = async (id: number) => await httpRequest({ path: `${path}/customer/${id}`, method: 'GET' });
 
-export const httpUpdateNotification = async (id: number) => await httpRequest({ path: `${path}/${id}`, method: 'PUT' });
+export const httpUpdateNotification = async (id: string) => await httpRequest({ path: `${path}/${id}`, method: 'PUT' });
