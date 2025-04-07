@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { save as saveCustomerFileService } from '../customer-file/customer-file.service';
 import { getById as getCustomerTypeByIdService } from '../customer-type/customer-type.service';
-import CustomerService from '../customer/customer.service';
-import { generateToken } from '../middleware';
+import CustomerService from './customer.service';
+import { generateToken } from '../../middleware';
 
 export const login = async (req: Request, res: Response) => {
     try {

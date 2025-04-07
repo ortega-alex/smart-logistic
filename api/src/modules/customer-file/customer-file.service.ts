@@ -1,5 +1,5 @@
 import { Customer } from '../customer/entity/Customer';
-import { enviroment } from '../utils';
+import { enviroment } from '../../utils';
 import { CustomerFile } from './entity/CustomerFile';
 
 export const getById = async (id: number) => await CustomerFile.findOneBy({ id });

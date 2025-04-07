@@ -5,12 +5,12 @@ import { getById as getCustomerByIdService } from '../customer/customer.service'
 import { getById as getIssuingHeadquarterByIdService } from '../headquarter/headquarter.service';
 import { getById as getTransportTypeByIdService } from '../transport-type/transport-type.service';
 import { getById as getUserByIdService } from '../user/user.service';
-import { commaSeparateNumber, createPdfWithTable, generateAttachmentPdf, unionEndPfd } from '../utils';
+import { commaSeparateNumber, createPdfWithTable, generateAttachmentPdf, unionEndPfd } from '../../utils';
 import { getById as getVehicleTypeByIdService } from '../vehicle-type/vehicle-type.service';
 import { Coin } from './interface/Quoter';
 import QuoterService from './quoter.service';
-import { Email } from '../interfaces';
-import { sendEmail } from '../email';
+import { Email } from '../../interfaces';
+import { sendEmail } from '../../email';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {

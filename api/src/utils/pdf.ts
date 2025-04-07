@@ -1,8 +1,8 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { Quoter } from '../quoter/entity/Quoter';
+import { Quoter } from '../modules/quoter/entity/Quoter';
 import path from 'path';
 import fs from 'fs';
-import { Coin, QuoterDetail } from '../quoter/interface/Quoter';
+import { Coin, QuoterDetail } from '../modules/quoter/interface/Quoter';
 import { commaSeparateNumber } from './format.utility';
 
 export interface Attachment {

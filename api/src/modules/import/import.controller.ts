@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import { getById as getCustomerByIdService } from '../customer/customer.service';
-import { saveFile } from '../middleware';
+import { saveFile } from '../../middleware';
 import { getById as getUserByIdService } from '../user/user.service';
 import { getById as getVehicleByIdService, update as updateVehicleService } from '../vehicle/vehicle.service';
 import ImportService from './import.service';
+import { add as addNotificationService } from '../notification/notification.service';
+import { NotificationPriority } from '../notification/interface/Notification';
+import { emitNotificationSocket, enviroment, sendNotification } from '../../utils';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
@@ -62,52 +65,54 @@ export const addHistory = async (req: Request, res: Response) => {
 
         const message = 'Historial de importacion creado';
         if (vehicle.importState.id !== importState.id) {
-            // const notification_title = 'Nuevo estado';
-            // newNotification(
-            //     {
-            //         id_vehiculo: vehicle.id_vehiculo,
-            //         id_cliente: customer?.id_cliente,
-            //         id_usuario: vehicle.cotizacion.vendedor.id_usuario,
-            //         titulo: notification_title,
-            //         contenido: descripcion
-            //     },
-            //     io
-            // );
-            // if (customer?.token_fcm)
-            //     sendNotification({
-            //         token: customer.token_fcm,
-            //         notification: {
-            //             title: notification_title,
-            //             body: descripcion
-            //         },
-            //         data: {
-            //             id_vehiculo: String(vehicle.id_vehiculo),
-            //             lote: vehicle.cotizacion.lote
-            //         }
-            //     });
-
-            // if (vehicle.cotizacion.vendedor?.token_fcm)
-            //     sendNotification({
-            //         token: vehicle.cotizacion.vendedor?.token_fcm,
-            //         notification: {
-            //             title: notification_title,
-            //             body: descripcion
-            //         },
-            //         data: {
-            //             id_vehiculo: String(vehicle.id_vehiculo),
-            //             lote: vehicle.cotizacion.lote
-            //         }
-            //     });
-
-            // const update = await Vehicles.update(
-            //     { id_vehiculo: Number(id) },
-            //     {
-            //         estado_importacion: import_state
-            //     }
-            // );
             const updateVehicle = await updateVehicleService(Number(vehicle.id), { importState: importState });
-            if ((updateVehicle?.affected ?? 0) > 0)
+            if ((updateVehicle?.affected ?? 0) > 0) {
+                const title = 'Nuevo estado';
+                const description = `El estado de la importacion con lote: ${vehicle.quoter.lot}, vehículo: ${vehicle.quoter.mark} ${vehicle.quoter.model} ha cambiado a ${importState.name}`;
+
+                const notification = await addNotificationService({
+                    title,
+                    description,
+                    priority: NotificationPriority.LOW,
+                    customer: vehicle.quoter.customer,
+                    user: vehicle.quoter.seller
+                });
+
+                if (notification) {
+                    emitNotificationSocket(req.app.locals.io, {
+                        customer: vehicle.quoter.customer,
+                        user: vehicle.quoter.seller
+                    });
+
+                    if (req.headers?.origin?.includes('https') || enviroment.NODE_ENV === 'development') {
+                        if (customer?.token_fcm)
+                            sendNotification({
+                                token: customer.token_fcm,
+                                notification: {
+                                    title,
+                                    body: description
+                                },
+                                data: {
+                                    path: '/customer-order-detail/' + String(vehicle.id)
+                                }
+                            });
+
+                        if (vehicle.quoter.seller?.token_fcm)
+                            sendNotification({
+                                token: vehicle.quoter.seller?.token_fcm,
+                                notification: {
+                                    title,
+                                    body: description
+                                },
+                                data: {
+                                    path: '/vehicle/' + String(vehicle.quoter.lot)
+                                }
+                            });
+                    }
+                }
+
                 return res.status(200).json({ success: true, message: `${message}, y vehiculo actualizado'` });
+            }
             return res.status(203).json({ message: `${message} No se pudo actualizar el vehiculo` });
         }
 

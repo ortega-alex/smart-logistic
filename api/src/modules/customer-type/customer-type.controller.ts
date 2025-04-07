@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import CustomerTypeService from '../customer-type/customer-type.service';
+import CustomerTypeService from './customer-type.service';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {

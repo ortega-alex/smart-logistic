@@ -1,4 +1,4 @@
-import { CustomerType } from '../customer-type/entity/CustomerType';
+import { CustomerType } from './entity/CustomerType';
 import { CustomerType as CustomerTypeInterface } from './interface/CustomerType';
 
 export const getAll = async () => await CustomerType.find();

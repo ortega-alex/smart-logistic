@@ -1,9 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
-import { sendEmail } from '../email';
+import { sendEmail } from '../../email';
 import { getById as getHeadquarterByIdService } from '../headquarter/headquarter.service';
-import { defaultPassword, Email } from '../interfaces';
-import { generateToken } from '../middleware';
+import { defaultPassword, Email } from '../../interfaces';
+import { generateToken } from '../../middleware';
 import { getById as getProfileByIdService } from '../profile/profile.service';
 import UserService from './user.service';
 

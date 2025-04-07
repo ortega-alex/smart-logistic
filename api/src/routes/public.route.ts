@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { login as loginCustomer } from '../customer/customer.controller';
-import { forgotPassword, login, resetPassword } from '../user/user.controller';
+import { login as loginCustomer } from '../modules/customer/customer.controller';
+import { forgotPassword, login, resetPassword } from '../modules/user/user.controller';
 import { Message, sendNotification } from '../utils';
 
 const routes = Router();

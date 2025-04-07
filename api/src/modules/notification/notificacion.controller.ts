@@ -1,15 +1,9 @@
 import { Request, Response } from 'express';
-import { Socket } from 'socket.io';
+import { emitNotificationSocket } from '../../utils';
 import { getById as getCustomerByIdService } from '../customer/customer.service';
 import { getById as getUserByIdService } from '../user/user.service';
-import { NotificationOptional, NotificationPriority } from './interface/Notification';
+import { NotificationPriority } from './interface/Notification';
 import NotificationService from './notification.service';
-
-export const emitNotificationSocket = async (io: Socket, notificacion: NotificationOptional) => {
-    if (notificacion.customer) io.emit(`notification-${notificacion.customer?.id}`, notificacion);
-    else if (notificacion.user) io.emit(`notification-${notificacion.user?.id}`, notificacion);
-    else io.emit('notification', notificacion);
-};
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
