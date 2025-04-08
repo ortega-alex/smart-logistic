@@ -91,7 +91,7 @@ export const QuoterDetail = () => {
             {details[Coin.GTQ].length > 0 && (
                 <>
                     <Divider orientation='left'>Costos GTQ</Divider>
-                    {renderDetail(details[Coin.GTQ], Coin.USD)}
+                    {renderDetail(details[Coin.GTQ], Coin.GTQ)}
                 </>
             )}
 

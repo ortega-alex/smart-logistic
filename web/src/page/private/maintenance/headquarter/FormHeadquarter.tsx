@@ -23,10 +23,14 @@ export const FormHeadquarter: React.FC<Props> = ({ headquarter, states, departme
         const [key, _value] = Object.entries(env)[0];
         if (key === 'state_id' || key === 'department_id') {
             let _required = { ...required };
-            if (key === 'state_id') _required = { state: true, department: false };
-            else if (key === 'department_id') _required = { state: false, department: true };
+            if (key === 'state_id') {
+                _required = { state: true, department: false };
+                formRef.current?.setFieldsValue({ department_id: undefined });
+            } else if (key === 'department_id') {
+                _required = { state: false, department: true };
+                formRef.current?.setFieldsValue({ state_id: undefined });
+            }
             setRequired(_required);
-            formRef.current?.validateFields();
         }
     };
 

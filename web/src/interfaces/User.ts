@@ -32,6 +32,9 @@ export interface User {
 export interface Session extends User {
     session_id: number;
     iniciales: string;
+    level: number;
+    headquarter_id: number;
+    eeuu_state?: boolean;
 }
 
 export type Loogin = Pick<User, 'username' | 'password'>;

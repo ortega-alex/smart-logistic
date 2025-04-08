@@ -6,10 +6,11 @@ import { Provider } from 'react-redux';
 import { HashRouter, Navigate, Route } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { Loading, RoutesWithNotFound } from './components';
-import { privateRoutes, publicRoutes, color, _SERVER } from './constants';
+import { privateRoutes, publicRoutes, color, _SERVER, _KEYS } from './constants';
 import { Interceptor } from './interceptors';
 import { store } from './redux';
 import { ClienteToServerEvents, ServerToClientEvents } from './interfaces';
+import { getStorage, saveStorage } from './services';
 
 const SingIn = lazy(() => import('@/page/sing-In/SingIn').then(module => ({ default: module.SingIn })));
 const SingInCustomer = lazy(() => import('@/page/sing-in-customer/SingInCustomer').then(module => ({ default: module.SingInCustomer })));
@@ -26,6 +27,19 @@ export const App = () => {
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
+        (async () => {
+            const currentVersion = await getStorage(_KEYS.CURRENT_API_VERSION);
+            if ('caches' in window && currentVersion !== _KEYS.API_VERSION) {
+                caches.keys().then(keys => {
+                    keys.forEach(key => {
+                        caches.delete(key);
+                    });
+                    window.location.reload();
+                    saveStorage(_KEYS.CURRENT_API_VERSION, String(_KEYS.API_VERSION));
+                });
+            }
+        })();
+
         try {
             const _socket: Socket<ServerToClientEvents, ClienteToServerEvents> = io(_SERVER.socketUrl, {
                 transports: ['websocket'],

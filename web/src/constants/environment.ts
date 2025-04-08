@@ -5,7 +5,9 @@ const {
     SESSION_CUSTOMER = '1c238ba4-a764-11ef-b097-0242ac130002',
     SECRET = 'e1f86c0b-6a5d-11ef-80f9-0242ac130002',
     IV = 'f1873205-6a5d-11ef-80f9-0242ac130002',
-    TOKEN = '6f5b5c3a-6a61-11ef-80f9-0242ac130002'
+    TOKEN = '6f5b5c3a-6a61-11ef-80f9-0242ac130002',
+    npm_package_version,
+    CURRENT_API_VERSION = '3ff01093-293c-4699-8b92-efa01ac513fd'
 } = process.env;
 const {
     VITE_FIREBASE_TOKEN = '6f5b5c3a-6a61-11ef-80f9-0242ac130002',
@@ -20,9 +22,9 @@ export const _SERVER = {
     NODE_ENV
 } as const;
 
-console.log(_SERVER);
-
 export const _KEYS = {
+    API_VERSION: npm_package_version,
+    CURRENT_API_VERSION,
     SESSION,
     SESSION_CUSTOMER,
     SECRET,

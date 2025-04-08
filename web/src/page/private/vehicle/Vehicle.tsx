@@ -53,7 +53,7 @@ export const Vehicle = () => {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize,
             filter,
-            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC',
+            sortOrder: tableParams.sortOrder === 'ascend' ? 'ASC' : 'DESC',
             session_id: sessionState.session_id
         })
             .then(res => {
@@ -106,9 +106,7 @@ export const Vehicle = () => {
                     </Tooltip>
                     <Search onSearch={(value: string) => setFilter(value)} onReset={() => setFilter('')} />
                 </div>
-                <Button type='primary' htmlType='button' onClick={() => {}} className='w-md-100'>
-                    Agregar
-                </Button>
+                <div></div>
             </div>
 
             {deviceState ? (
@@ -189,11 +187,6 @@ export const Vehicle = () => {
                     rowKey='id'
                     dataSource={vehicles}
                     columns={[
-                        {
-                            title: 'No',
-                            dataIndex: 'id',
-                            sorter: true
-                        },
                         {
                             title: 'Fecha',
                             dataIndex: 'created_at',

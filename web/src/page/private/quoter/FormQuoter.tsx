@@ -102,6 +102,7 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
     };
 
     useEffect(() => {
+        console.log(session);
         httpGetAllTransportTypes()
             .then(res => setTransportType(res))
             .catch(err => message.error(`Error http get transport types: ${err.message}}`));
@@ -138,8 +139,8 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
                     transport_type_id: quoter.transportType?.id,
                     vehicle_type_id: quoter.vehicleType?.id,
                     auction_id: quoter.auction?.id,
-                    issuing_headquarter_id: quoter.issuingHeadquarter?.id,
-                    headquarter_id: quoter.headquarter?.id
+                    issuing_headquarter_id: quoter.issuingHeadquarter?.id ?? (!session.eeuu_state ? session.headquarter_id : undefined),
+                    headquarter_id: quoter.headquarter?.id ?? (session.eeuu_state ? session.headquarter_id : undefined)
                 }}
                 layout='vertical'
                 onFinish={handleSubmit}
@@ -181,6 +182,7 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
                                         className='w-100'
                                         placeholder='Selecciones una opción'
                                         options={headquarters[HeadquarterFilter.GT].map(item => ({ label: item.name, value: item.id }))}
+                                        disabled={session.level !== 1 && !session.eeuu_state}
                                     />
                                 </Form.Item>
                                 <Form.Item
@@ -191,6 +193,7 @@ export const FormQuoter: React.FC<Props> = ({ onClose }) => {
                                 >
                                     <Select
                                         allowClear
+                                        disabled={session.level !== 1 && session.eeuu_state}
                                         className='w-100'
                                         placeholder='Selecciones una opción'
                                         options={headquarters[HeadquarterFilter.EEUU].map(item => ({ label: item.name, value: item.id }))}

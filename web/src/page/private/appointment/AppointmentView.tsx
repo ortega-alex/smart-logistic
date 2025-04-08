@@ -1,7 +1,7 @@
 import { Icon } from '@/components';
 import { Appointment, AppointmentStatus, AppointmentView as AppointmentViewInterface, Customer } from '@/interfaces';
 import { httpAppointmentAdd, httpAppointmentUpdate } from '@/services';
-import { Button, DatePicker, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
+import { Badge, Button, DatePicker, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 
@@ -79,8 +79,7 @@ export const AppointmentView: React.FC<Props> = ({ appointment, appointementsSta
                     }}
                 >
                     <Form.Item name='id' hidden>
-                        {' '}
-                        <Input />{' '}
+                        <Input />
                     </Form.Item>
 
                     <Form.Item label='Fecha' name='date' rules={[{ required: true, message: 'El campo es requerido' }]}>
@@ -130,10 +129,11 @@ export const AppointmentView: React.FC<Props> = ({ appointment, appointementsSta
                             </span>
                         </div>
                         <div className='flex justify-between'>
-                            <h4>{item.title}</h4>
+                            <span style={{ color: item.status?.color }}>{item.status?.name}</span>
                             <Icon.Edit />
                         </div>
-                        {item.customer?.name && <strong className='text-gray'>Ciente: {item.customer.name}</strong>}
+                        <h4>{item.title}</h4>
+                        {item.customer?.name && <strong className='text-gray'>Cliente: {item.customer.name}</strong>}
                         <p>{item.description}</p>
                     </div>
                 ))}

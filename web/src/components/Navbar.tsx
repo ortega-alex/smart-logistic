@@ -166,7 +166,7 @@ export const Navbar = () => {
                 onClose={() => setDrawer(false)}
                 closeIcon={null}
                 open={drawer}
-                width={200}
+                width={250}
                 styles={{ footer: { border: 'none' }, body: { border: 'none' } }}
                 footer={
                     <div className='flex flex-column gap-3'>
@@ -188,14 +188,20 @@ export const Navbar = () => {
                     </div>
                 }
             >
-                <div className='flex flex-column justify-center items-center text-white'>
+                <div className='flex flex-column justify-center items-center text-white text-capitalize'>
                     <Avatar gap={3} size={100} className='bg-primary'>
                         {sessionState.iniciales}
                     </Avatar>
 
-                    <strong className='mt-3'>{sessionState.name}</strong>
-                    <span>{sessionState.username}</span>
-                    <span>{sessionState.profile?.name}</span>
+                    <strong className='mt-3'>
+                        <strong>Nombre:</strong> {sessionState.name}
+                    </strong>
+                    <span>
+                        <strong>Usuario:</strong> {sessionState.username}
+                    </span>
+                    <span>
+                        <strong>Perfil:</strong> {sessionState.profile?.name}
+                    </span>
                 </div>
             </Drawer>
 

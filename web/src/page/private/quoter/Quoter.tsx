@@ -44,7 +44,7 @@ export const Quoter = () => {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize,
             filter,
-            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC',
+            sortOrder: tableParams.sortOrder === 'ascend' ? 'ASC' : 'DESC',
             session_id: sessionState.session_id
         })
             .then(res => {
@@ -182,11 +182,6 @@ export const Quoter = () => {
                     rowKey='id'
                     dataSource={quoters}
                     columns={[
-                        {
-                            title: 'No',
-                            dataIndex: 'id',
-                            sorter: true
-                        },
                         {
                             title: 'Fecha',
                             dataIndex: 'created_at',

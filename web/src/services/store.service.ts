@@ -1,4 +1,5 @@
 import { decryptData, encryptData } from '../utilities';
+
 export const saveStorage = (key: string, value: string | object) => {
     const encrypt = encryptData(value);
     window.sessionStorage.setItem(key, encrypt);

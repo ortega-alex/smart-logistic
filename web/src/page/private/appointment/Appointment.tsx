@@ -61,7 +61,7 @@ export const Appointment = () => {
             >
                 {deviceState ? (
                     <div className='flex h-100 w-100 justify-center items-center'>
-                        <Badge count={dayAppointments.length} />
+                        {dayAppointments.length > 0 && <Badge count={dayAppointments.length} color='blue' />}
                     </div>
                 ) : (
                     <ul style={{ listStyle: 'none', padding: 0 }}>

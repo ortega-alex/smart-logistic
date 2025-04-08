@@ -153,27 +153,27 @@ export const TransportRate = () => {
                     dataSource={transportRates}
                     columns={[
                         {
-                            title: 'headquarter',
+                            title: 'Sede',
                             dataIndex: 'headquarter',
                             render: headquarter => <span>{headquarter?.name}</span>
                         },
                         {
-                            title: 'transportType',
+                            title: 'Tipo de transporte',
                             dataIndex: 'transportType',
                             render: transportType => <span>{transportType?.name}</span>
                         },
                         {
-                            title: 'customerType',
+                            title: 'Typo de cliente',
                             dataIndex: 'customerType',
                             render: customerType => <span>{customerType?.name}</span>
                         },
                         {
-                            title: 'vehicleType',
+                            title: 'Tipo de vehiculo',
                             dataIndex: 'vehicleType',
                             render: vehicleType => <span>{vehicleType?.name}</span>
                         },
                         {
-                            title: 'Rol',
+                            title: 'Tarifa',
                             dataIndex: 'rate',
                             render: value => <span>{commaSeparateNumber(value)}</span>
                         },
