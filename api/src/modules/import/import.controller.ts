@@ -71,7 +71,7 @@ export const addHistory = async (req: Request, res: Response) => {
                 const title = 'Nuevo estado';
                 const description = `El estado de la importacion con lote: ${vehicle.quoter.lot}, vehículo: ${vehicle.quoter.mark} ${vehicle.quoter.model} ha cambiado a ${importState.name}`;
                 const paht_customer = 'customer-order-detail/' + String(vehicle.id);
-                const path_seller = 'vehicle/' + String(vehicle.quoter.lot);
+                const path_seller = 'vehicles' + String(vehicle.quoter.lot);
 
                 if (vehicle.quoter.customer) {
                     await addNotificationService({

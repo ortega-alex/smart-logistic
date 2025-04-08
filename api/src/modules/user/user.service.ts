@@ -7,6 +7,7 @@ export const getByUsername = async (username: string) =>
     await User.getRepository()
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.headquarter', 'headquarter')
+        .leftJoinAndSelect('headquarter.state', 'state')
         .innerJoinAndSelect('user.profile', 'profile')
         .innerJoinAndSelect('profile.role', 'role')
         .where('user.username = :username', { username })

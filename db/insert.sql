@@ -3,11 +3,11 @@ INSERT INTO menu (name, icon, path, is_main_menu, is_maintenance) VALUES
 ('Vehiculos', 'car', 'vehicles', 1, 0),
 ('Clientes', 'users', 'customers', 1, 1),
 ('Usuario', 'user', 'users', 1, 1),
-('Tipos de vehiculos', 'car2', 'vehicle-type', 1, 1),
+('Tipos de vehiculos', 'car2', 'vehicle-type', 0, 1),
 ('Perfiles', 'profile', 'profiles', 1, 1),
 ('Reportes', 'report', 'reports', 1, 0),
 ('Subasta', 'auction', 'auction', 1, 1),
-('Tipos de clientes', 'usersPlus', 'customer-type', 1, 1),
+('Tipos de clientes', 'usersPlus', 'customer-type', 0, 1),
 ('Sedes', 'store', 'headquarters', 1, 1),
 ('Tarifa Transporte', 'sackDollar', 'transport-rate', 0, 1),
 ('Citas', 'calendar', 'appointments ', 0, 1);
@@ -18,7 +18,7 @@ INSERT INTO customer_type (name) VALUES
 ('Inportador');
 
 INSERT INTO `smart_logistic`.`role` (`level`, `name`, `description`) VALUES
- ('1', 'Vendedor', 'Acceso Completo'),
+ ('1', 'Administrador', 'Acceso Completo'), -- Nivel 1
  ('2', 'Vendedor', 'Nivel medio/alto'),
  ('3', 'Operador', 'Moderado');
 
