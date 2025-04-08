@@ -1,6 +1,8 @@
+import { Brackets } from 'typeorm';
 import { Quoter } from './entity/Quoter';
 import { QuoterDetail } from './entity/QuoterDetail';
 import { OptionalQuoter, QuoterDetail as QuoterDetailInterface, Quoter as QuoterInterface } from './interface/Quoter';
+import { ACCESS_LEVEL } from '../../interfaces';
 
 export const getAll = async () => await Quoter.find();
 
@@ -20,24 +22,42 @@ export const getById = async (id: number) =>
         }
     });
 
-export const pagination = async (filter: string, sortField: string, sortOrder: string, current: number, pageSize: number) => {
+export const pagination = async (
+    filter: string,
+    sortField: string,
+    sortOrder: string,
+    current: number,
+    pageSize: number,
+    access_level: ACCESS_LEVEL
+) => {
     // Crear la consulta base
     const query = Quoter.createQueryBuilder('quoter')
-        .leftJoinAndSelect('quoter.customer', 'customer')
-        .leftJoinAndSelect('quoter.seller', 'seller');
+        .innerJoin('quoter.customer', 'customer')
+        .innerJoin('quoter.seller', 'seller')
+        .innerJoin('quoter.createdBy', 'createdBy');
+
+    // filtra informacion en base al nivel de acceso
+    if (access_level.level === 3) {
+        query.where('createdBy.id = :id', { id: access_level.session_id });
+    } else if (access_level.level === 2) {
+        query.where('seller.id = :id', { id: access_level.session_id });
+    }
 
     // Aplicar filtro si es necesario
-    if (filter != '') {
-        if (isNaN(Number(filter))) {
-            query
-                .where('quoter.created_at LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('seller.name LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('quoter.mark LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('quoter.model LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('customer.name LIKE :filter', { filter: `%${filter}%` });
-        } else {
-            query.where('customer.id = :id', { id: Number(filter) });
-        }
+    if (filter !== '') {
+        query.andWhere(
+            new Brackets(qb => {
+                if (isNaN(Number(filter))) {
+                    qb.where('quoter.created_at LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('seller.name LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('quoter.mark LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('quoter.model LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('customer.name LIKE :filter', { filter: `%${filter}%` });
+                } else {
+                    qb.where('customer.id = :id', { id: Number(filter) });
+                }
+            })
+        );
     }
 
     if (sortField.includes('customer')) query.orderBy(`customer.${sortField}`, sortOrder.toUpperCase() as 'ASC' | 'DESC');

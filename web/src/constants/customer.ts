@@ -7,7 +7,7 @@ export const EmptyCustomerType: CustomerType = {
 };
 
 export const EmptyCustomerFile: CustomerFile = {
-    id: 0,
+    id: '',
     name: '',
     path: '',
     is_active: true

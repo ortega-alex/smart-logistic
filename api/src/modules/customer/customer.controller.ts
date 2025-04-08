@@ -14,7 +14,7 @@ export const login = async (req: Request, res: Response) => {
 
         const token = generateToken({
             email,
-            user: customer?.name
+            username: customer?.name
         });
 
         return res.json({

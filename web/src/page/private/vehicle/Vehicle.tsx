@@ -1,7 +1,7 @@
 import { Icon, Search } from '@/components';
 import { privateRoutes } from '@/constants';
 import { useVehicle } from '@/hooks';
-import { Customer, TableParams, Vehicle as VehicleInterface } from '@/interfaces';
+import { Customer, Session, TableParams, Vehicle as VehicleInterface } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetCustomer, httpGetVehiclesPagination } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -13,6 +13,7 @@ import { ViewVehicle } from './ViewVehicle';
 
 export const Vehicle = () => {
     const deviceState = useSelector((store: RootState) => store.device);
+    const sessionState: Session = useSelector((store: RootState) => store.session);
     const { lot } = useParams();
     const navigate = useNavigate();
     const { vehicle, addVehicle } = useVehicle();
@@ -52,7 +53,8 @@ export const Vehicle = () => {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize,
             filter,
-            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC'
+            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC',
+            session_id: sessionState.session_id
         })
             .then(res => {
                 setVehicles(res.data);
@@ -238,7 +240,11 @@ export const Vehicle = () => {
                             title: 'Estado',
                             dataIndex: 'importState',
                             sorter: true,
-                            render: importState => <Tag color={importState.color}>{importState.name}</Tag>
+                            render: importState => (
+                                <Tag color={importState.color}>
+                                    <span className='text-black'>{importState.name}</span>
+                                </Tag>
+                            )
                         },
                         {
                             title: 'Opciones',
@@ -264,7 +270,10 @@ export const Vehicle = () => {
                 open={modal}
                 title={
                     <h3>
-                        Vehículo <Tag color={vehicle.importState.color}>{vehicle.importState.name}</Tag>
+                        Vehículo{' '}
+                        <Tag color={vehicle.importState.color}>
+                            <span className='text-black'>{vehicle.importState.name}</span>
+                        </Tag>
                     </h3>
                 }
                 footer={null}

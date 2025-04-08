@@ -1,4 +1,5 @@
 # Ignorar cualquier archivo JSON relacionado con Firebase Admin SDK
 *firebase-adminsdk*.json
-src/public/files
-src/public/images
+# src/public/files
+# src/public/images
+uploads

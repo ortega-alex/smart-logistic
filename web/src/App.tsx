@@ -27,11 +27,19 @@ export const App = () => {
 
     useEffect(() => {
         try {
-            const _socket: Socket<ServerToClientEvents, ClienteToServerEvents> = io(_SERVER.baseUrl, {
+            const _socket: Socket<ServerToClientEvents, ClienteToServerEvents> = io(_SERVER.socketUrl, {
                 transports: ['websocket'],
                 auth: { id: 'web' }
             });
             setSocket(_socket);
+
+            _socket.onAny((event, ...args) => {
+                console.log(`📤 Emitted to server: ${event}`, args);
+            });
+
+            _socket.on('connect_error', err => {
+                console.error('❌ connect_error', err);
+            });
         } catch (error) {
             console.log('error socket', error);
         }

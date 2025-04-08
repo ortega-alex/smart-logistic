@@ -1,9 +1,9 @@
-import { Icon, PageHeader, Search } from '@/components';
+import { Icon, PageHeader } from '@/components';
 import { EmptyProfile } from '@/constants';
 import { Menu, Permission, Profile as ProfileInterface, Role } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetAllRoles, httpGetMenus, httpGetPermissions, httpGetProfiles } from '@/services';
-import { Button, List, message, Modal, Table, Tooltip } from 'antd';
+import { Button, List, message, Modal, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormProfile } from './FormProfile';

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getImportStateById as getImportStateByIdService } from '../import/import.service';
 import { getById as getQuoterByIdService } from '../quoter/quoter.service';
 import VehicleService from './vehicle.service';
+import { getById as getUserByIdService } from '../user/user.service';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
@@ -25,7 +26,15 @@ export const getById = async (req: Request, res: Response) => {
 
 export const paginated = async (req: Request, res: Response) => {
     try {
-        const { pageSize = 100, current = 1, sortField = 'id', sortOrder = 'ASC', filter = '' } = req.body;
+        const { session_id, pageSize = 100, current = 1, sortField = 'id', sortOrder = 'ASC', filter = '' } = req.body;
+
+        // permisos de usuario
+        if (!session_id) return res.status(203).json({ message: 'EL id en sesion es requerido' });
+        let access_level = { session_id, level: 3 };
+        if (session_id) {
+            const user = await getUserByIdService(Number(session_id));
+            access_level.level = user?.profile?.role?.level ?? 3;
+        }
 
         const validFields = [
             'id',
@@ -45,7 +54,7 @@ export const paginated = async (req: Request, res: Response) => {
         const validDirections = ['ASC', 'DESC'];
         if (!validDirections.includes(sortOrder.toUpperCase())) return res.status(203).json({ message: 'Dirección de orden inválida' });
 
-        const [data, total] = await VehicleService.pagination(filter, sortField, sortOrder, current, pageSize);
+        const [data, total] = await VehicleService.pagination(filter, sortField, sortOrder, current, pageSize, access_level);
 
         return res.status(200).json({
             data,

@@ -1,10 +1,11 @@
 import { Icon, Search } from '@/components';
 import { privateRoutes } from '@/constants';
+import { useSocket } from '@/hooks';
 import { Customer, Vehicle } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpAddImportHistory, httpGetVehiclesByCustomerId } from '@/services';
 import { getDateFormat } from '@/utilities';
-import { Alert, Button, List, message, Table, Tooltip, Upload } from 'antd';
+import { Alert, Button, List, message, Table, Tag, Tooltip, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +14,7 @@ export const CustomerOrders = () => {
     const deviceState: Boolean = useSelector((store: RootState) => store.device);
     const sessionCustomerState: Customer = useSelector((store: RootState) => store.session_customer);
     const navigate = useNavigate();
+    const { socket } = useSocket();
 
     const [loading, setLoading] = useState(false);
     const [vehicles, setVehicles] = useState<Array<Vehicle>>([]);
@@ -61,6 +63,11 @@ export const CustomerOrders = () => {
 
     useEffect(() => {
         handleGet();
+        if (socket)
+            socket.on(`customer-${sessionCustomerState.id}`, () => {
+                console.log('se ejecuta el socket en customer-orders');
+                handleGet();
+            });
     }, []);
 
     return (
@@ -149,7 +156,11 @@ export const CustomerOrders = () => {
                                 title: 'Estado',
                                 dataIndex: 'importState',
                                 sorter: true,
-                                render: importState => <span>{importState.name}</span>
+                                render: importState => (
+                                    <Tag color={importState.color}>
+                                        <span className='text-black'>{importState.name}</span>
+                                    </Tag>
+                                )
                             },
                             {
                                 title: 'Opciones',

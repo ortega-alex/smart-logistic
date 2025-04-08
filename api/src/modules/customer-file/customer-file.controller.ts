@@ -9,7 +9,7 @@ export const deleteById = async (req: Request, res: Response) => {
         const file = await CustomerFileService.getById(Number(id));
         if (!file) return res.status(404).json({ message: 'File no exite' });
 
-        const ruta = path.join(__dirname, `../public/${file.path}`);
+        const ruta = path.join(__dirname, `../../uploads/${file.path}`);
         if (fs.existsSync(ruta)) fs.unlinkSync(ruta);
 
         const result = await CustomerFileService.deleteById(Number(id));

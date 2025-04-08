@@ -15,9 +15,9 @@ export const remaneFile = (originalname: string): string => {
 };
 
 export const validatePath = (_path: string): string => {
-    let ruta = path.join(__dirname, `../public/`);
+    let ruta = path.join(__dirname, `../../uploads`);
     if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
-    ruta = path.join(ruta, `${_path}/`);
+    ruta = path.join(ruta, `/${_path}`);
     if (!fs.existsSync(ruta)) fs.mkdirSync(ruta);
     return ruta;
 };

@@ -1,3 +1,5 @@
+import { Brackets } from 'typeorm';
+import { ACCESS_LEVEL } from '../../interfaces';
 import { Vehicle } from './entity/Vehicle';
 import { Vehicle as VehicleInterface, OptionalVehicle } from './interface/Vehicle';
 
@@ -30,33 +32,51 @@ export const getByCustomerId = async (id: number) =>
         .orderBy('vehicle.created_at', 'DESC')
         .getMany();
 
-export const pagination = async (filter: string, sortField: string, sortOrder: string, current: number, pageSize: number) => {
+export const pagination = async (
+    filter: string,
+    sortField: string,
+    sortOrder: string,
+    current: number,
+    pageSize: number,
+    access_level: ACCESS_LEVEL
+) => {
     const query = Vehicle.createQueryBuilder('vehicle')
         .innerJoinAndSelect('vehicle.quoter', 'quoter')
         .innerJoinAndSelect('vehicle.importState', 'importState')
         .innerJoinAndSelect('quoter.customer', 'customer')
         .innerJoinAndSelect('quoter.seller', 'seller')
+        .innerJoinAndSelect('quoter.createdBy', 'createdBy')
         .innerJoinAndSelect('quoter.headquarter', 'headquarter')
         .innerJoinAndSelect('quoter.transportType', 'transportType');
 
+    // filtra informacion en base al nivel de acceso
+    if (access_level.level === 3) {
+        query.where('createdBy.id = :id', { id: access_level.session_id });
+        if (access_level.headquarter_id) query.orWhere('headquarter.id = :headquarter_id', { headquarter_id: access_level.headquarter_id });
+    } else if (access_level.level === 2) {
+        query.where('seller.id = :id', { id: access_level.session_id });
+    }
+
     if (filter != '') {
-        if (isNaN(Number(filter))) {
-            query
-                .where('vehicle.created_at LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('quoter.lot LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('customer.name LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('seller.name LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('importState.name LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('headquarter.name LIKE :filter', { filter: `%${filter}%` })
-                .orWhere('transportType.name LIKE :filter', { filter: `%${filter}%` });
-        } else {
-            query
-                .where('customer.id = :id', { id: Number(filter) })
-                .orWhere('quoter.id = :id', { id: Number(filter) })
-                .orWhere('importState.id = :id', { id: Number(filter) })
-                .orWhere('headquarter.id = :id', { id: Number(filter) })
-                .orWhere('transportType.id = :id', { id: Number(filter) });
-        }
+        query.andWhere(
+            new Brackets(qb => {
+                if (isNaN(Number(filter))) {
+                    qb.where('vehicle.created_at LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('quoter.lot LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('customer.name LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('seller.name LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('importState.name LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('headquarter.name LIKE :filter', { filter: `%${filter}%` })
+                        .orWhere('transportType.name LIKE :filter', { filter: `%${filter}%` });
+                } else {
+                    qb.where('customer.id = :id', { id: Number(filter) })
+                        .orWhere('quoter.id = :id', { id: Number(filter) })
+                        .orWhere('importState.id = :id', { id: Number(filter) })
+                        .orWhere('headquarter.id = :id', { id: Number(filter) })
+                        .orWhere('transportType.id = :id', { id: Number(filter) });
+                }
+            })
+        );
     }
 
     if (sortField.includes('customer')) query.orderBy(`customer.name`, sortOrder.toUpperCase() as 'ASC' | 'DESC');

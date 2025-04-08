@@ -11,5 +11,6 @@ export interface ClienteToServerEvents {
 export interface ServerToClientEvents {
     [event: `notification-${number}`]: (data: Notification) => void;
     notification: (data: Notification) => void;
-    [event: `estado-${string}`]: (data: Vehicles) => void;
+    [event: `state-${string}`]: (data: Vehicles) => void;
+    [event: `customer-${string}`]: (data: Vehicles) => void;
 }

@@ -17,6 +17,11 @@ const io = new Server(server, {
     connectionStateRecovery: {
         maxDisconnectionDuration: 2 * 60 * 1000,
         skipMiddlewares: true
+    },
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+        credentials: true
     }
 });
 setupSocket(io);
@@ -31,7 +36,7 @@ app.use(decrypt);
 app.use(encrypt);
 
 // STATIC FILES
-app.use(express.static(path.join(__dirname, './public')));
+app.use(express.static(path.join(__dirname, '../uploads')));
 
 // PUBLIC ROUTES
 app.use(uri, publicRoutes);

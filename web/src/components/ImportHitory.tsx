@@ -66,7 +66,7 @@ export const ImportHitory: React.FC<Props> = ({ details, loading }) => {
                     pagination={false}
                     className='table mb-3 px-5'
                     showSorterTooltip={false}
-                    rowKey='id_subasta'
+                    rowKey='id'
                     dataSource={details}
                     loading={loading}
                     scroll={{ y: 250 }}

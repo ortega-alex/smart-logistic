@@ -33,7 +33,11 @@ export const CustomerOrderDetail = () => {
             .then(res => setImportStates(res))
             .catch(err => message.error(`Error http get import state ${err.message}`));
 
-        if (socket) socket.on(`estado-${id}`, () => handleGetDetail(Number(id)));
+        if (socket)
+            socket.on(`state-${id}`, () => {
+                console.log('estado ha cambiado');
+                handleGetDetail(Number(id));
+            });
     }, []);
 
     return (
@@ -88,6 +92,8 @@ export const CustomerOrderDetail = () => {
                 <br />
                 <Divider orientation='left'>Archivos adjuntos</Divider>
                 <ImportHitory details={vehicle?.record?.filter(item => item.is_visible_customer) ?? []} loading={loading} />
+                <br />
+                <br />
             </div>
         </div>
     );

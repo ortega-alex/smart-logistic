@@ -8,7 +8,7 @@ interface Options {
 export const ViewFiles: React.FC<Options> = ({ path, download }) => {
     const arr = path.split('.');
     const extension = arr[arr.length - 1];
-    const url = `${_SERVER.baseUrl}${path}`;
+    const url = `${_SERVER.baseUrl}/${path}`;
 
     return (
         <object data={`${url}#toolbar=${download ? 1 : 0}`} style={{ width: '100%', height: '90vh', objectFit: 'contain' }}>

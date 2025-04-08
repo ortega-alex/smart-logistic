@@ -1,16 +1,17 @@
 import archiver from 'archiver';
 import { Request, Response } from 'express';
+import { sendEmail } from '../../email';
+import { Email } from '../../interfaces';
+import { generateAttachmentPdf } from '../../utils';
 import { getById as getAuctionByIdServices } from '../auction/auction.service';
 import { getById as getCustomerByIdService } from '../customer/customer.service';
 import { getById as getIssuingHeadquarterByIdService } from '../headquarter/headquarter.service';
+import { getImportStateById as getImportStateByIdService } from '../import/import.service';
 import { getById as getTransportTypeByIdService } from '../transport-type/transport-type.service';
 import { getById as getUserByIdService } from '../user/user.service';
-import { commaSeparateNumber, createPdfWithTable, generateAttachmentPdf, unionEndPfd } from '../../utils';
 import { getById as getVehicleTypeByIdService } from '../vehicle-type/vehicle-type.service';
-import { Coin } from './interface/Quoter';
+import { add as addVehicleService } from '../vehicle/vehicle.service';
 import QuoterService from './quoter.service';
-import { Email } from '../../interfaces';
-import { sendEmail } from '../../email';
 
 export const getAll = async (_req: Request, res: Response) => {
     try {
@@ -138,6 +139,8 @@ export const update = async (req: Request, res: Response) => {
             details
         } = req.body;
 
+        if (!details || details.length === 0) return res.status(203).json({ error: true, message: 'El detalle es requerido' });
+
         const quoter = await QuoterService.getById(Number(id));
         if (!quoter) return res.status(203).json({ error: true, message: 'Cotización no existe' });
 
@@ -190,9 +193,12 @@ export const update = async (req: Request, res: Response) => {
                 await QuoterService.addDetail(quoter, details);
             } else {
                 // setea a vehiculos la cotizacion aprobada
-                //     const estado_importacion = await ImportState.findOneBy({ id_estado_importacion: 1 });
-                //     if (!estado_importacion) return res.status(203).json({ message: 'estado de importacion no encontrado' });
-                //     await newVehicle(quoter, estado_importacion);
+                const importState = await getImportStateByIdService(1);
+                if (!importState) return res.status(203).json({ message: 'estado de importacion no encontrado' });
+                await addVehicleService({
+                    quoter,
+                    importState
+                });
             }
             return res.json({ message: 'Cotización actualizada correctamente' });
         }
@@ -233,7 +239,15 @@ export const generatePdf = async (req: Request, res: Response) => {
 
 export const pagination = async (req: Request, res: Response) => {
     try {
-        const { pageSize = 100, current = 1, sortField = 'id', sortOrder = 'ASC', filter = '' } = req.body;
+        const { session_id, pageSize = 100, current = 1, sortField = 'id', sortOrder = 'ASC', filter = '' } = req.body;
+
+        // permisos de usuario
+        if (!session_id) return res.status(203).json({ message: 'EL id en sesion es requerido' });
+        let access_level = { session_id, level: 3 };
+        if (session_id) {
+            const user = await getUserByIdService(Number(session_id));
+            access_level.level = user?.profile?.role?.level ?? 3;
+        }
 
         // Validar que los valores recibidos sean correctos
         const validFields = ['id', 'created_at', 'seller', 'customer', 'is_aproverd', 'customer_id']; // Lista de campos válidos para ordenar
@@ -243,7 +257,7 @@ export const pagination = async (req: Request, res: Response) => {
         if (!validDirections.includes(sortOrder.toUpperCase())) return res.status(203).json({ message: 'Dirección de orden inválida' });
 
         // Ejecutar la consulta
-        const [data, total] = await QuoterService.pagination(filter, sortField, sortOrder, current, pageSize);
+        const [data, total] = await QuoterService.pagination(filter, sortField, sortOrder, current, pageSize, access_level);
 
         // Retornar los datos paginados
         return res.status(200).json({

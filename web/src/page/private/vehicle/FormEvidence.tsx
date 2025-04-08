@@ -47,7 +47,7 @@ export const FormEvidence: React.FC<Props> = ({ onClose }) => {
     }, []);
 
     return (
-        <Form layout='vertical' name='evidence' onFinish={handleSubmit} initialValues={{ id_estado_importacion: vehicle.importState.id }}>
+        <Form layout='vertical' name='evidence' onFinish={handleSubmit} initialValues={{ import_state_id: vehicle.importState.id }}>
             <Form.Item
                 tooltip='Permite cambiar el estado de la importación'
                 label='Estado'

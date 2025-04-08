@@ -8,7 +8,7 @@ const main = async () => {
     try {
         await AppDataSource.initialize();
         console.log('Databa is connected');
-        app.listen(port);
+        app.listen(Number(port), '0.0.0.0');
         console.log(`server on port ${port}`);
     } catch (error) {
         console.log(error);

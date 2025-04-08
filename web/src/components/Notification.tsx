@@ -125,11 +125,13 @@ export const Notification = () => {
     useEffect(() => {
         handleGetNotifications();
         if (socket) {
-            if (sessionState.session_id) {
-                socket.on('notification', () => handleGetNotifications());
-                socket.on(`notification-${sessionState.session_id}`, () => handleGetNotifications());
-            }
-            if (sessionCustomerState.id) socket.on(`notification-${sessionCustomerState.id}`, () => handleGetNotifications());
+            socket.on('notification', () => handleGetNotifications());
+            if (sessionState.session_id) socket.on(`notification-${sessionState.session_id}`, () => handleGetNotifications());
+            if (sessionCustomerState.id)
+                socket.on(`notification-${sessionCustomerState.id}`, () => {
+                    console.log('notificaciones para el cliente');
+                    handleGetNotifications();
+                });
         }
         if (window.location.protocol === 'https:' || _SERVER.NODE_ENV === 'development') {
             handleGetToken_fcm();

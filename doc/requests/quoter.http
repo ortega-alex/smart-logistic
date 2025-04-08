@@ -4,7 +4,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### GET QUOTERS BY ID
-GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/2
+GET {{protocol}}://{{host}}:{{port}}/api/{{version}}/quoter/9
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -21,7 +21,8 @@ Authorization: Bearer {{token}}
 {
     "orderField": "id_cotizacion",
     "orderDirection": "ASC",
-    "filter": ""
+    "filter": "",
+    "session_id": 1
 }
 
 ### ADD QUOTER
@@ -35,15 +36,15 @@ Authorization: Bearer {{token}}
     "year": "2022",
     "lot": "SERIE",
     "vin": "VIN",
-    "customer_id": 1,
-    "user_id": 1,
-    "seller_id": 1,
+    "customer_id": 2,
+    "user_id": 3,
+    "seller_id": 2,
     "vehicle_type_id": 2,
     "transport_type_id": 1,
     "issuing_headquarter_id": 2,
     "headquarter_id": 1,
     "auction_id": 1,
-    "detalles": [
+    "details": [
         {
             "name": "Precio de GRUA",
             "value": "210",
@@ -76,7 +77,7 @@ Authorization: Bearer {{token}}
     "issuing_headquarter_id": 2,
     "headquarter_id": 1,
     "auction_id": 1,
-    "detalles": [
+    "details": [
         {
             "name": "Precio de GRUA",
             "value": "210",

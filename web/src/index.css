@@ -112,6 +112,10 @@
     text-transform: capitalize !important;
 }
 
+.text-black {
+    color: black !important;
+}
+
 .navbar {
     width: 100%;
     position: sticky;

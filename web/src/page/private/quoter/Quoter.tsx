@@ -1,7 +1,7 @@
 import { Icon, Search } from '@/components';
 import { privateRoutes } from '@/constants';
 import { useQuoter } from '@/hooks';
-import { Quoter as QuoterInterface, TableParams } from '@/interfaces';
+import { Quoter as QuoterInterface, Session, TableParams } from '@/interfaces';
 import { RootState } from '@/redux';
 import { httpGetQuoterPaginationData, httpGetQuotersById } from '@/services';
 import { getDateFormat } from '@/utilities';
@@ -13,6 +13,7 @@ import { FormQuoter } from './FormQuoter';
 
 export const Quoter = () => {
     const deviceState = useSelector((store: RootState) => store.device);
+    const sessionState: Session = useSelector((store: RootState) => store.session);
     const navigate = useNavigate();
     const { quoter, customers, loading, updateQuoter, rebootQuoter, onAproveQuoter, onDownloadInvoice } = useQuoter();
 
@@ -43,7 +44,8 @@ export const Quoter = () => {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize,
             filter,
-            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC'
+            sortOrder: tableParams.sortOrder === 'descend' ? 'DESC' : 'ASC',
+            session_id: sessionState.session_id
         })
             .then(res => {
                 setQuoters(res.data);

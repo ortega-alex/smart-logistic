@@ -48,6 +48,7 @@ export const PrivateCustomer = () => {
                         <img src={icon} height='80' className='d-inline-block align-top' alt='' />
                     </Link>
                 </div>
+                <h3 className='text-capitalize'>{sessionCustomerState.name}</h3>
                 <div className='navbar-nav'>
                     <Notification />
                     <Dropdown

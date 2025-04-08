@@ -18,7 +18,8 @@ Authorization: Bearer {{token}}
     "orderField": "id_vehiculo",
     "orderDirection": "ASC",
     "filter": "SERIE",    
-    "id_cliente": 1
+    "id_cliente": 1,
+    "session_id": 1
 }
 
 ### ADD VEHICLES

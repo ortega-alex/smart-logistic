@@ -1,1 +1,0 @@
-import"./index-fBuO0l8w.js";import{h as a}from"./method-http.utility-CM8CHeIw.js";const o="/profile",p=async()=>await a({path:o,method:"GET"}),h=async t=>await a({path:o,method:"POST",data:t}),i=async t=>await a({path:`${o}/${t.id_perfil}`,method:"PUT",data:t});export{i as a,h as b,p as h};

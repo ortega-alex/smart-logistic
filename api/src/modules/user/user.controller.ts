@@ -21,7 +21,7 @@ export const login = async (req: Request, res: Response) => {
         if (!match) return res.status(203).json({ message: 'Contraseña incorecta' });
 
         const token = generateToken({
-            user: user.username,
+            username: user.username,
             email: user.email
         });
 
@@ -73,6 +73,17 @@ export const getAll = async (_req: Request, res: Response) => {
     try {
         const users = await UserService.getAll();
         return res.json(users);
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+export const getById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const user = await UserService.getById(Number(id));
+        if (!user) return res.status(404).json({ message: 'Usuario no exite' });
+        return res.json(user);
     } catch (error) {
         return res.status(500).json({ message: (error as Error).message });
     }
@@ -162,6 +173,7 @@ export default {
     login,
     add,
     getAll,
+    getById,
     update,
     forgotPassword,
     resetPassword

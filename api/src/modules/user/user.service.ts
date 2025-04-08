@@ -1,5 +1,5 @@
 import { User } from './entity/User';
-import { OptionalUser, User as UserInterface } from './interface/User';
+import { OptionalUser, User as UserInterface } from '../../interfaces';
 
 export const getAll = async () => await User.find({ relations: { profile: true, headquarter: true } });
 
@@ -12,7 +12,14 @@ export const getByUsername = async (username: string) =>
         .where('user.username = :username', { username })
         .getOne();
 
-export const getById = async (id: number) => await User.findOne({ where: { id }, relations: { profile: true } });
+export const getById = async (id: number) =>
+    await User.getRepository()
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.headquarter', 'headquarter')
+        .innerJoinAndSelect('user.profile', 'profile')
+        .innerJoinAndSelect('profile.role', 'role')
+        .where('user.id = :id', { id })
+        .getOne();
 
 export const getByEmail = async (email: string) => await User.findOneBy({ email });
 

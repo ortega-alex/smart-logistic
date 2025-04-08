@@ -33,3 +33,7 @@ npx typeorm-ts-node-commonjs migration:revert -d ./src/db.ts
 ```bash
 npx typeorm entity:create src/entities/[NAME]
 ```
+
+message
+: 
+"EACCES: permission denied, open '/app/dist/public/files/3c7a0dcf046dc2d95e7c585f71f95fc4.pdf'"

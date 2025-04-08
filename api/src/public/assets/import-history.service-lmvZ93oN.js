@@ -1,1 +1,0 @@
-import"./index-fBuO0l8w.js";import{h as p}from"./method-http.utility-CM8CHeIw.js";const r="/import-history",s=async(t,o)=>await p({path:`${r}/${t}`,method:"POST",data:o,type:"multipart"});export{s as h};

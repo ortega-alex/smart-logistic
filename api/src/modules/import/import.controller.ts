@@ -61,7 +61,8 @@ export const addHistory = async (req: Request, res: Response) => {
         if (!history) return res.status(203).json({ message: 'No se pudo agregar el historial de importacion' });
 
         const io = req.app.locals.io;
-        io.emit(`estado-${id}`, vehicle);
+        io.emit(`state-${id}`, vehicle);
+        io.emit(`customer-${customer_id}`, vehicle);
 
         const message = 'Historial de importacion creado';
         if (vehicle.importState.id !== importState.id) {
@@ -69,46 +70,55 @@ export const addHistory = async (req: Request, res: Response) => {
             if ((updateVehicle?.affected ?? 0) > 0) {
                 const title = 'Nuevo estado';
                 const description = `El estado de la importacion con lote: ${vehicle.quoter.lot}, vehículo: ${vehicle.quoter.mark} ${vehicle.quoter.model} ha cambiado a ${importState.name}`;
+                const paht_customer = 'customer-order-detail/' + String(vehicle.id);
+                const path_seller = 'vehicle/' + String(vehicle.quoter.lot);
 
-                const notification = await addNotificationService({
-                    title,
-                    description,
-                    priority: NotificationPriority.LOW,
-                    customer: vehicle.quoter.customer,
-                    user: vehicle.quoter.seller
-                });
+                if (vehicle.quoter.customer) {
+                    await addNotificationService({
+                        title,
+                        description,
+                        path: paht_customer,
+                        priority: NotificationPriority.LOW,
+                        customer: vehicle.quoter.customer
+                    });
+                    emitNotificationSocket(req.app.locals.io, { customer: vehicle.quoter.customer });
+                }
 
-                if (notification) {
-                    emitNotificationSocket(req.app.locals.io, {
-                        customer: vehicle.quoter.customer,
+                if (vehicle.quoter.seller) {
+                    await addNotificationService({
+                        title,
+                        description,
+                        path: path_seller,
+                        priority: NotificationPriority.LOW,
                         user: vehicle.quoter.seller
                     });
+                    emitNotificationSocket(req.app.locals.io, { user: vehicle.quoter.seller });
+                }
 
-                    if (req.headers?.origin?.includes('https') || enviroment.NODE_ENV === 'development') {
-                        if (customer?.token_fcm)
-                            sendNotification({
-                                token: customer.token_fcm,
-                                notification: {
-                                    title,
-                                    body: description
-                                },
-                                data: {
-                                    path: '/customer-order-detail/' + String(vehicle.id)
-                                }
-                            });
+                if (req.headers?.origin?.includes('https') || enviroment.NODE_ENV === 'development') {
+                    if (customer?.token_fcm)
+                        sendNotification({
+                            token: customer.token_fcm,
+                            notification: {
+                                title,
+                                body: description
+                            },
+                            data: {
+                                path: paht_customer
+                            }
+                        });
 
-                        if (vehicle.quoter.seller?.token_fcm)
-                            sendNotification({
-                                token: vehicle.quoter.seller?.token_fcm,
-                                notification: {
-                                    title,
-                                    body: description
-                                },
-                                data: {
-                                    path: '/vehicle/' + String(vehicle.quoter.lot)
-                                }
-                            });
-                    }
+                    if (vehicle.quoter.seller?.token_fcm)
+                        sendNotification({
+                            token: vehicle.quoter.seller?.token_fcm,
+                            notification: {
+                                title,
+                                body: description
+                            },
+                            data: {
+                                path: path_seller
+                            }
+                        });
                 }
 
                 return res.status(200).json({ success: true, message: `${message}, y vehiculo actualizado'` });

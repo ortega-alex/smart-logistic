@@ -24,6 +24,7 @@ import NotificationController from '../modules/notification/notificacion.control
 const routes = Router();
 
 routes.get('/user', UserController.getAll);
+routes.get('/user/:id', UserController.getById);
 routes.post('/user', UserController.add);
 routes.put('/user/:id', UserController.update);
 
