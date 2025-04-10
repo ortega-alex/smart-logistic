@@ -11,8 +11,11 @@ const firebaseConfig = {
     appId: '1:407412759437:web:3ab472b6bd721cff3cfbc4'
 };
 
-initializeApp(firebaseConfig);
-const messaging = getMessaging();
+let messaging: any;
+if (window.location.protocol === 'https:') {
+    initializeApp(firebaseConfig);
+    messaging = getMessaging();
+}
 
 export const askNotificationPermission = async (): Promise<boolean> => {
     try {
@@ -29,8 +32,10 @@ export const requestForToken = async () => {
     try {
         const hasPermission = await askNotificationPermission();
         if (!hasPermission) return null;
-        const token = await getToken(messaging, { vapidKey: _KEYS.FIREBASE_TOKEN });
-        return token;
+        if (messaging) {
+            const token = await getToken(messaging, { vapidKey: _KEYS.FIREBASE_TOKEN });
+            return token;
+        }
     } catch (error) {
         console.log('Error al recuperar el token', error);
         return null;

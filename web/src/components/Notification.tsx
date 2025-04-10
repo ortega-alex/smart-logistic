@@ -133,7 +133,7 @@ export const Notification = () => {
                     handleGetNotifications();
                 });
         }
-        if (window.location.protocol === 'https:' || _SERVER.NODE_ENV === 'development') {
+        if (window.location.protocol === 'https:') {
             handleGetToken_fcm();
             onMessageListener().then((payload: any) => {
                 api.open({
