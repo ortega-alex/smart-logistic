@@ -3,7 +3,7 @@ import { Session } from '@/interfaces';
 import { clearStorage, getStorage, saveStorage } from '@/services';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const emptySession: Session = {
+const EmptySession: Session = {
     session_id: 0,
     id: 0,
     email: '',
@@ -11,13 +11,15 @@ const emptySession: Session = {
     name: '',
     username: '',
     phone_number: '',
-    iniciales: 'NA'
+    iniciales: '',
+    level: 0,
+    headquarter_id: 0
 };
 const session = getStorage(_KEYS.SESSION);
 
 export const sessionSlice = createSlice({
     name: 'session',
-    initialState: session ? session : emptySession,
+    initialState: session ? session : EmptySession,
     reducers: {
         setSession: (_, action: PayloadAction<{ session: Session; token?: string }>) => {
             const { session, token } = action.payload;
@@ -28,7 +30,7 @@ export const sessionSlice = createSlice({
         modifySession: (state, action: PayloadAction<Partial<Session>>) => ({ ...state, ...action.payload }),
         resetSesion: () => {
             clearStorage();
-            return emptySession;
+            return EmptySession;
         }
     }
 });

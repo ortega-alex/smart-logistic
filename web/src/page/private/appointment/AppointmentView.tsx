@@ -1,7 +1,7 @@
 import { Icon } from '@/components';
 import { Appointment, AppointmentStatus, AppointmentView as AppointmentViewInterface, Customer } from '@/interfaces';
 import { httpAppointmentAdd, httpAppointmentUpdate } from '@/services';
-import { Badge, Button, DatePicker, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
+import { Button, DatePicker, Form, FormInstance, FormProps, Input, message, Select } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 
