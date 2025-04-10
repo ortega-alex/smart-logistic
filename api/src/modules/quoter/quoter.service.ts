@@ -32,9 +32,9 @@ export const pagination = async (
 ) => {
     // Crear la consulta base
     const query = Quoter.createQueryBuilder('quoter')
-        .innerJoin('quoter.customer', 'customer')
-        .innerJoin('quoter.seller', 'seller')
-        .innerJoin('quoter.createdBy', 'createdBy');
+        .innerJoinAndSelect('quoter.customer', 'customer')
+        .innerJoinAndSelect('quoter.seller', 'seller')
+        .innerJoinAndSelect('quoter.createdBy', 'createdBy');
 
     // filtra informacion en base al nivel de acceso
     if (access_level.level === 3) {
